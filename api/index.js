@@ -5813,11 +5813,13 @@ var getDbPath = () => {
     if (fs.existsSync(path1)) return path1;
     const path2 = join(process.cwd(), "src", "database", "alquran.db");
     if (fs.existsSync(path2)) return path2;
-    const path3 = join(process.cwd(), "api", "alquran.db");
+    const path3 = join(process.cwd(), "api", "src", "database", "alquran.db");
     if (fs.existsSync(path3)) return path3;
     const path4 = join("/var/task", "src", "database", "alquran.db");
     if (fs.existsSync(path4)) return path4;
-    return path1;
+    const path5 = join(process.cwd(), "src", "database", "alquran.db");
+    if (fs.existsSync(path5)) return path5;
+    return path2;
   } catch (e) {
     console.error("Error finding database path:", e);
     return join(process.cwd(), "src", "database", "alquran.db");
@@ -5829,9 +5831,9 @@ try {
   console.log(`Initializing database at: ${dbFile}`);
   db = new Database(dbFile, {
     readonly: isProduction,
-    fileMustExist: false,
+    fileMustExist: isProduction,
+    // Di Vercel file harus ada, jika tidak ada berarti path salah
     timeout: 5e3
-    // Set timeout to 5s to prevent hanging
   });
   console.log("Database connection established successfully");
   if (!isProduction) {

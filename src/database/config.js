@@ -19,15 +19,19 @@ const getDbPath = () => {
     const path2 = join(process.cwd(), 'src', 'database', 'alquran.db');
     if (fs.existsSync(path2)) return path2;
 
-    // 3. Coba di api/ (fallback)
-    const path3 = join(process.cwd(), 'api', 'alquran.db');
+    // 3. Vercel specific path (files included via includeFiles are placed relative to the entry point)
+    const path3 = join(process.cwd(), 'api', 'src', 'database', 'alquran.db');
     if (fs.existsSync(path3)) return path3;
 
-    // 4. Vercel specific path (sometimes files are in /var/task/)
+    // 4. Fallback path for Vercel's /var/task structure
     const path4 = join('/var/task', 'src', 'database', 'alquran.db');
     if (fs.existsSync(path4)) return path4;
 
-    return path1;
+    // 5. Another Vercel fallback
+    const path5 = join(process.cwd(), 'src', 'database', 'alquran.db');
+    if (fs.existsSync(path5)) return path5;
+
+    return path2; // Default to local dev path
   } catch (e) {
     console.error('Error finding database path:', e);
     return join(process.cwd(), 'src', 'database', 'alquran.db');
@@ -41,8 +45,8 @@ try {
   
   db = new Database(dbFile, { 
     readonly: isProduction,
-    fileMustExist: false,
-    timeout: 5000 // Set timeout to 5s to prevent hanging
+    fileMustExist: isProduction, // Di Vercel file harus ada, jika tidak ada berarti path salah
+    timeout: 5000 
   });
   
   console.log('Database connection established successfully');
