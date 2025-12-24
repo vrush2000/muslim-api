@@ -1,203 +1,149 @@
-const express = require("express");
-const router = express.Router();
-const db = require("../../../database/config");
+import { Hono } from 'hono';
+import { get, query as dbQuery } from '../../../database/config.js';
 
-router.get("/", async (req, res) => {
+const ayah = new Hono();
+
+const formatAyah = (a) => {
+  return {
+    ...a,
+    audio_partial: a.audio_partial ? JSON.parse(a.audio_partial) : {}
+  };
+};
+
+ayah.get('/', async (c) => {
   try {
-    db.all(
-      "SELECT * FROM ayah ORDER BY CAST(id as INTEGER) ASC",
-      (err, data) => {
-        if (err) {
-          res.status(500).json({ status: 500, message: err.message });
-        } else if (!data) {
-          res.status(404).json({ status: 404, data: [] });
-        } else {
-          res.status(200).json({ status: 200, data: data });
-        }
-      }
-    );
+    const data = await dbQuery("SELECT * FROM ayah ORDER BY CAST(id as INTEGER) ASC");
+    return c.json({ status: 200, data: (data || []).map(formatAyah) });
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-router.get("/range", async (req, res) => {
+ayah.get('/range', async (c) => {
   try {
-    const surahId = req.query.surahId;
-    const start = req.query.start;
-    const end = req.query.end;
+    const surahId = c.req.query('surahId') || c.req.query('id');
+    const start = c.req.query('start');
+    const end = c.req.query('end');
     if (surahId != null && start != null && end != null) {
-      db.all(
-        "SELECT * FROM ayah WHERE surah = " +
-          surahId +
-          " AND ayah BETWEEN CAST(" +
-          start +
-          " as INTEGER) and CAST(" +
-          end +
-          " as INTEGER) ORDER BY CAST(id as INTEGER) ASC",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
+      const data = await dbQuery(
+        "SELECT * FROM ayah WHERE surah = ? AND ayah BETWEEN CAST(? as INTEGER) and CAST(? as INTEGER) ORDER BY CAST(id as INTEGER) ASC",
+        [surahId, start, end]
       );
+      return c.json({ status: 200, data: (data || []).map(formatAyah) });
     } else {
-      res.status(500).json({
+      return c.json({
         status: 500,
         message: "Parameter di perlukan (surahId, start, end).",
-      });
+      }, 500);
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-router.get("/surah", async (req, res) => {
+ayah.get('/surah', async (c) => {
   try {
-    const id = req.query.id;
+    const id = c.req.query('surahId') || c.req.query('id');
     if (id != null) {
-      db.all(
-        "SELECT * FROM ayah WHERE surah = " +
-          id +
-          " ORDER BY CAST(id as INTEGER) ASC",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
+      const data = await dbQuery(
+        "SELECT * FROM ayah WHERE surah = ? ORDER BY CAST(id as INTEGER) ASC",
+        [id]
       );
+      return c.json({ status: 200, data: (data || []).map(formatAyah) });
     } else {
-      res.status(500).json({
+      return c.json({
         status: 500,
-        message: "Parameter di perlukan (id).",
-      });
+        message: "Parameter di perlukan (surahId).",
+      }, 500);
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-router.get("/juz", async (req, res) => {
+ayah.get('/juz', async (c) => {
   try {
-    const id = req.query.id;
+    const id = c.req.query('juzId') || c.req.query('id');
     if (id != null) {
-      db.all(
-        "SELECT * FROM ayah WHERE juz = " +
-          id +
-          " ORDER BY CAST(id as INTEGER) ASC",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
+      const data = await dbQuery(
+        "SELECT * FROM ayah WHERE juz = ? ORDER BY CAST(id as INTEGER) ASC",
+        [id]
       );
+      return c.json({ status: 200, data: (data || []).map(formatAyah) });
     } else {
-      res.status(500).json({
+      return c.json({
         status: 500,
-        message: "Parameter di perlukan (id).",
-      });
+        message: "Parameter di perlukan (juzId).",
+      }, 500);
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-router.get("/page", async (req, res) => {
+ayah.get('/page', async (c) => {
   try {
-    const id = req.query.id;
+    const id = c.req.query('page') || c.req.query('id');
     if (id != null) {
-      db.all(
-        "SELECT * FROM ayah WHERE page = " +
-          id +
-          " ORDER BY CAST(id as INTEGER) ASC",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
+      const data = await dbQuery(
+        "SELECT * FROM ayah WHERE page = ? ORDER BY CAST(id as INTEGER) ASC",
+        [id]
       );
+      return c.json({ status: 200, data: (data || []).map(formatAyah) });
     } else {
-      res.status(500).json({
+      return c.json({
         status: 500,
-        message: "Parameter di perlukan (id).",
-      });
+        message: "Parameter di perlukan (page).",
+      }, 500);
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-router.get("/specific", async (req, res) => {
+ayah.get('/specific', async (c) => {
   try {
-    const surahId = req.query.surahId;
-    const ayahId = req.query.ayahId;
+    const surahId = c.req.query('surahId') || c.req.query('id');
+    const ayahId = c.req.query('ayahId');
     if (surahId != null && ayahId != null) {
-      db.get(
-        "SELECT * FROM ayah WHERE surah = " + surahId + " AND ayah = " + ayahId,
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: {} });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
+      const data = await get(
+        "SELECT * FROM ayah WHERE surah = ? AND ayah = ?",
+        [surahId, ayahId]
       );
+      if (!data) {
+        return c.json({ status: 404, data: {} }, 404);
+      } else {
+        return c.json({ status: 200, data: formatAyah(data) });
+      }
     } else {
-      res.status(500).json({
+      return c.json({
         status: 500,
         message: "Parameter di perlukan (surahId, ayahId).",
-      });
+      }, 500);
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-router.get("/find", async (req, res) => {
+ayah.get('/find', async (c) => {
   try {
-    const query = req.query.query;
-    if (query != null && query.length > 3) {
-      db.all(
-        "SELECT * FROM ayah WHERE text LIKE '%" +
-          query +
-          "%' ORDER BY CAST(id as INTEGER) ASC",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
+    const q = c.req.query('query');
+    if (q != null && q.length > 3) {
+      const data = await dbQuery(
+        "SELECT * FROM ayah WHERE text LIKE ? ORDER BY CAST(id as INTEGER) ASC",
+        [`%${q}%`]
       );
+      return c.json({ status: 200, data: (data || []).map(formatAyah) });
     } else {
-      res.status(500).json({
+      return c.json({
         status: 500,
         message: "Parameter di perlukan (query). Harus lebih dari 3 karakter.",
-      });
+      }, 500);
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-module.exports = router;
+export default ayah;

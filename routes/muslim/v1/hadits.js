@@ -1,66 +1,90 @@
-const express = require("express");
-const router = express.Router();
-const db = require("../../../database/config");
+import { Hono } from 'hono';
+import { get, query as dbQuery } from '../../../database/config.js';
 
-router.get("/", async (req, res) => {
+const hadits = new Hono();
+
+const GADING_API_BASE = 'https://api.hadith.gading.dev';
+
+// Hadits Arbain (Existing)
+hadits.get('/', async (c) => {
   try {
-    const nomor = req.query.nomor;
+    const nomor = c.req.query('nomor');
     if (nomor != null) {
-      db.get("SELECT * FROM hadits WHERE no = " + nomor, (err, data) => {
-        if (err) {
-          res.status(500).json({ status: 500, message: err.message });
-        } else if (!data) {
-          res.status(404).json({ status: 404, data: {} });
-        } else {
-          res.status(200).json({ status: 200, data: data });
-        }
-      });
+      const data = await get("SELECT * FROM hadits WHERE no = ?", [nomor]);
+      if (!data) {
+        return c.json({ status: 404, data: {} }, 404);
+      } else {
+        return c.json({ status: 200, data: data });
+      }
     } else {
-      db.all(
-        "SELECT * FROM hadits ORDER BY CAST(no as INTEGER) ASC",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
-      );
+      const data = await dbQuery("SELECT * FROM hadits ORDER BY CAST(no as INTEGER) ASC");
+      return c.json({ status: 200, data: data || [] });
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-router.get("/find", async (req, res) => {
+// List of Hadith Books (from api.hadith.gading.dev)
+hadits.get('/books', async (c) => {
   try {
-    const query = req.query.query;
-    if (query != null) {
-      db.all(
-        "SELECT * FROM hadits WHERE judul LIKE '%" +
-          query +
-          "%' ORDER BY CAST(no as INTEGER) ASC",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
+    const response = await fetch(`${GADING_API_BASE}/books`);
+    const data = await response.json();
+    return c.json(data);
+  } catch (error) {
+    return c.json({ status: 500, message: error.message }, 500);
+  }
+});
+
+// Hadiths by Book with Range (from api.hadith.gading.dev)
+hadits.get('/books/:name', async (c) => {
+  try {
+    const name = c.req.param('name');
+    const range = c.req.query('range');
+    const url = range 
+      ? `${GADING_API_BASE}/books/${name}?range=${range}`
+      : `${GADING_API_BASE}/books/${name}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    return c.json(data);
+  } catch (error) {
+    return c.json({ status: 500, message: error.message }, 500);
+  }
+});
+
+// Specific Hadith by Number (from api.hadith.gading.dev)
+hadits.get('/books/:name/:number', async (c) => {
+  try {
+    const name = c.req.param('name');
+    const number = c.req.param('number');
+    
+    const response = await fetch(`${GADING_API_BASE}/books/${name}/${number}`);
+    const data = await response.json();
+    return c.json(data);
+  } catch (error) {
+    return c.json({ status: 500, message: error.message }, 500);
+  }
+});
+
+hadits.get('/find', async (c) => {
+  try {
+    const q = c.req.query('query');
+    if (q != null) {
+      const data = await dbQuery(
+        "SELECT * FROM hadits WHERE judul LIKE ? ORDER BY CAST(no as INTEGER) ASC",
+        [`%${q}%`]
       );
+      return c.json({ status: 200, data: data || [] });
     } else {
-      res.status(500).json({
+      return c.json({
         status: 500,
         message: "Parameter di perlukan (query).",
-      });
+      }, 500);
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-module.exports = router;
+export default hadits;

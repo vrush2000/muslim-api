@@ -1,37 +1,29 @@
-const express = require("express");
-const router = express.Router();
-const db = require("../../../database/config");
+import { Hono } from 'hono';
+import { get, query } from '../../../database/config.js';
 
-router.get("/", (req, res) => {
+const asbab = new Hono();
+
+asbab.get('/', async (c) => {
   try {
-    const id = req.query.id;
+    const id = c.req.query('asbabId') || c.req.query('id');
     if (id == null) {
-      db.all(
-        "SELECT * FROM asbab_nuzul ORDER BY CAST(id as INTEGER) ASC",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
-      );
+      const data = await query("SELECT * FROM asbab_nuzul ORDER BY CAST(id as INTEGER) ASC");
+      if (!data) {
+        return c.json({ status: 404, data: [] }, 404);
+      } else {
+        return c.json({ status: 200, data: data });
+      }
     } else {
-      db.get("SELECT * FROM asbab_nuzul WHERE id = " + id, (err, data) => {
-        if (err) {
-          res.status(500).json({ status: 500, message: err.message });
-        } else if (!data) {
-          res.status(404).json({ status: 404, data: {} });
-        } else {
-          res.status(200).json({ status: 200, data: data });
-        }
-      });
+      const data = await get("SELECT * FROM asbab_nuzul WHERE id = ?", [id]);
+      if (!data) {
+        return c.json({ status: 404, data: {} }, 404);
+      } else {
+        return c.json({ status: 200, data: data });
+      }
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-module.exports = router;
+export default asbab;
