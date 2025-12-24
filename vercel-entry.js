@@ -1,4 +1,4 @@
-import { getRequestListener } from '@hono/node-server';
+import { handle } from 'hono/vercel';
 import app from './src/app.jsx';
 
-export default getRequestListener(app);
+export default handle(app);

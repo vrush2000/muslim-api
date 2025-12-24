@@ -7,37 +7,57 @@ const isProduction = process.env.VERCEL === '1' || process.env.NODE_ENV === 'pro
 
 // Helper to find the database file
 const getDbPath = () => {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
 
-  // 1. Coba di direktori yang sama (untuk bundled api/index.js di Vercel)
-  const path1 = join(__dirname, 'alquran.db');
-  if (fs.existsSync(path1)) return path1;
+    // 1. Coba di direktori yang sama (untuk bundled api/index.js di Vercel)
+    const path1 = join(__dirname, 'alquran.db');
+    if (fs.existsSync(path1)) return path1;
 
-  // 2. Coba di src/database/ (untuk local dev)
-  const path2 = join(process.cwd(), 'src', 'database', 'alquran.db');
-  if (fs.existsSync(path2)) return path2;
+    // 2. Coba di src/database/ (untuk local dev)
+    const path2 = join(process.cwd(), 'src', 'database', 'alquran.db');
+    if (fs.existsSync(path2)) return path2;
 
-  // 3. Coba di api/ (fallback)
-  const path3 = join(process.cwd(), 'api', 'alquran.db');
-  if (fs.existsSync(path3)) return path3;
+    // 3. Coba di api/ (fallback)
+    const path3 = join(process.cwd(), 'api', 'alquran.db');
+    if (fs.existsSync(path3)) return path3;
 
-  // Default fallback
-  return path1;
+    // 4. Vercel specific path (sometimes files are in /var/task/)
+    const path4 = join('/var/task', 'src', 'database', 'alquran.db');
+    if (fs.existsSync(path4)) return path4;
+
+    return path1;
+  } catch (e) {
+    console.error('Error finding database path:', e);
+    return join(process.cwd(), 'src', 'database', 'alquran.db');
+  }
 };
 
-const dbFile = getDbPath();
-console.log(`Using database at: ${dbFile}`);
-
-const db = new Database(dbFile, { 
-  readonly: isProduction,
-  fileMustExist: true
-});
-
-// Optimization for better-sqlite3
-if (!isProduction) {
-  db.pragma('journal_mode = WAL');
-  db.pragma('synchronous = NORMAL');
+let db;
+try {
+  const dbFile = getDbPath();
+  console.log(`Initializing database at: ${dbFile}`);
+  
+  db = new Database(dbFile, { 
+    readonly: isProduction,
+    fileMustExist: false // Don't crash immediately if not found, handle later
+  });
+  
+  if (!isProduction) {
+    db.pragma('journal_mode = WAL');
+    db.pragma('synchronous = NORMAL');
+  }
+} catch (error) {
+  console.error('FAILED TO INITIALIZE DATABASE:', error);
+  // Create a mock db object that throws on queries to prevent app crash on startup
+  db = {
+    prepare: () => ({
+      all: () => { throw new Error('Database not initialized: ' + error.message) },
+      get: () => { throw new Error('Database not initialized: ' + error.message) }
+    }),
+    pragma: () => {}
+  };
 }
 
 /**
