@@ -41,14 +41,20 @@ try {
   
   db = new Database(dbFile, { 
     readonly: isProduction,
-    fileMustExist: false
+    fileMustExist: false,
+    timeout: 5000 // Set timeout to 5s to prevent hanging
   });
   
   console.log('Database connection established successfully');
   
+  // Optimization for better-sqlite3 - NEVER use WAL in production/Vercel
   if (!isProduction) {
-    db.pragma('journal_mode = WAL');
-    db.pragma('synchronous = NORMAL');
+    try {
+      db.pragma('journal_mode = WAL');
+      db.pragma('synchronous = NORMAL');
+    } catch (e) {
+      console.warn('Could not set PRAGMA:', e);
+    }
   }
 } catch (error) {
   console.error('FAILED TO INITIALIZE DATABASE:', error);

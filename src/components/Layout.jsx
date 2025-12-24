@@ -213,11 +213,10 @@ export const Layout = ({ children, title }) => {
                   </p>
                   <p>
                     <a
-                      href="https://muslim-api-three.vercel.app/"
-                      target="_blank"
-                      class="hover:text-emerald-600"
+                      href="http://localhost:3000/v1"
+                      class="text-slate-600 hover:text-emerald-600 transition-colors"
                     >
-                      Muslim API (Dataset)
+                      Muslim API Vercel
                     </a>
                   </p>
                   <p>
@@ -270,7 +269,7 @@ export const Layout = ({ children, title }) => {
                 <span class="hidden sm:inline">|</span>
                 <span>Sumber Data:</span>
                 <a
-                  href="https://muslim-api-three.vercel.app"
+                  href="http://localhost:3000/v1"
                   target="_blank"
                   class="hover:text-emerald-600 transition-colors"
                 >
