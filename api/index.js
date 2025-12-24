@@ -5262,39 +5262,52 @@ var routes_default = router;
 
 // src/database/config.js
 import Database from "better-sqlite3";
-import { dirname, join } from "path";
+import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-var __filename = fileURLToPath(import.meta.url);
-var __dirname = dirname(__filename);
-var dbFile = join(__dirname, "alquran.db");
+import fs from "fs";
 var isProduction = process.env.VERCEL === "1" || process.env.NODE_ENV === "production";
+var getDbPath = () => {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const path1 = join(__dirname, "alquran.db");
+  if (fs.existsSync(path1)) return path1;
+  const path2 = join(process.cwd(), "src", "database", "alquran.db");
+  if (fs.existsSync(path2)) return path2;
+  const path3 = join(process.cwd(), "api", "alquran.db");
+  if (fs.existsSync(path3)) return path3;
+  return path1;
+};
+var dbFile = getDbPath();
+console.log(`Using database at: ${dbFile}`);
 var db = new Database(dbFile, {
-  readonly: isProduction
+  readonly: isProduction,
+  fileMustExist: true
 });
 if (!isProduction) {
   db.pragma("journal_mode = WAL");
   db.pragma("synchronous = NORMAL");
 }
 var query = (sql, params = []) => {
-  try {
-    const stmt = db.prepare(sql);
-    if (sql.trim().toUpperCase().startsWith("SELECT") || sql.trim().toUpperCase().startsWith("PRAGMA")) {
-      return Promise.resolve(Array.isArray(params) ? stmt.all(...params) : stmt.all(params));
-    } else {
-      const result = Array.isArray(params) ? stmt.run(...params) : stmt.run(params);
-      return Promise.resolve(result);
+  return new Promise((resolve, reject) => {
+    try {
+      const stmt = db.prepare(sql);
+      const rows = stmt.all(params);
+      resolve(rows);
+    } catch (err) {
+      reject(err);
     }
-  } catch (err) {
-    return Promise.reject(err);
-  }
+  });
 };
 var get = (sql, params = []) => {
-  try {
-    const stmt = db.prepare(sql);
-    return Promise.resolve(Array.isArray(params) ? stmt.get(...params) : stmt.get(params));
-  } catch (err) {
-    return Promise.reject(err);
-  }
+  return new Promise((resolve, reject) => {
+    try {
+      const stmt = db.prepare(sql);
+      const row = stmt.get(params);
+      resolve(row);
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 // src/routes/muslim/v1/asbab.js
