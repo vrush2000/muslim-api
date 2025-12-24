@@ -2546,6 +2546,11 @@ var app_default = app;
 
 // vercel-entry.js
 var vercel_entry_default = (req, res) => {
+  const protocol = req.headers["x-forwarded-proto"] || "http";
+  const host = req.headers["host"];
+  if (req.url && !req.url.startsWith("http")) {
+    req.url = `${protocol}://${host}${req.url}`;
+  }
   if (req.headers && typeof req.headers.get !== "function") {
     req.headers.get = function(name) {
       return this[name.toLowerCase()] || null;
