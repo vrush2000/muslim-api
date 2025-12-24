@@ -4,7 +4,7 @@
     <strong>API Keislaman All-in-One: Al-Quran (Tafsir & Audio), Jadwal Sholat, Kalender Hijriah/Jawa, Dzikir, Doa, Hadits, serta Sistem Integritas Data Modern.</strong>
   </p>
    <p align="center">
-    <a href="https://muslim-api.vercel.app"><strong>Dokumentasi</strong></a> · <a href="https://github.com/vrush2000/muslim-all-in-one-api/issues"><strong>Laporkan Bug</strong></a> · <a href="https://github.com/vrush2000/muslim-all-in-one-api/issues"><strong>Request Fitur</strong></a>
+    <a href="https://muslim-all-in-one-api.vercel.app"><strong>Dokumentasi</strong></a> · <a href="https://github.com/vrush2000/muslim-all-in-one-api/issues"><strong>Laporkan Bug</strong></a> · <a href="https://github.com/vrush2000/muslim-all-in-one-api/issues"><strong>Request Fitur</strong></a>
   </p>
   <div align="center">
     <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/vrush2000/muslim-all-in-one-api">
@@ -100,7 +100,7 @@ vercel deploy --prod
 ## 📖 Dokumentasi API
 
 Dokumentasi lengkap dapat diakses langsung melalui root URL aplikasi:
-👉 [https://muslim-api.vercel.app](https://muslim-api.vercel.app)
+👉 [https://muslim-all-in-one-api.vercel.app](https://muslim-all-in-one-api.vercel.app)
 
 ---
 
@@ -108,7 +108,7 @@ Dokumentasi lengkap dapat diakses langsung melalui root URL aplikasi:
 
 Aplikasi yang menggunakan API ini:
 
-[![Play Store](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=otang.app.muslim)
+[![Play Store](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/developer?id=Vrush+Studio)
 
 ---
 

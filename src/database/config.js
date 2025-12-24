@@ -16,9 +16,9 @@ const getDbPath = () => {
   console.log('process.cwd():', cwd);
 
   const paths = [
+    { name: 'Vercel Root', path: join(cwd, 'alquran.db') },
     { name: 'Vercel /var/task Root', path: '/var/task/alquran.db' },
     { name: 'Vercel /var/task/src/database', path: '/var/task/src/database/alquran.db' },
-    { name: 'CWD Root', path: join(cwd, 'alquran.db') },
     { name: 'CWD Database', path: join(cwd, 'src', 'database', 'alquran.db') },
     { name: 'Bundled Relative', path: join(__dirname, '..', 'src', 'database', 'alquran.db') }
   ];
@@ -41,14 +41,16 @@ try {
   db = new Database(dbFile, { 
     readonly: true,
     fileMustExist: false,
-    timeout: 10000
+    timeout: 20000 // Tingkatkan lagi ke 20 detik
   });
   
-  // Set PRAGMA yang aman untuk environment read-only
+  // Set PRAGMA yang sangat aman untuk environment read-only
   try {
-    db.pragma('journal_mode = DELETE');
+    db.pragma('journal_mode = OFF'); // Matikan journal sepenuhnya
+    db.pragma('query_only = ON');    // Paksa hanya query (read-only)
     db.pragma('synchronous = OFF');
     db.pragma('temp_store = MEMORY');
+    db.pragma('cache_size = -2000'); // 2MB cache
   } catch (e) {
     console.warn('Could not set PRAGMA:', e);
   }

@@ -5813,9 +5813,9 @@ var getDbPath = () => {
   console.log("__dirname:", __dirname);
   console.log("process.cwd():", cwd);
   const paths = [
+    { name: "Vercel Root", path: join(cwd, "alquran.db") },
     { name: "Vercel /var/task Root", path: "/var/task/alquran.db" },
     { name: "Vercel /var/task/src/database", path: "/var/task/src/database/alquran.db" },
-    { name: "CWD Root", path: join(cwd, "alquran.db") },
     { name: "CWD Database", path: join(cwd, "src", "database", "alquran.db") },
     { name: "Bundled Relative", path: join(__dirname, "..", "src", "database", "alquran.db") }
   ];
@@ -5834,12 +5834,15 @@ try {
   db = new Database(dbFile, {
     readonly: true,
     fileMustExist: false,
-    timeout: 1e4
+    timeout: 2e4
+    // Tingkatkan lagi ke 20 detik
   });
   try {
-    db.pragma("journal_mode = DELETE");
+    db.pragma("journal_mode = OFF");
+    db.pragma("query_only = ON");
     db.pragma("synchronous = OFF");
     db.pragma("temp_store = MEMORY");
+    db.pragma("cache_size = -2000");
   } catch (e) {
     console.warn("Could not set PRAGMA:", e);
   }
