@@ -1,37 +1,24 @@
-const express = require("express");
-const router = express.Router();
-const db = require("../../../database/config");
+import { Hono } from 'hono';
+import { query as dbQuery } from '../../../database/config.js';
 
-router.get("/", async (req, res) => {
+const dzikir = new Hono();
+
+dzikir.get('/', async (c) => {
   try {
-    const type = req.query.type;
+    const type = c.req.query('type');
     if (type != null) {
-      db.all(
-        "SELECT * FROM dzikir WHERE type = '" + type + "'",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
+      const data = await dbQuery(
+        "SELECT * FROM dzikir WHERE type = ?",
+        [type]
       );
+      return c.json({ status: 200, data: data || [] });
     } else {
-      db.all("SELECT * FROM dzikir", (err, data) => {
-        if (err) {
-          res.status(500).json({ status: 500, message: err.message });
-        } else if (!data) {
-          res.status(404).json({ status: 404, data: [] });
-        } else {
-          res.status(200).json({ status: 200, data: data });
-        }
-      });
+      const data = await dbQuery("SELECT * FROM dzikir");
+      return c.json({ status: 200, data: data || [] });
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-module.exports = router;
+export default dzikir;

@@ -1,165 +1,216 @@
-const express = require("express");
-const router = express.Router();
-const db = require("../../../database/config");
+import { Hono } from 'hono';
+import asbab from './asbab.js';
+import asma from './asma.js';
+import ayah from './ayah.js';
+import calendar from './calendar.js';
+import doa from './doa.js';
+import dzikir from './dzikir.js';
+import hadits from './hadits.js';
+import juz from './juz.js';
+import murotal from './murotal.js';
+import integrity from './integrity.js';
+import sholat from './sholat.js';
+import surah from './surah.js';
+import tafsir from './tafsir.js';
+import theme from './theme.js';
+import word from './word.js';
+import admin from './admin.js';
 
-const asbab = require("./asbab");
-const asma = require("./asma");
-const ayah = require("./ayah");
-const doa = require("./doa");
-const dzikir = require("./dzikir");
-const hadits = require("./hadits");
-const juz = require("./juz");
-const surah = require("./surah");
-const tafsir = require("./tafsir");
-const theme = require("./theme");
-const word = require("./word");
+const v1 = new Hono();
 
-router.get("/", (req, res) => {
-  res.status(200).send({
+v1.route('/asbab', asbab);
+v1.route('/asma', asma);
+v1.route('/ayah', ayah);
+v1.route('/calendar', calendar);
+v1.route('/doa', doa);
+v1.route('/dzikir', dzikir);
+v1.route('/hadits', hadits);
+v1.route('/juz', juz);
+v1.route('/murotal', murotal);
+v1.route('/integrity', integrity);
+v1.route('/sholat', sholat);
+v1.route('/surah', surah);
+v1.route('/tafsir', tafsir);
+v1.route('/theme', theme);
+v1.route('/word', word);
+v1.route('/admin', admin);
+
+v1.get('/', (c) => {
+  return c.json({
     quran: {
       surah: {
         daftarSurah: {
-          pattern: "/surah",
+          pattern: "/v1/surah",
         },
         infoSurah: {
-          pattern: "/surah?surahId={surahId}",
-          contoh: "/surah?surahId=114",
+          pattern: "/v1/surah?surahId={surahId}",
+          contoh: "/v1/surah?surahId=114",
+        },
+      },
+      ayah: {
+        range: {
+          pattern: "/v1/ayah/range?surahId={surahId}&start={start}&end={end}",
+          contoh: "/v1/ayah/range?surahId=1&start=1&end=7",
+        },
+        spesifikSurah: {
+          pattern: "/v1/ayah/surah?surahId={surahId}",
+          contoh: "/v1/ayah/surah?surahId=1",
+        },
+        spesifikJuz: {
+          pattern: "/v1/ayah/juz?juzId={juzId}",
+          contoh: "/v1/ayah/juz?juzId=30",
+        },
+        spesifikHalaman: {
+          pattern: "/v1/ayah/page?page={page}",
+          contoh: "/v1/ayah/page?page=604",
+        },
+        spesifikAyat: {
+          pattern: "/v1/ayah/specific?surahId={surahId}&ayahId={ayahId}",
+          contoh: "/v1/ayah/specific?surahId=1&ayahId=1",
+        },
+        cari: {
+          pattern: "/v1/ayah/find?query={query}",
+          contoh: "/v1/ayah/find?query=alhamdulillah",
         },
       },
       juz: {
-        daftarJuz: {
-          pattern: "/juz",
+        semua: {
+          pattern: "/v1/juz",
         },
-        infoJuz: {
-          pattern: "/juz?juzId={juzId}",
-          contoh: "/juz?juzId=30",
-        },
-      },
-      ayat: {
-        semuaAyat: {
-          pattern: "/ayah",
-        },
-        spesifikSurah: {
-          pattern: "/ayah/surah?surahId={surahId}",
-          contoh: "/ayah/surah?surahId=114",
-        },
-        spesifikAyat: {
-          pattern: "/ayah/surah?surahId={surahId}&ayahId={ayahId}",
-          contoh: "/ayah/surah?surahId=114&ayahId=1",
-        },
-        spesifikJuz: {
-          pattern: "/ayah/juz?juzId={juzId}",
-          contoh: "/ayah/juz?juzId=30",
-        },
-        spesifikHalaman: {
-          pattern: "/ayah/page?pageId={pageId}",
-          contoh: "/ayah/page?pageId=604",
-        },
-        ayatRange: {
-          pattern: "/ayah/range?surahId={surahId}&start={start}&end={end}",
-          contoh: "/ayah/range?surahId=1&start=3&end=5",
+        spesifik: {
+          pattern: "/v1/juz?juzId={juzId}",
+          contoh: "/v1/juz?juzId=30",
         },
       },
       asbabNujul: {
         semua: {
-          pattern: "/asbab",
+          pattern: "/v1/asbab",
         },
         spesifik: {
-          pattern: "/asbab?asbabId={id}",
-          contoh: "/asbab?asbabId=1",
+          pattern: "/v1/asbab?id={asbabId}",
+          contoh: "/v1/asbab?id=1",
         },
       },
       asmaulHusna: {
-        pattern: "/asma",
+        semua: {
+          pattern: "/v1/asma",
+        },
+        spesifik: {
+          pattern: "/v1/asma?id={asmaId}",
+          contoh: "/v1/asma?id=1",
+        },
+      },
+      murotal: {
+        qari: {
+          pattern: "/v1/murotal/qari",
+        },
+        semua: {
+          pattern: "/v1/murotal",
+        },
+        spesifikQari: {
+          pattern: "/v1/murotal?qariId={qariId}",
+          contoh: "/v1/murotal?qariId=05",
+        },
+        spesifikSurah: {
+          pattern: "/v1/murotal?surahId={surahId}&qariId={qariId}",
+          contoh: "/v1/murotal?surahId=1&qariId=05",
+        },
+      },
+      jadwalSholat: {
+        semuaKota: {
+          pattern: "/v1/sholat/kota/semua",
+        },
+        cariKota: {
+          pattern: "/v1/sholat/kota/cari?nama={namaKota}",
+          contoh: "/v1/sholat/kota/cari?nama=jakarta",
+        },
+        jadwalByKota: {
+          pattern: "/v1/sholat/jadwal?kotaId={kotaId}&tanggal={YYYY-MM-DD}",
+          contoh: "/v1/sholat/jadwal?kotaId=58a2fc6ed39fd083f55d4182bf88826d&tanggal=2025-12-24",
+        },
+        jadwalByKoordinat: {
+          pattern: "/v1/sholat/jadwal/koordinat?lat={latitude}&lon={longitude}",
+          contoh: "/v1/sholat/jadwal/koordinat?lat=-6.1751&lon=106.8272",
+        },
+      },
+      calendar: {
+        masehiToHijri: {
+          pattern: "/v1/calendar/hijri?date={YYYY-MM-DD}",
+          contoh: "/v1/calendar/hijri?date=2024-03-11",
+        },
+        hijriToMasehi: {
+          pattern: "/v1/calendar/masehi?day={day}&month={month}&year={year}",
+          contoh: "/v1/calendar/masehi?day=1&month=9&year=1445",
+        },
       },
       tafsir: {
         semua: {
-          pattern: "/tafsir",
+          pattern: "/v1/tafsir",
         },
-        spesifik: {
-          pattern: "/tafsir?tafsirId={id}",
-          contoh: "/tafsir?tafsirId=1",
+        spesifikSurah: {
+          pattern: "/v1/tafsir?surahId={surahId}",
+          contoh: "/v1/tafsir?surahId=1",
         },
       },
-      tema: {
+      theme: {
         semua: {
-          pattern: "/theme",
+          pattern: "/v1/theme",
         },
         spesifik: {
-          pattern: "/theme?themeId={id}",
-          contoh: "/theme?themeId=1",
+          pattern: "/v1/theme?themeId={themeId}",
+          contoh: "/v1/theme?themeId=1",
         },
       },
       kataPerKata: {
         semua: {
-          pattern: "/word",
+          pattern: "/v1/word",
         },
         spesifikSurah: {
-          pattern: "/word?surahId={surahId}",
-          contoh: "/word?surahId=1",
+          pattern: "/v1/word?surahId={surahId}",
+          contoh: "/v1/word?surahId=1",
         },
         spesifikAyat: {
-          pattern: "/word?surahId={surahId}&ayahId={ayahId}",
-          contoh: "/word?surahId=1&ayahId=1",
+          pattern: "/v1/word?surahId={surahId}&ayahId={ayahId}",
+          contoh: "/v1/word?surahId=1&ayahId=1",
         },
       },
     },
     doa: {
       semua: {
-        pattern: "/doa",
+        pattern: "/v1/doa",
       },
-      spesifik: {
-        pattern: "/doa?source={source}",
-        source: "quran, hadits, pilihan, harian, ibadah, haji, lainnya",
-        contoh: "/doa?source=harian",
+      spesifikSumber: {
+        pattern: "/v1/doa?source={source}",
+        contoh: "/v1/doa?source=quran",
+      },
+      cari: {
+        pattern: "/v1/doa/find?query={query}",
+        contoh: "/v1/doa/find?query=makan",
       },
     },
     dzikir: {
-      pattern: "/dzikir?type={sumber}",
-      type: "pagi, sore, solat",
-      contoh: "/dzikir?type=pagi",
+      semua: {
+        pattern: "/v1/dzikir",
+      },
+      spesifikTipe: {
+        pattern: "/v1/dzikir?type={type}",
+        contoh: "/v1/dzikir?type=pagi",
+      },
     },
     hadits: {
       semua: {
-        pattern: "/hadits",
+        pattern: "/v1/hadits",
       },
-      spesifik: {
-        pattern: "/hadits?nomor={nomor}",
-        contoh: "/hadits?nomor=1",
+      spesifikNomor: {
+        pattern: "/v1/hadits?nomor={nomor}",
+        contoh: "/v1/hadits?nomor=1",
+      },
+      cari: {
+        pattern: "/v1/hadits/find?query={query}",
+        contoh: "/v1/hadits/find?query=niat",
       },
     },
-    maintaner: "Otang45",
   });
 });
 
-router.use("/quran/asbab", asbab);
-router.use("/quran/asma", asma);
-router.use("/quran/ayah", ayah);
-router.use("/doa", doa);
-router.use("/dzikir", dzikir);
-router.use("/hadits", hadits);
-router.use("/quran/juz", juz);
-router.use("/quran/surah", surah);
-router.use("/quran/tafsir", tafsir);
-router.use("/quran/theme", theme);
-router.use("/quran/word", word);
-
-const closeDb = () => {
-  db.close((err) => {
-    if (err) {
-      console.error("Error closeing database.", err.message);
-    } else {
-      console.log("Database closed.");
-    }
-    process.exit(0);
-  });
-};
-
-process.on("SIGINT", closeDb);
-process.on("SIGTERM", closeDb);
-process.on("uncaughtException", (err) => {
-  console.log("Uncaught Exception: ", err);
-  closeDb();
-});
-
-module.exports = router;
+export default v1;

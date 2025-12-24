@@ -2,23 +2,21 @@
   "name": "muslim-api",
   "version": "1.0.0",
   "description": "Quran, Doa, Dzikir, Hadits Api",
-  "private": true,
+  "type": "module",
   "scripts": {
-    "start": "node --env-file=.env ./bin/www",
-    "devstart": "DEBUG=dikiotang:* nodemon --env-file=.env ./bin/www"
+    "start": "node --env-file=.env api/index.js",
+    "dev": "vite"
   },
   "dependencies": {
-    "body-parser": "^1.20.3",
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "ejs": "^3.1.10",
-    "express": "^4.21.1",
-    "express-ejs-layouts": "^2.5.1",
-    "http-errors": "~1.6.3",
-    "morgan": "~1.9.1",
-    "sqlite3": "^5.1.7"
+    "@hono/node-server": "^1.19.7",
+    "better-sqlite3": "^12.5.0",
+    "crypto": "^1.0.1",
+    "hono": "^4.11.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "@hono/vite-dev-server": "^0.23.0",
+    "@types/node": "^25.0.3",
+    "tsx": "^4.21.0",
+    "vite": "^7.3.0"
   }
 }

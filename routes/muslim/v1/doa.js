@@ -1,66 +1,44 @@
-const express = require("express");
-const router = express.Router();
-const db = require("../../../database/config");
+import { Hono } from 'hono';
+import { query as dbQuery } from '../../../database/config.js';
 
-router.get("/", async (req, res) => {
+const doa = new Hono();
+
+doa.get('/', async (c) => {
   try {
-    const source = req.query.source;
+    const source = c.req.query('source');
     if (source != null) {
-      db.all(
-        "SELECT * FROM doa WHERE source = '" + source + "' ORDER BY judul ASC",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
+      const data = await dbQuery(
+        "SELECT * FROM doa WHERE source = ? ORDER BY judul ASC",
+        [source]
       );
+      return c.json({ status: 200, data: data || [] });
     } else {
-      db.all("SELECT * FROM doa ORDER BY judul ASC", (err, data) => {
-        if (err) {
-          res.status(500).json({ status: 500, message: err.message });
-        } else if (!data) {
-          res.status(404).json({ status: 404, data: [] });
-        } else {
-          res.status(200).json({ status: 200, data: data });
-        }
-      });
+      const data = await dbQuery("SELECT * FROM doa ORDER BY judul ASC");
+      return c.json({ status: 200, data: data || [] });
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-router.get("/find", async (req, res) => {
+doa.get('/find', async (c) => {
   try {
-    const query = req.query.query;
-    if (query != null) {
-      db.all(
-        "SELECT * FROM doa WHERE judul LIKE '%" +
-          query +
-          "%' ORDER BY judul ASC",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
+    const q = c.req.query('query');
+    if (q != null) {
+      const data = await dbQuery(
+        "SELECT * FROM doa WHERE judul LIKE ? ORDER BY judul ASC",
+        [`%${q}%`]
       );
+      return c.json({ status: 200, data: data || [] });
     } else {
-      res.status(500).json({
+      return c.json({
         status: 500,
         message: "Parameter di perlukan (query).",
-      });
+      }, 500);
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-module.exports = router;
+export default doa;

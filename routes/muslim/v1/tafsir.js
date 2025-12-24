@@ -1,37 +1,25 @@
-const express = require("express");
-const router = express.Router();
-const db = require("../../../database/config");
+import { Hono } from 'hono';
+import { get, query as dbQuery } from '../../../database/config.js';
 
-router.get("/", async (req, res) => {
+const tafsir = new Hono();
+
+tafsir.get('/', async (c) => {
   try {
-    const tafsirId = req.query.id;
-    if (tafsirId != null) {
-      db.get("SELECT * FROM tafsir WHERE id = " + tafsirId, (err, data) => {
-        if (err) {
-          res.status(500).json({ status: 500, message: err.message });
-        } else if (!data) {
-          res.status(404).json({ status: 404, data: {} });
-        } else {
-          res.status(200).json({ status: 200, data: data });
-        }
-      });
+    const surahId = c.req.query('surahId') || c.req.query('id');
+    if (surahId != null) {
+      const data = await dbQuery("SELECT * FROM tafsir WHERE surahId = ?", [surahId]);
+      if (!data) {
+        return c.json({ status: 404, data: {} }, 404);
+      } else {
+        return c.json({ status: 200, data: data });
+      }
     } else {
-      db.all(
-        "SELECT * FROM tafsir ORDER BY CAST(id as INTEGER) ASC",
-        (err, data) => {
-          if (err) {
-            res.status(500).json({ status: 500, message: err.message });
-          } else if (!data) {
-            res.status(404).json({ status: 404, data: [] });
-          } else {
-            res.status(200).json({ status: 200, data: data });
-          }
-        }
-      );
+      const data = await dbQuery("SELECT * FROM tafsir ORDER BY CAST(id as INTEGER) ASC");
+      return c.json({ status: 200, data: data || [] });
     }
   } catch (error) {
-    res.status(500).json({ status: 500, message: error.message });
+    return c.json({ status: 500, message: error.message }, 500);
   }
 });
 
-module.exports = router;
+export default tafsir;
