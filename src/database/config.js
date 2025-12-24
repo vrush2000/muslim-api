@@ -11,27 +11,23 @@ const getDbPath = () => {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
 
-    // 1. Coba di direktori yang sama (untuk bundled api/index.js di Vercel)
-    const path1 = join(__dirname, 'alquran.db');
+    // 1. Vercel Standard Path (Files included via includeFiles are usually at /var/task/src/database/alquran.db)
+    const path1 = '/var/task/src/database/alquran.db';
     if (fs.existsSync(path1)) return path1;
 
-    // 2. Coba di src/database/ (untuk local dev)
+    // 2. Relative to process.cwd() (Local and some Vercel environments)
     const path2 = join(process.cwd(), 'src', 'database', 'alquran.db');
     if (fs.existsSync(path2)) return path2;
 
-    // 3. Vercel specific path (files included via includeFiles are placed relative to the entry point)
-    const path3 = join(process.cwd(), 'api', 'src', 'database', 'alquran.db');
+    // 3. Relative to bundled file location
+    const path3 = join(__dirname, '..', 'src', 'database', 'alquran.db');
     if (fs.existsSync(path3)) return path3;
 
-    // 4. Fallback path for Vercel's /var/task structure
-    const path4 = join('/var/task', 'src', 'database', 'alquran.db');
+    // 4. Root fallback
+    const path4 = join(process.cwd(), 'alquran.db');
     if (fs.existsSync(path4)) return path4;
 
-    // 5. Another Vercel fallback
-    const path5 = join(process.cwd(), 'src', 'database', 'alquran.db');
-    if (fs.existsSync(path5)) return path5;
-
-    return path2; // Default to local dev path
+    return path2; // Default to standard local path
   } catch (e) {
     console.error('Error finding database path:', e);
     return join(process.cwd(), 'src', 'database', 'alquran.db');
@@ -44,8 +40,8 @@ try {
   console.log(`Initializing database at: ${dbFile}`);
   
   db = new Database(dbFile, { 
-    readonly: isProduction,
-    fileMustExist: isProduction, // Di Vercel file harus ada, jika tidak ada berarti path salah
+    readonly: true, // Paksa readonly di semua lingkungan untuk keamanan
+    fileMustExist: false,
     timeout: 5000 
   });
   
