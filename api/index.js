@@ -6539,7 +6539,19 @@ app.onError((err, c) => {
 var app_default = app;
 
 // vercel-entry.js
+var GET = handle(app_default);
+var POST = handle(app_default);
+var PUT = handle(app_default);
+var DELETE = handle(app_default);
+var PATCH = handle(app_default);
+var OPTIONS = handle(app_default);
 var vercel_entry_default = handle(app_default);
 export {
+  DELETE,
+  GET,
+  OPTIONS,
+  PATCH,
+  POST,
+  PUT,
   vercel_entry_default as default
 };
