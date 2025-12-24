@@ -1,5 +1,5 @@
 // vercel-entry.js
-import { handle } from "hono/vercel";
+import { getRequestListener } from "@hono/node-server";
 
 // src/app.jsx
 import { Hono as Hono19 } from "hono";
@@ -2520,7 +2520,7 @@ app.onError((err, c) => {
 var app_default = app;
 
 // vercel-entry.js
-var vercel_entry_default = handle(app_default);
+var vercel_entry_default = getRequestListener(app_default);
 export {
   vercel_entry_default as default
 };
