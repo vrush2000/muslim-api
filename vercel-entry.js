@@ -1,11 +1,12 @@
 import { handle } from 'hono/vercel';
 import app from './src/app.jsx';
 
-export const GET = handle(app);
-export const POST = handle(app);
-export const PUT = handle(app);
-export const DELETE = handle(app);
-export const PATCH = handle(app);
-export const OPTIONS = handle(app);
+// Vercel Serverless Functions (Node.js) expect a default export that handles (req, res)
+// or specific HTTP method exports for Edge Functions.
+// For @vercel/node, we use the handle(app) which returns (req, res) => void.
 
-export default handle(app);
+const handler = handle(app);
+
+export default (req, res) => {
+  return handler(req, res);
+};
