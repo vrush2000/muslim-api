@@ -1,6 +1,19 @@
 /** @jsx jsx */
 import { jsx } from "hono/jsx";
 import { Search } from "./Search.jsx";
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Read compiled CSS once at startup
+let compiledCss = "";
+try {
+  const cssPath = path.resolve(process.cwd(), "src/compiled.css");
+  if (fs.existsSync(cssPath)) {
+    compiledCss = fs.readFileSync(cssPath, "utf-8");
+  }
+} catch (e) {
+  console.error("Failed to load compiled CSS:", e);
+}
 
 export const Layout = ({ children, title }) => {
   return (
@@ -10,7 +23,11 @@ export const Layout = ({ children, title }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{title}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23059669%22/><path d=%22M30 35v40c10-5 20-5 20 0V35c0-5-10-5-20 0zM70 35v40c-10-5-20-5-20 0V35c0-5 10-5 20 0z%22 fill=%22white%22/></svg>" />
-        <script src="https://cdn.tailwindcss.com"></script>
+        {compiledCss ? (
+          <style dangerouslySetInnerHTML={{ __html: compiledCss }} />
+        ) : (
+          <script src="https://cdn.tailwindcss.com"></script>
+        )}
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsoneditor@9.10.0/dist/jsoneditor.min.css" />
         <script src="https://cdn.jsdelivr.net/npm/jsoneditor@9.10.0/dist/jsoneditor.min.js"></script>
