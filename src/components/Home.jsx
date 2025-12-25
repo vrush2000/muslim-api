@@ -542,7 +542,7 @@ export const Home = ({ baseUrl }) => {
               },
               {
                 q: "Bagaimana cara melakukan perubahan data atau memperbaiki typo?",
-                a: "Data lokal seperti Al-Quran, Dzikir, dan Doa disimpan dalam database SQLite di `database/alquran.db`. Anda dapat melakukan koreksi langsung pada database tersebut menggunakan SQLite client. Berkat sistem Integrity & Blockchain kami, setiap perubahan pada teks Al-Quran akan secara otomatis mengubah 'Digital Fingerprint' (hash) pada sistem, sehingga transparansi data tetap terjaga."
+                a: "Data lokal seperti Al-Quran, Dzikir, dan Doa disimpan dalam database SQLite di `src/database/alquran.db`. Anda dapat melakukan koreksi langsung pada database tersebut menggunakan SQLite client. Berkat sistem Integrity & Blockchain kami, setiap perubahan pada teks Al-Quran akan secara otomatis mengubah 'Digital Fingerprint' (hash) pada sistem, sehingga transparansi data tetap terjaga."
               },
               {
                 q: "Bagaimana jika saya menemukan kesalahan penulisan atau bug?",
