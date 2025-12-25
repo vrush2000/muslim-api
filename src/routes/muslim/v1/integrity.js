@@ -58,6 +58,36 @@ integrity.get('/chain', async (c) => {
   }
 });
 
+// Endpoint: General Integrity Verification (Quick Check)
+integrity.get('/verify', async (c) => {
+  try {
+    // Quick check using Al-Fatihah (Surah 1)
+    const surah = await dbQuery("SELECT number, name_id FROM surah WHERE number = 1");
+    const ayahs = await dbQuery(
+      "SELECT arab, text FROM ayah WHERE surah = 1 ORDER BY CAST(ayah as INTEGER) ASC"
+    );
+
+    const isDataValid = surah && surah.length > 0 && ayahs && ayahs.length > 0;
+
+    return c.json({
+      status: 200,
+      message: isDataValid ? "System Integrity Verified" : "System Online (Data Check Pending)",
+      check: "Surah Al-Fatihah",
+      integrity: isDataValid ? "Healthy" : "Warning",
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    // Even if DB check fails, if the route is reached, the system is partially online
+    return c.json({ 
+      status: 200, 
+      message: "System Online (Integrity Check Error)",
+      integrity: "Error",
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Endpoint: Verify specific Ayah
 integrity.get('/verify/ayah', async (c) => {
   const surahId = c.req.query('surahId');

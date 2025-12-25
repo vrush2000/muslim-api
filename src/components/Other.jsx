@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from 'hono/jsx'
 
-const ApiEndpoint = ({ method, path, title, responseJson }) => (
+const ApiEndpoint = ({ method, path, title, responseJson, category, endpointId }) => (
   <div class="mb-8 bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
     <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
       <h4 class="font-semibold text-slate-900">{title}</h4>
@@ -18,15 +18,27 @@ const ApiEndpoint = ({ method, path, title, responseJson }) => (
         <div class="flex-grow flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-lg border border-slate-200 group-hover:border-emerald-200 transition-colors">
           <code class="text-sm font-mono text-slate-600 truncate">{path}</code>
         </div>
-        <button 
-          onclick={`navigator.clipboard.writeText(window.location.origin + '/v1${path}')`}
-          class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
-          title="Copy URL"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-3 8.5V11a.5.5 0 00-.5-.5H9.75a.5.5 0 00-.5.5v1.5a.5.5 0 00.5.5h.75a.5.5 0 00.5-.5z" />
-          </svg>
-        </button>
+        <div class="flex gap-2">
+          <a 
+            href={`/playground?category=${category}&endpoint=${endpointId}`}
+            class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+            title="Try in Playground"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </a>
+          <button 
+            onclick={`navigator.clipboard.writeText(window.location.origin + '/v1${path}')`}
+            class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+            title="Copy URL"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-3 8.5V11a.5.5 0 00-.5-.5H9.75a.5.5 0 00-.5.5v1.5a.5.5 0 00.5.5h.75a.5.5 0 00.5-.5z" />
+            </svg>
+          </button>
+        </div>
       </div>
       
       <div class="space-y-4">
@@ -77,7 +89,10 @@ export const Other = () => {
                 { name: 'Asbabun Nuzul', href: '#asbab', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
                 { name: 'Dzikir', href: '#dzikir', icon: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z' },
                 { name: 'Doa-doa', href: '#doa', icon: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z' },
+                { name: 'Kemenag', href: '#kemenag', icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' },
+                { name: 'Sejarah', href: '#sejarah', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
                 { name: 'Juz & Tema', href: '#extra', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
+                { name: 'Resources', href: '#resources', icon: 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1' },
               ].map((item, index) => (
                 <a 
                   key={index}
@@ -112,6 +127,8 @@ export const Other = () => {
             title="Daftar Qari" 
             method="GET" 
             path="/murotal/qari" 
+            category="murottal"
+            endpointId="murottal-qari"
             responseJson={`{
   "status": 200,
   "data": [
@@ -127,6 +144,8 @@ export const Other = () => {
             title="Murottal by Surah" 
             method="GET" 
             path="/murotal?surahId=1" 
+            category="murottal"
+            endpointId="murottal-surah"
             responseJson={`{
   "status": 200,
   "data": {
@@ -147,12 +166,14 @@ export const Other = () => {
             title="Cari Kota" 
             method="GET" 
             path="/sholat/kota/cari?nama=jakarta" 
+            category="sholat"
+            endpointId="sholat-cari-kota"
             responseJson={`{
   "status": true,
   "message": "success",
   "data": [
     {
-      "id": "58a2fc6ed39fd083f55d4182bf88826d",
+      "id": "1301",
       "lokasi": "KOTA JAKARTA"
     }
   ]
@@ -161,12 +182,14 @@ export const Other = () => {
           <ApiEndpoint 
             title="Jadwal by Kota ID" 
             method="GET" 
-            path="/sholat/jadwal?kotaId=58a2fc6ed39fd083f55d4182bf88826d&tanggal=2025-12-24" 
+            path="/sholat/jadwal?kotaId=1301&tanggal=2025-12-24" 
+            category="sholat"
+            endpointId="sholat-jadwal-kota"
             responseJson={`{
   "status": true,
   "message": "success",
   "data": {
-    "id": "58a2fc6ed39fd083f55d4182bf88826d",
+    "id": "1301",
     "kabko": "KOTA JAKARTA",
     "prov": "DKI JAKARTA",
     "jadwal": {
@@ -189,12 +212,14 @@ export const Other = () => {
             title="Jadwal by Koordinat" 
             method="GET" 
             path="/sholat/jadwal/koordinat?lat=-6.1751&lon=106.8272" 
+            category="sholat"
+            endpointId="sholat-jadwal-koordinat"
             responseJson={`{
   "status": 200,
   "location": "Monumen Nasional, Jalan Medan Merdeka Barat, Gambir, Jakarta Pusat",
   "city_found": "Jakarta Pusat",
   "data": {
-    "id": "58a2fc6ed39fd083f55d4182bf88826d",
+    "id": "1301",
     "kabko": "KOTA JAKARTA",
     "prov": "DKI JAKARTA",
     "jadwal": {
@@ -224,6 +249,8 @@ export const Other = () => {
             title="Masehi ke Hijriah & Jawa" 
             method="GET" 
             path="/calendar/hijri?date=2024-03-11&adj=-1" 
+            category="other"
+            endpointId="calendar-hijri"
             responseJson={`{
   "status": 200,
   "data": {
@@ -242,6 +269,8 @@ export const Other = () => {
             title="Hijriah ke Masehi" 
             method="GET" 
             path="/calendar/masehi?day=1&month=9&year=1445" 
+            category="other"
+            endpointId="calendar-masehi"
             responseJson={`{
   "status": 200,
   "data": {
@@ -272,6 +301,8 @@ export const Other = () => {
             title="Daftar Hadits Arbain" 
             method="GET" 
             path="/hadits" 
+            category="hadits"
+            endpointId="hadits-list"
             responseJson={`{
   "status": 200,
   "data": [
@@ -289,6 +320,8 @@ export const Other = () => {
             title="Daftar Kitab Hadits" 
             method="GET" 
             path="/hadits/books" 
+            category="hadits"
+            endpointId="hadits-books"
             responseJson={`{
   "code": 200,
   "message": "Success fetching all collections",
@@ -309,6 +342,8 @@ export const Other = () => {
             title="Semua Asmaul Husna" 
             method="GET" 
             path="/asma" 
+            category="other"
+            endpointId="asma-list"
             responseJson={`{
   "status": 200,
   "data": [
@@ -333,6 +368,8 @@ export const Other = () => {
             title="Daftar Asbabun Nuzul" 
             method="GET" 
             path="/asbab" 
+            category="other"
+            endpointId="asbab-list"
             responseJson={`{
   "status": 200,
   "data": [
@@ -357,6 +394,8 @@ export const Other = () => {
             title="Daftar Dzikir" 
             method="GET" 
             path="/dzikir" 
+            category="other"
+            endpointId="dzikir"
             responseJson={`{
   "status": 200,
   "data": [
@@ -381,6 +420,8 @@ export const Other = () => {
             title="Daftar Doa" 
             method="GET" 
             path="/doa" 
+            category="other"
+            endpointId="doa-list"
             responseJson={`{
   "status": 200,
   "data": [
@@ -405,23 +446,212 @@ export const Other = () => {
             title="Juz Al-Quran" 
             method="GET" 
             path="/juz" 
+            category="quran"
+            endpointId="juz-list"
             responseJson={`{ "status": 200, "data": [...] }`}
           />
           <ApiEndpoint 
             title="Tema Al-Quran" 
             method="GET" 
             path="/theme" 
+            category="quran"
+            endpointId="theme-list"
             responseJson={`{ "status": 200, "data": [...] }`}
           />
           <ApiEndpoint 
             title="Kata per Kata" 
             method="GET" 
             path="/word?surahId=1" 
+            category="quran"
+            endpointId="word-ayah"
             responseJson={`{ "status": 200, "data": [...] }`}
           />
+
+          <SectionTitle 
+            id="kemenag" 
+            title="Layanan Kemenag & Masjid" 
+            icon="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" 
+            color="emerald"
+          />
+          <ApiEndpoint 
+            title="Daftar Masjid Utama" 
+            method="GET" 
+            path="/kemenag/masjid" 
+            category="kemenag"
+            endpointId="kemenag-masjid"
+            responseJson={`{
+  "status": true,
+  "data": [
+    {
+      "id": 1,
+      "nama": "Masjid Istiqlal",
+      "lokasi": "Jakarta Pusat, DKI Jakarta",
+      "kapasitas": "200.000",
+      "tahun_berdiri": "1978",
+      "deskripsi": "Masjid terbesar di Asia Tenggara."
+    }
+  ]
+}`}
+          />
+          <ApiEndpoint 
+            title="Hari Libur Nasional" 
+            method="GET" 
+            path="/kemenag/libur?year=2025" 
+            category="kemenag"
+            endpointId="kemenag-libur"
+            responseJson={`{
+  "status": true,
+  "year": "2025",
+  "data": [
+    {
+      "tanggal": "2025-01-01",
+      "keterangan": "Tahun Baru 2025 Masehi",
+      "is_cuti": false
+    }
+  ]
+}`}
+          />
+          <ApiEndpoint 
+            title="Daftar Provinsi (Pesantren)" 
+            method="GET" 
+            path="/kemenag/provinsi" 
+            category="kemenag"
+            endpointId="kemenag-provinsi"
+            responseJson={`{ "status": true, "data": [...] }`}
+          />
+          <ApiEndpoint 
+            title="Daftar Kabupaten (Pesantren)" 
+            method="GET" 
+            path="/kemenag/kabupaten?provinsiId=32" 
+            category="kemenag"
+            endpointId="kemenag-kabupaten"
+            responseJson={`{ "status": true, "data": [...] }`}
+          />
+          <ApiEndpoint 
+            title="Daftar Pesantren" 
+            method="GET" 
+            path="/kemenag/pesantren?kabupatenId=3201" 
+            category="kemenag"
+            endpointId="kemenag-pesantren"
+            responseJson={`{ "status": true, "data": [...] }`}
+          />
+
+          <SectionTitle 
+            id="sejarah" 
+            title="Sejarah & Fatwa" 
+            icon="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" 
+            color="blue"
+          />
+          <ApiEndpoint 
+            title="Sejarah Islam & Sirah Nabawiyah" 
+            method="GET" 
+            path="/sejarah" 
+            category="sejarah"
+            endpointId="sejarah-list"
+            responseJson={`{
+  "status": true,
+  "data": [
+    {
+      "id": 1,
+      "peristiwa": "Kelahiran Nabi Muhammad SAW",
+      "tahun": "571 M",
+      "kategori": "Sirah Nabawiyah"
+    },
+    ...
+  ]
+}`}
+          />
+          <ApiEndpoint 
+            title="Sejarah Islam di Indonesia" 
+            method="GET" 
+            path="/sejarah?kategori=indonesia" 
+            category="sejarah"
+            endpointId="sejarah-indonesia"
+            responseJson={`{
+  "status": true,
+  "data": [
+    {
+      "id": 5,
+      "peristiwa": "Masuknya Islam ke Nusantara",
+      "tahun": "Abad ke-7 s/d 13 M",
+      "kategori": "Sejarah Indonesia"
+    },
+    ...
+  ]
+}`}
+          />
+          <ApiEndpoint 
+            title="Detail Peristiwa Sejarah" 
+            method="GET" 
+            path="/sejarah/detail?id=1" 
+            category="sejarah"
+            endpointId="sejarah-detail"
+            responseJson={`{
+  "status": true,
+  "data": {
+    "id": 1,
+    "peristiwa": "Kelahiran Nabi Muhammad SAW",
+    "tahun": "571 M (Tahun Gajah)",
+    "deskripsi": "...",
+    "kategori": "Sirah Nabawiyah"
+  }
+}`}
+          />
+          <ApiEndpoint 
+            title="Tanya Jawab & Fatwa Ringkas" 
+            method="GET" 
+            path="/sejarah/tanya-jawab" 
+            category="sejarah"
+            endpointId="sejarah-fatwa"
+            responseJson={`{
+  "status": true,
+  "data": [
+    {
+      "id": 1,
+      "pertanyaan": "Apakah menyikat gigi membatalkan puasa?",
+      "jawaban": "...",
+      "sumber": "Umum / Fatwa Kontemporer"
+    }
+  ]
+}`}
+          />
+
+          <SectionTitle 
+            id="resources" 
+            title="Resources" 
+            icon="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" 
+            color="slate"
+          />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+            {[
+              { name: 'GitHub Repository', url: 'https://github.com/vrush2000/muslim-all-in-one-api', desc: 'Source code and documentation' },
+              { name: 'Quran Kemenag', url: 'https://quran.kemenag.go.id/', desc: 'Official Quran data from Kemenag RI' },
+              { name: 'MyQuran (Prayer Times)', url: 'https://api.myquran.com/', desc: 'Prayer times and Islamic schedule API' },
+              { name: 'equran.id (Audio)', url: 'https://equran.id/', desc: 'Quran audio and digital text' },
+              { name: 'Muslim API Vercel', url: 'https://muslim-api-three.vercel.app/', desc: 'Alternative Muslim API provider' },
+              { name: 'Hadith Gading (Hadith Collection)', url: 'https://api.hadith.gading.dev/', desc: 'Comprehensive Hadith collection API' },
+              { name: 'Fatwa Tarjih', url: 'https://fatwatarjih.or.id/', desc: 'Kumpulan putusan tarjih dan tajdid' },
+              { name: 'Data Pesantren (Repo)', url: 'https://github.com/nasrul21/data-pesantren-indonesia', desc: 'Database pesantren se-Indonesia (Source)' },
+              { name: 'Libur Nasional (Repo)', url: 'https://github.com/kresnasatya/api-harilibur', desc: 'Data hari libur nasional Indonesia (Source)' },
+            ].map((resource) => (
+              <a 
+                href={resource.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="p-4 bg-white rounded-xl border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all group"
+              >
+                <div class="flex items-center justify-between mb-1">
+                  <h4 class="font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">{resource.name}</h4>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 group-hover:text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </div>
+                <p class="text-xs text-slate-500 leading-relaxed">{resource.desc}</p>
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   )
 }
-

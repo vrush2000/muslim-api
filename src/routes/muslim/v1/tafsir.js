@@ -7,11 +7,11 @@ tafsir.get('/', async (c) => {
   try {
     const surahId = c.req.query('surahId') || c.req.query('id');
     if (surahId != null) {
-      const data = await dbQuery("SELECT * FROM tafsir WHERE surahId = ?", [surahId]);
-      if (!data) {
+      const data = await dbQuery("SELECT * FROM tafsir WHERE id = ?", [surahId]);
+      if (!data || data.length === 0) {
         return c.json({ status: 404, data: {} }, 404);
       } else {
-        return c.json({ status: 200, data: data });
+        return c.json({ status: 200, data: data[0] });
       }
     } else {
       const data = await dbQuery("SELECT * FROM tafsir ORDER BY CAST(id as INTEGER) ASC");

@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { trimTrailingSlash } from 'hono/trailing-slash';
 import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
+import { query as dbQuery } from './database/config.js';
 
 import apiRouter from './routes/index.jsx';
 import apiV1Router from './routes/muslim/v1/index.js';
@@ -11,6 +12,28 @@ const app = new Hono();
 app.use('*', trimTrailingSlash());
 app.use('*', logger());
 app.use('*', cors());
+
+// Global Health Check
+app.get('/health', async (c) => {
+  let dbStatus = 'disconnected';
+  try {
+    const result = await dbQuery('SELECT 1');
+    if (result) dbStatus = 'connected';
+  } catch (e) {
+    dbStatus = 'error: ' + e.message;
+  }
+
+  return c.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    services: {
+      database: dbStatus,
+      uptime: process.uptime()
+    },
+    env: process.env.NODE_ENV || 'development'
+  });
+});
 
 app.get('/v1/*', async (c, next) => {
   await next();

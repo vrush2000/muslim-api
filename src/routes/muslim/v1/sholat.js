@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 
 const sholat = new Hono();
 
-const BASE_API = 'https://api.myquran.com/v3/sholat';
+const BASE_API = 'https://api.myquran.com/v2/sholat';
 
 // Cache untuk daftar kota agar tidak sering fetch
 let kotaCache = null;

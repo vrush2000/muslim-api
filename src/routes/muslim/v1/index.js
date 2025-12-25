@@ -15,6 +15,8 @@ import tafsir from './tafsir.js';
 import theme from './theme.js';
 import word from './word.js';
 import admin from './admin.js';
+import kemenag from './kemenag.js';
+import sejarah from './sejarah.js';
 
 const v1 = new Hono();
 
@@ -34,6 +36,8 @@ v1.route('/tafsir', tafsir);
 v1.route('/theme', theme);
 v1.route('/word', word);
 v1.route('/admin', admin);
+v1.route('/kemenag', kemenag);
+v1.route('/sejarah', sejarah);
 
 v1.get('/', (c) => {
   return c.json({
