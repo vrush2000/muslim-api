@@ -17,6 +17,12 @@ const getBaseUrl = (c) => {
   return `${proto}://${url.host}/v1`;
 };
 
+const getOrigin = (c) => {
+  const url = new URL(c.req.url);
+  const proto = c.req.header('x-forwarded-proto') || url.protocol.split(':')[0];
+  return `${proto}://${url.host}`;
+};
+
 router.get("/", async (c) => {
   const sejarah = await getSejarah();
   return c.html(
@@ -37,9 +43,10 @@ router.get("/docs", (c) => {
 });
 
 router.get("/other", (c) => {
+  const origin = getOrigin(c);
   return c.html(
     <Layout title="Muslim All-in-One API | Resources">
-      <Other />
+      <Other baseUrl={origin} />
     </Layout>
   );
 });

@@ -147,7 +147,7 @@ const SectionTitle = ({ title, icon, id, color = "emerald" }) => {
   );
 };
 
-export const Other = () => {
+export const Other = ({ baseUrl = "https://muslim-api.vercel.app" }) => {
   return (
     <div class="px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 gap-12 lg:grid-cols-4">
@@ -1070,19 +1070,40 @@ export const Other = () => {
                   </div>
                 </div>
               </div>
-              <div class="flex-1">
+              <div class="flex-1 space-y-4">
+                {/* Preview Section */}
+                <div class="overflow-hidden bg-white rounded-xl border shadow-sm border-slate-200">
+                  <div class="flex justify-between items-center px-4 py-2 border-b border-slate-100 bg-slate-50/50">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Widget Preview</span>
+                    <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-bold">Live</span>
+                  </div>
+                  <div class="p-0">
+                    <iframe 
+                      src={`${baseUrl}/widget/sholat?city=jakarta`}
+                      width="100%" 
+                      height="380" 
+                      frameborder="0"
+                      class="w-full"
+                    ></iframe>
+                  </div>
+                </div>
+
+                {/* Embed Code Section */}
                 <div class="p-4 rounded-xl bg-slate-900">
                   <div class="flex justify-between items-center mb-2">
                     <span class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
                       Embed Code
                     </span>
-                    <button class="text-[10px] text-blue-400 hover:text-blue-300 transition-colors">
+                    <button 
+                      onclick={`navigator.clipboard.writeText('<iframe src="${baseUrl}/widget/sholat?city=jakarta" width="100%" height="400" frameborder="0"></iframe>')`}
+                      class="text-[10px] text-blue-400 hover:text-blue-300 transition-colors"
+                    >
                       Copy Code
                     </button>
                   </div>
                   <pre class="overflow-x-auto text-[11px] text-blue-300 font-mono">
                     {`<iframe 
-  src="https://muslim-api.vercel.app/widget/jadwal-sholat?kota=jakarta" 
+  src="${baseUrl}/widget/sholat?city=jakarta" 
   width="100%" 
   height="400" 
   frameborder="0"
