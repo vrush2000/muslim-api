@@ -11,7 +11,7 @@ const widget = new Hono();
 
 // Widget Jadwal Sholat
 widget.get('/sholat', async (c) => {
-  const cityName = c.req.query('city') || 'jakarta';
+  const cityName = c.req.query('city') || c.req.query('kota') || 'jakarta';
   const BASE_API = API_CONFIG.SHOLAT.MYQURAN;
   
   try {
