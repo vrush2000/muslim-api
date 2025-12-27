@@ -79,7 +79,7 @@ v1.get('/', (c) => {
           },
           cari: {
             pattern: "/v1/ayah/find?query={query}",
-            contoh: "/v1/ayah/find?query=alhamdulillah",
+            contoh: "/v1/ayah/find?query=puasa",
           },
         },
         juz: {

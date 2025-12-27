@@ -43,6 +43,14 @@ sholat.get('/kota/cari', async (c) => {
       }, response.status || 502);
     }
 
+    if (!data.data || data.data.length === 0) {
+      return c.json({
+        status: false,
+        message: `Tidak ada kota yang ditemukan dengan kata kunci: ${query}.`,
+        data: []
+      }, 404);
+    }
+
     return c.json({
       status: true,
       message: `Berhasil mencari kota dengan kata kunci: ${query}.`,

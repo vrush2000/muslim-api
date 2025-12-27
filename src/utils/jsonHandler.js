@@ -1,0 +1,88 @@
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const DATA_PATH = path.join(__dirname, '../data');
+
+export async function readJson(filePath) {
+  try {
+    const fullPath = path.join(DATA_PATH, filePath);
+    const data = await fs.readFile(fullPath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error(`Error reading JSON file ${filePath}:`, error);
+    return null;
+  }
+}
+
+export async function getSurahList() {
+  return await readJson('quran/surah.json');
+}
+
+export async function getSurahDetail(number) {
+  const surahs = await getSurahList();
+  return surahs ? surahs.find(s => s.number == number) : null;
+}
+
+export async function getAyahBySurah(surahNumber) {
+  return await readJson(`quran/ayah/${surahNumber}.json`);
+}
+
+export async function getDoa() {
+  return await readJson('common/doa.json');
+}
+
+export async function getAsmaulHusna() {
+  return await readJson('common/asmaul_husna.json');
+}
+
+export async function getDzikir() {
+  return await readJson('common/dzikir.json');
+}
+
+export async function getHaditsArbain() {
+  return await readJson('hadits/arbain.json');
+}
+
+export async function getThemes() {
+  return await readJson('quran/themes.json');
+}
+
+export async function getJuz() {
+  return await readJson('quran/juz.json');
+}
+
+export async function getTafsir() {
+  return await readJson('quran/tafsir.json');
+}
+
+export async function getWord() {
+  return await readJson('quran/word.json');
+}
+
+export async function getAsbabNuzul() {
+  return await readJson('quran/asbab_nuzul.json');
+}
+
+export async function getSejarah() {
+  return await readJson('common/sejarah.json');
+}
+
+export async function getQari() {
+  return await readJson('common/qari.json');
+}
+
+export async function getCalendarMonths() {
+  return await readJson('common/calendar_months.json');
+}
+
+export async function getCalendarDays() {
+  return await readJson('common/calendar_days.json');
+}
+
+export async function getMasjid() {
+  return await readJson('common/masjid.json');
+}

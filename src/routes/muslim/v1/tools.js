@@ -1,43 +1,58 @@
 import { Hono } from 'hono';
-import { query as dbQuery, get as dbGet } from '../../../database/config.js';
+import { getSurahList, getAyahBySurah, getHaditsArbain } from '../../../utils/jsonHandler.js';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const tools = new Hono();
+
+// Helper untuk membaca file JSON hadits lokal
+async function getLocalHadits(bookName) {
+  try {
+    const filePath = path.join(__dirname, '../../../../src/data/hadits', `${bookName}.json`);
+    const data = await fs.readFile(filePath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    return null;
+  }
+}
 
 // Daily Quotes (Ayat/Hadits Hari Ini)
 tools.get('/quotes/daily', async (c) => {
   try {
-    // Ambil 1 ayat acak
-    const ayat = await dbGet(`
-      SELECT *
-      FROM ayah
-      ORDER BY RANDOM() LIMIT 1
-    `);
-    
-    // Ambil data surah
-    const surahData = await dbGet(`SELECT * FROM surah WHERE number = ?`, [ayat.surah]);
-    const surahName = surahData.name_id || surahData.name_en || surahData.name_long;
+    const surahList = await getSurahList();
+    if (!surahList) throw new Error('Daftar surah tidak tersedia');
 
-    // Ambil 1 hadits acak
-    const hadits = await dbGet(`
-      SELECT *
-      FROM hadits
-      ORDER BY RANDOM() LIMIT 1
-    `);
+    // Pilih surah acak
+    const randomSurah = surahList[Math.floor(Math.random() * surahList.length)];
+    const ayahs = await getAyahBySurah(randomSurah.number);
+    if (!ayahs) throw new Error('Daftar ayat tidak tersedia');
+
+    // Pilih ayat acak
+    const randomAyah = ayahs[Math.floor(Math.random() * ayahs.length)];
+    const surahName = randomSurah.name_id || randomSurah.name_en || randomSurah.name_long;
+
+    // Ambil 1 hadits arbain acak
+    const allArbain = await getHaditsArbain();
+    const randomHadits = allArbain ? allArbain[Math.floor(Math.random() * allArbain.length)] : null;
 
     return c.json({
       status: true,
       message: 'Berhasil mengambil kutipan harian.',
       data: {
         ayat: {
-          arab: ayat.arab,
-          text: ayat.text,
-          sumber: `QS. ${surahName}: ${ayat.ayah}`
+          arab: randomAyah.arab,
+          text: randomAyah.text,
+          sumber: `QS. ${surahName}: ${randomAyah.ayah}`
         },
-        hadits: {
-          arab: hadits.arab,
-          text: hadits.indo,
-          sumber: `HR. ${hadits.judul || 'Hadits'}`
-        }
+        hadits: randomHadits ? {
+          arab: randomHadits.arab,
+          text: randomHadits.indo,
+          sumber: `Hadits Arbain No. ${randomHadits.no}: ${randomHadits.judul}`
+        } : null
       }
     });
   } catch (error) {
@@ -146,40 +161,89 @@ tools.get('/semantic-search', async (c) => {
   if (!query) return c.json({ status: false, message: 'Parameter query diperlukan.' }, 400);
 
   try {
-    // Cari di Quran
-    const quranResults = await dbQuery(`
-      SELECT *
-      FROM ayah
-      WHERE text LIKE ? OR theme LIKE ?
-    `, [`%${query}%`, `%${query}%`]);
+    const queryLower = query.toLowerCase();
+    const searchTerms = queryLower.split(' ');
 
-    const formattedQuran = await Promise.all(quranResults.map(async (r) => {
-      const s = await dbGet(`SELECT * FROM surah WHERE number = ?`, [r.surah]);
-      return {
-        arab: r.arab,
-        text: r.text,
-        sumber: `QS. ${s.name_id || s.name_en || s.name_long}: ${r.ayah}`
-      };
+    // Cari di Quran
+    const surahList = await getSurahList();
+    let quranResults = [];
+    
+    for (const s of surahList) {
+      const ayahs = await getAyahBySurah(s.number);
+      if (ayahs) {
+        const matches = ayahs.filter(a => {
+          const text = (a.text || '').toLowerCase();
+          return searchTerms.every(term => text.includes(term));
+        }).slice(0, 5);
+
+        if (matches.length > 0) {
+          const surahName = s.name_id || s.name_en || s.name_long;
+          quranResults.push(...matches.map(a => ({
+            arab: a.arab,
+            text: a.text,
+            sumber: `QS. ${surahName}: ${a.ayah}`
+          })));
+        }
+      }
+      if (quranResults.length >= 10) break;
+    }
+
+    // Cari di Hadits Arbain
+    const allArbain = await getHaditsArbain();
+    const arbainMatches = allArbain ? allArbain.filter(h => {
+      const text = (h.judul + ' ' + h.indo).toLowerCase();
+      return searchTerms.every(term => text.includes(term));
+    }).slice(0, 5) : [];
+
+    const formattedArbain = arbainMatches.map(h => ({
+      arab: h.arab,
+      text: h.indo,
+      sumber: `Hadits Arbain No. ${h.no}: ${h.judul}`
     }));
 
-    // Cari di Hadits
-    const haditsResults = await dbQuery(`
-      SELECT *
-      FROM hadits
-      WHERE indo LIKE ? OR judul LIKE ?
-    `, [`%${query}%`, `%${query}%`]);
+    // Cari di Kitab Utama (Bukhari & Muslim) secara lokal
+    let globalHadits = [];
+    const mainBooks = ['bukhari', 'muslim'];
+
+    for (const book of mainBooks) {
+      const allHadits = await getLocalHadits(book);
+      if (allHadits) {
+        const matches = allHadits.filter(h => {
+          const text = (h.id || '').toLowerCase();
+          return searchTerms.every(term => text.includes(term));
+        }).slice(0, 3);
+
+        const bookName = book.charAt(0).toUpperCase() + book.slice(1);
+        globalHadits.push(...matches.map(h => ({
+          arab: h.arab,
+          text: h.id,
+          sumber: `HR. ${bookName} No. ${h.number}`
+        })));
+      }
+      if (globalHadits.length >= 6) break;
+    }
+
+    const totalHadits = [...formattedArbain, ...globalHadits];
+
+    if (quranResults.length === 0 && totalHadits.length === 0) {
+      return c.json({
+        status: false,
+        message: `Tidak ada hasil pencarian semantik untuk '${query}'.`,
+        data: {
+          query: query,
+          quran: [],
+          hadits: []
+        }
+      }, 404);
+    }
 
     return c.json({
       status: true,
       message: `Pencarian semantik untuk '${query}' berhasil.`,
       data: {
         query: query,
-        quran: formattedQuran,
-        hadits: haditsResults.map(r => ({
-          arab: r.arab,
-          text: r.indo,
-          sumber: `HR. ${r.judul || 'Hadits'}`
-        }))
+        quran: quranResults,
+        hadits: totalHadits
       }
     });
   } catch (error) {

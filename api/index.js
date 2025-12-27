@@ -666,26 +666,26 @@ var handleParsingNestedValues = (form3, key, value) => {
 };
 
 // node_modules/hono/dist/utils/url.js
-var splitPath = (path2) => {
-  const paths = path2.split("/");
+var splitPath = (path4) => {
+  const paths = path4.split("/");
   if (paths[0] === "") {
     paths.shift();
   }
   return paths;
 };
 var splitRoutingPath = (routePath) => {
-  const { groups, path: path2 } = extractGroupsFromPath(routePath);
-  const paths = splitPath(path2);
+  const { groups, path: path4 } = extractGroupsFromPath(routePath);
+  const paths = splitPath(path4);
   return replaceGroupMarks(paths, groups);
 };
-var extractGroupsFromPath = (path2) => {
+var extractGroupsFromPath = (path4) => {
   const groups = [];
-  path2 = path2.replace(/\{[^}]+\}/g, (match2, index) => {
+  path4 = path4.replace(/\{[^}]+\}/g, (match2, index) => {
     const mark = `@${index}`;
     groups.push([mark, match2]);
     return mark;
   });
-  return { groups, path: path2 };
+  return { groups, path: path4 };
 };
 var replaceGroupMarks = (paths, groups) => {
   for (let i = groups.length - 1; i >= 0; i--) {
@@ -740,8 +740,8 @@ var getPath = (request) => {
     const charCode = url.charCodeAt(i);
     if (charCode === 37) {
       const queryIndex = url.indexOf("?", i);
-      const path2 = url.slice(start, queryIndex === -1 ? void 0 : queryIndex);
-      return tryDecodeURI(path2.includes("%25") ? path2.replace(/%25/g, "%2525") : path2);
+      const path4 = url.slice(start, queryIndex === -1 ? void 0 : queryIndex);
+      return tryDecodeURI(path4.includes("%25") ? path4.replace(/%25/g, "%2525") : path4);
     } else if (charCode === 63) {
       break;
     }
@@ -758,11 +758,11 @@ var mergePath = (base, sub, ...rest) => {
   }
   return `${base?.[0] === "/" ? "" : "/"}${base}${sub === "/" ? "" : `${base?.at(-1) === "/" ? "" : "/"}${sub?.[0] === "/" ? sub.slice(1) : sub}`}`;
 };
-var checkOptionalParameter = (path2) => {
-  if (path2.charCodeAt(path2.length - 1) !== 63 || !path2.includes(":")) {
+var checkOptionalParameter = (path4) => {
+  if (path4.charCodeAt(path4.length - 1) !== 63 || !path4.includes(":")) {
     return null;
   }
-  const segments = path2.split("/");
+  const segments = path4.split("/");
   const results = [];
   let basePath = "";
   segments.forEach((segment) => {
@@ -903,9 +903,9 @@ var HonoRequest = class {
    */
   path;
   bodyCache = {};
-  constructor(request, path2 = "/", matchResult = [[]]) {
+  constructor(request, path4 = "/", matchResult = [[]]) {
     this.raw = request;
-    this.path = path2;
+    this.path = path4;
     this.#matchResult = matchResult;
     this.#validatedData = {};
   }
@@ -1715,8 +1715,8 @@ var Hono = class _Hono {
         return this;
       };
     });
-    this.on = (method, path2, ...handlers) => {
-      for (const p of [path2].flat()) {
+    this.on = (method, path4, ...handlers) => {
+      for (const p of [path4].flat()) {
         this.#path = p;
         for (const m of [method].flat()) {
           handlers.map((handler) => {
@@ -1773,8 +1773,8 @@ var Hono = class _Hono {
    * app.route("/api", app2) // GET /api/user
    * ```
    */
-  route(path2, app2) {
-    const subApp = this.basePath(path2);
+  route(path4, app2) {
+    const subApp = this.basePath(path4);
     app2.routes.map((r) => {
       let handler;
       if (app2.errorHandler === errorHandler) {
@@ -1800,9 +1800,9 @@ var Hono = class _Hono {
    * const api = new Hono().basePath('/api')
    * ```
    */
-  basePath(path2) {
+  basePath(path4) {
     const subApp = this.#clone();
-    subApp._basePath = mergePath(this._basePath, path2);
+    subApp._basePath = mergePath(this._basePath, path4);
     return subApp;
   }
   /**
@@ -1876,7 +1876,7 @@ var Hono = class _Hono {
    * })
    * ```
    */
-  mount(path2, applicationHandler, options) {
+  mount(path4, applicationHandler, options) {
     let replaceRequest;
     let optionHandler;
     if (options) {
@@ -1903,7 +1903,7 @@ var Hono = class _Hono {
       return [c.env, executionContext];
     };
     replaceRequest ||= (() => {
-      const mergedPath = mergePath(this._basePath, path2);
+      const mergedPath = mergePath(this._basePath, path4);
       const pathPrefixLength = mergedPath === "/" ? 0 : mergedPath.length;
       return (request) => {
         const url = new URL(request.url);
@@ -1918,14 +1918,14 @@ var Hono = class _Hono {
       }
       await next();
     };
-    this.#addRoute(METHOD_NAME_ALL, mergePath(path2, "*"), handler);
+    this.#addRoute(METHOD_NAME_ALL, mergePath(path4, "*"), handler);
     return this;
   }
-  #addRoute(method, path2, handler) {
+  #addRoute(method, path4, handler) {
     method = method.toUpperCase();
-    path2 = mergePath(this._basePath, path2);
-    const r = { basePath: this._basePath, path: path2, method, handler };
-    this.router.add(method, path2, [handler, r]);
+    path4 = mergePath(this._basePath, path4);
+    const r = { basePath: this._basePath, path: path4, method, handler };
+    this.router.add(method, path4, [handler, r]);
     this.routes.push(r);
   }
   #handleError(err, c) {
@@ -1938,10 +1938,10 @@ var Hono = class _Hono {
     if (method === "HEAD") {
       return (async () => new Response(null, await this.#dispatch(request, executionCtx, env, "GET")))();
     }
-    const path2 = this.getPath(request, { env });
-    const matchResult = this.router.match(method, path2);
+    const path4 = this.getPath(request, { env });
+    const matchResult = this.router.match(method, path4);
     const c = new Context(request, {
-      path: path2,
+      path: path4,
       matchResult,
       env,
       executionCtx,
@@ -2041,7 +2041,7 @@ var Hono = class _Hono {
 
 // node_modules/hono/dist/router/reg-exp-router/matcher.js
 var emptyParam = [];
-function match(method, path2) {
+function match(method, path4) {
   const matchers = this.buildAllMatchers();
   const match2 = ((method2, path22) => {
     const matcher = matchers[method2] || matchers[METHOD_NAME_ALL];
@@ -2057,7 +2057,7 @@ function match(method, path2) {
     return [matcher[1][index], match3];
   });
   this.match = match2;
-  return match2(method, path2);
+  return match2(method, path4);
 }
 
 // node_modules/hono/dist/router/reg-exp-router/node.js
@@ -2172,12 +2172,12 @@ var Node = class _Node {
 var Trie = class {
   #context = { varIndex: 0 };
   #root = new Node();
-  insert(path2, index, pathErrorCheckOnly) {
+  insert(path4, index, pathErrorCheckOnly) {
     const paramAssoc = [];
     const groups = [];
     for (let i = 0; ; ) {
       let replaced = false;
-      path2 = path2.replace(/\{[^}]+\}/g, (m) => {
+      path4 = path4.replace(/\{[^}]+\}/g, (m) => {
         const mark = `@\\${i}`;
         groups[i] = [mark, m];
         i++;
@@ -2188,7 +2188,7 @@ var Trie = class {
         break;
       }
     }
-    const tokens = path2.match(/(?::[^\/]+)|(?:\/\*$)|./g) || [];
+    const tokens = path4.match(/(?::[^\/]+)|(?:\/\*$)|./g) || [];
     for (let i = groups.length - 1; i >= 0; i--) {
       const [mark] = groups[i];
       for (let j = tokens.length - 1; j >= 0; j--) {
@@ -2227,9 +2227,9 @@ var Trie = class {
 // node_modules/hono/dist/router/reg-exp-router/router.js
 var nullMatcher = [/^$/, [], /* @__PURE__ */ Object.create(null)];
 var wildcardRegExpCache = /* @__PURE__ */ Object.create(null);
-function buildWildcardRegExp(path2) {
-  return wildcardRegExpCache[path2] ??= new RegExp(
-    path2 === "*" ? "" : `^${path2.replace(
+function buildWildcardRegExp(path4) {
+  return wildcardRegExpCache[path4] ??= new RegExp(
+    path4 === "*" ? "" : `^${path4.replace(
       /\/\*$|([.\\+*[^\]$()])/g,
       (_, metaChar) => metaChar ? `\\${metaChar}` : "(?:|/.*)"
     )}$`
@@ -2251,17 +2251,17 @@ function buildMatcherFromPreprocessedRoutes(routes) {
   );
   const staticMap = /* @__PURE__ */ Object.create(null);
   for (let i = 0, j = -1, len = routesWithStaticPathFlag.length; i < len; i++) {
-    const [pathErrorCheckOnly, path2, handlers] = routesWithStaticPathFlag[i];
+    const [pathErrorCheckOnly, path4, handlers] = routesWithStaticPathFlag[i];
     if (pathErrorCheckOnly) {
-      staticMap[path2] = [handlers.map(([h]) => [h, /* @__PURE__ */ Object.create(null)]), emptyParam];
+      staticMap[path4] = [handlers.map(([h]) => [h, /* @__PURE__ */ Object.create(null)]), emptyParam];
     } else {
       j++;
     }
     let paramAssoc;
     try {
-      paramAssoc = trie.insert(path2, j, pathErrorCheckOnly);
+      paramAssoc = trie.insert(path4, j, pathErrorCheckOnly);
     } catch (e) {
-      throw e === PATH_ERROR ? new UnsupportedPathError(path2) : e;
+      throw e === PATH_ERROR ? new UnsupportedPathError(path4) : e;
     }
     if (pathErrorCheckOnly) {
       continue;
@@ -2295,12 +2295,12 @@ function buildMatcherFromPreprocessedRoutes(routes) {
   }
   return [regexp, handlerMap, staticMap];
 }
-function findMiddleware(middleware, path2) {
+function findMiddleware(middleware, path4) {
   if (!middleware) {
     return void 0;
   }
   for (const k of Object.keys(middleware).sort((a, b) => b.length - a.length)) {
-    if (buildWildcardRegExp(k).test(path2)) {
+    if (buildWildcardRegExp(k).test(path4)) {
       return [...middleware[k]];
     }
   }
@@ -2314,7 +2314,7 @@ var RegExpRouter = class {
     this.#middleware = { [METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null) };
     this.#routes = { [METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null) };
   }
-  add(method, path2, handler) {
+  add(method, path4, handler) {
     const middleware = this.#middleware;
     const routes = this.#routes;
     if (!middleware || !routes) {
@@ -2329,18 +2329,18 @@ var RegExpRouter = class {
         });
       });
     }
-    if (path2 === "/*") {
-      path2 = "*";
+    if (path4 === "/*") {
+      path4 = "*";
     }
-    const paramCount = (path2.match(/\/:/g) || []).length;
-    if (/\*$/.test(path2)) {
-      const re = buildWildcardRegExp(path2);
+    const paramCount = (path4.match(/\/:/g) || []).length;
+    if (/\*$/.test(path4)) {
+      const re = buildWildcardRegExp(path4);
       if (method === METHOD_NAME_ALL) {
         Object.keys(middleware).forEach((m) => {
-          middleware[m][path2] ||= findMiddleware(middleware[m], path2) || findMiddleware(middleware[METHOD_NAME_ALL], path2) || [];
+          middleware[m][path4] ||= findMiddleware(middleware[m], path4) || findMiddleware(middleware[METHOD_NAME_ALL], path4) || [];
         });
       } else {
-        middleware[method][path2] ||= findMiddleware(middleware[method], path2) || findMiddleware(middleware[METHOD_NAME_ALL], path2) || [];
+        middleware[method][path4] ||= findMiddleware(middleware[method], path4) || findMiddleware(middleware[METHOD_NAME_ALL], path4) || [];
       }
       Object.keys(middleware).forEach((m) => {
         if (method === METHOD_NAME_ALL || method === m) {
@@ -2358,7 +2358,7 @@ var RegExpRouter = class {
       });
       return;
     }
-    const paths = checkOptionalParameter(path2) || [path2];
+    const paths = checkOptionalParameter(path4) || [path4];
     for (let i = 0, len = paths.length; i < len; i++) {
       const path22 = paths[i];
       Object.keys(routes).forEach((m) => {
@@ -2385,13 +2385,13 @@ var RegExpRouter = class {
     const routes = [];
     let hasOwnRoute = method === METHOD_NAME_ALL;
     [this.#middleware, this.#routes].forEach((r) => {
-      const ownRoute = r[method] ? Object.keys(r[method]).map((path2) => [path2, r[method][path2]]) : [];
+      const ownRoute = r[method] ? Object.keys(r[method]).map((path4) => [path4, r[method][path4]]) : [];
       if (ownRoute.length !== 0) {
         hasOwnRoute ||= true;
         routes.push(...ownRoute);
       } else if (method !== METHOD_NAME_ALL) {
         routes.push(
-          ...Object.keys(r[METHOD_NAME_ALL]).map((path2) => [path2, r[METHOD_NAME_ALL][path2]])
+          ...Object.keys(r[METHOD_NAME_ALL]).map((path4) => [path4, r[METHOD_NAME_ALL][path4]])
         );
       }
     });
@@ -2411,13 +2411,13 @@ var SmartRouter = class {
   constructor(init) {
     this.#routers = init.routers;
   }
-  add(method, path2, handler) {
+  add(method, path4, handler) {
     if (!this.#routes) {
       throw new Error(MESSAGE_MATCHER_IS_ALREADY_BUILT);
     }
-    this.#routes.push([method, path2, handler]);
+    this.#routes.push([method, path4, handler]);
   }
-  match(method, path2) {
+  match(method, path4) {
     if (!this.#routes) {
       throw new Error("Fatal error");
     }
@@ -2432,7 +2432,7 @@ var SmartRouter = class {
         for (let i2 = 0, len2 = routes.length; i2 < len2; i2++) {
           router3.add(...routes[i2]);
         }
-        res = router3.match(method, path2);
+        res = router3.match(method, path4);
       } catch (e) {
         if (e instanceof UnsupportedPathError) {
           continue;
@@ -2476,10 +2476,10 @@ var Node2 = class _Node2 {
     }
     this.#patterns = [];
   }
-  insert(method, path2, handler) {
+  insert(method, path4, handler) {
     this.#order = ++this.#order;
     let curNode = this;
-    const parts = splitRoutingPath(path2);
+    const parts = splitRoutingPath(path4);
     const possibleKeys = [];
     for (let i = 0, len = parts.length; i < len; i++) {
       const p = parts[i];
@@ -2530,12 +2530,12 @@ var Node2 = class _Node2 {
     }
     return handlerSets;
   }
-  search(method, path2) {
+  search(method, path4) {
     const handlerSets = [];
     this.#params = emptyParams;
     const curNode = this;
     let curNodes = [curNode];
-    const parts = splitPath(path2);
+    const parts = splitPath(path4);
     const curNodesQueue = [];
     for (let i = 0, len = parts.length; i < len; i++) {
       const part = parts[i];
@@ -2623,18 +2623,18 @@ var TrieRouter = class {
   constructor() {
     this.#node = new Node2();
   }
-  add(method, path2, handler) {
-    const results = checkOptionalParameter(path2);
+  add(method, path4, handler) {
+    const results = checkOptionalParameter(path4);
     if (results) {
       for (let i = 0, len = results.length; i < len; i++) {
         this.#node.insert(method, results[i], handler);
       }
       return;
     }
-    this.#node.insert(method, path2, handler);
+    this.#node.insert(method, path4, handler);
   }
-  match(method, path2) {
-    return this.#node.search(method, path2);
+  match(method, path4) {
+    return this.#node.search(method, path4);
   }
 };
 
@@ -2713,18 +2713,18 @@ var colorStatus = async (status) => {
   }
   return `${status}`;
 };
-async function log(fn, prefix, method, path2, status = 0, elapsed) {
-  const out = prefix === "<--" ? `${prefix} ${method} ${path2}` : `${prefix} ${method} ${path2} ${await colorStatus(status)} ${elapsed}`;
+async function log(fn, prefix, method, path4, status = 0, elapsed) {
+  const out = prefix === "<--" ? `${prefix} ${method} ${path4}` : `${prefix} ${method} ${path4} ${await colorStatus(status)} ${elapsed}`;
   fn(out);
 }
 var logger = (fn = console.log) => {
   return async function logger2(c, next) {
     const { method, url } = c.req;
-    const path2 = url.slice(url.indexOf("/", 8));
-    await log(fn, "<--", method, path2);
+    const path4 = url.slice(url.indexOf("/", 8));
+    await log(fn, "<--", method, path4);
     const start = Date.now();
     await next();
-    await log(fn, "-->", method, path2, c.res.status, time(start));
+    await log(fn, "-->", method, path4, c.res.status, time(start));
   };
 };
 
@@ -4668,7 +4668,7 @@ var Search = () => {
           { title: 'Ayat by Juz', path: '/#ayah', category: 'Ayat', endpoint: '/ayah/juz?juzId=30' },
           { title: 'Ayat by Page', path: '/#ayah', category: 'Ayat', endpoint: '/ayah/page?page=604' },
           { title: 'Range Ayat', path: '/#ayah', category: 'Ayat', endpoint: '/ayah/range?surahId=1&start=1&end=7' },
-          { title: 'Cari Ayat', path: '/#ayah', category: 'Ayat', endpoint: '/ayah/find?query=alhamdulillah' },
+          { title: 'Cari Ayat', path: '/#ayah', category: 'Ayat', endpoint: '/ayah/find?query=puasa' },
           { title: 'Resource Lainnya', path: '/other', category: 'Other' },
           { title: 'Asmaul Husna', path: '/other#asma', category: 'Other', endpoint: '/asma' },
           { title: 'Asbabun Nuzul', path: '/other#asbab', category: 'Other', endpoint: '/asbab' },
@@ -4710,7 +4710,7 @@ var Search = () => {
           if (!dropdown || !container) return;
 
           if (!query || query.trim() === '') {
-            container.innerHTML = '<div class="text-center py-4 text-slate-400 text-xs">Type to search...</div>';
+            container.innerHTML = '<div class="py-4 text-xs text-center text-slate-400">Type to search...</div>';
             dropdown.classList.add('hidden');
             selectedIndex = -1;
             return;
@@ -4724,7 +4724,7 @@ var Search = () => {
           });
 
           if (filtered.length === 0) {
-            container.innerHTML = '<div class="text-center py-8 text-slate-400 text-xs">No results found for "' + query + '"</div>';
+            container.innerHTML = '<div class="py-8 text-xs text-center text-slate-400">No results found for "' + query + '"</div>';
             dropdown.classList.remove('hidden');
             selectedIndex = -1;
             return;
@@ -4734,10 +4734,10 @@ var Search = () => {
           for (var i = 0; i < filtered.length; i++) {
             var item = filtered[i];
             var activeClass = (i === 0) ? 'bg-emerald-50' : '';
-            html += '<a href="' + item.path + '" onclick="window.hideResults()" class="search-result-item flex items-center justify-between p-2 rounded-lg hover:bg-emerald-50 group transition-all duration-150 ' + activeClass + '" data-index="' + i + '">' +
-                      '<div class="flex items-center gap-2">' +
-                        '<div class="w-6 h-6 rounded bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">' +
-                          '<svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>' +
+            html += '<a href="' + item.path + '" onclick="window.hideResults()" class="flex justify-between items-center p-2 rounded-lg transition-all duration-150 search-result-item hover:bg-emerald-50 group' + activeClass + '" data-index="' + i + '">' +
+                      '<div class="flex gap-2 items-center">' +
+                        '<div class="flex justify-center items-center w-6 h-6 rounded transition-colors bg-slate-100 text-slate-400 group-hover:bg-emerald-100 group-hover:text-emerald-600">' +
+                          '<svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>' +
                         '</div>' +
                         '<div>' +
                           '<div class="text-[9px] font-bold text-emerald-600 uppercase tracking-wider">' + item.category + '</div>' +
@@ -4745,7 +4745,7 @@ var Search = () => {
                         '</div>' +
                       '</div>' +
                       '<div class="text-slate-300 group-hover:text-emerald-500">' +
-                        '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>' +
+                        '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>' +
                       '</div>' +
                     '</a>';
           }
@@ -5503,13 +5503,13 @@ var Layout = ({ children, title: title3 }) => {
               jsonDisplay.textContent = JSON.stringify(data, null, 2);
               
               statusBadge.textContent = response.status + ' ' + response.statusText + ' (' + Math.round(end - start) + 'ms)';
-              statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + 
+              statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full' + 
                 (response.ok ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800');
               statusBadge.classList.remove('hidden');
             } catch (error) {
               jsonDisplay.textContent = JSON.stringify({ error: 'Failed to fetch API', details: error.message }, null, 2);
               statusBadge.textContent = 'Error';
-              statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800';
+              statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 text-xs font-medium text-red-800 bg-red-100 rounded-full';
               statusBadge.classList.remove('hidden');
             }
           };
@@ -5526,7 +5526,7 @@ var Layout = ({ children, title: title3 }) => {
               navigator.clipboard.writeText(json).then(() => {
                 const btn = event.currentTarget;
                 const originalText = btn.innerHTML;
-                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copied!';
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copied!';
                 setTimeout(() => btn.innerHTML = originalText, 2000);
               });
             }
@@ -5898,7 +5898,7 @@ var Layout = ({ children, title: title3 }) => {
             }
 
             btn.disabled = true;
-            btn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
+            btn.innerHTML = '<svg class="w-5 h-5 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
 
             try {
               const response = await fetch('/api/qris/generate?amount=' + amount);
@@ -5946,10 +5946,10 @@ var Layout = ({ children, title: title3 }) => {
 };
 
 // src/components/Home.jsx
-var ApiEndpoint = ({ method, path: path2, title: title3, responseJson, category, endpointId }) => /* @__PURE__ */ jsx("div", { class: "mb-8 bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300" }, /* @__PURE__ */ jsx("div", { class: "px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center" }, /* @__PURE__ */ jsx("h4", { class: "font-semibold text-slate-900" }, title3), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx("span", { class: `px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${method === "GET" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"}` }, method))), /* @__PURE__ */ jsx("div", { class: "p-6" }, /* @__PURE__ */ jsx("div", { class: "flex items-center gap-2 mb-6 group" }, /* @__PURE__ */ jsx("div", { class: "flex-grow flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-lg border border-slate-200 group-hover:border-emerald-200 transition-colors" }, /* @__PURE__ */ jsx("code", { class: "text-sm font-mono text-slate-600 truncate" }, path2)), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx(
+var ApiEndpoint = ({ method, path: path4, title: title3, responseJson, category, endpointId }) => /* @__PURE__ */ jsx("div", { class: "mb-8 bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300" }, /* @__PURE__ */ jsx("div", { class: "px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center" }, /* @__PURE__ */ jsx("h4", { class: "font-semibold text-slate-900" }, title3), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx("span", { class: `px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${method === "GET" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"}` }, method))), /* @__PURE__ */ jsx("div", { class: "p-6" }, /* @__PURE__ */ jsx("div", { class: "flex items-center gap-2 mb-6 group" }, /* @__PURE__ */ jsx("div", { class: "flex-grow flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-lg border border-slate-200 group-hover:border-emerald-200 transition-colors" }, /* @__PURE__ */ jsx("code", { class: "text-sm font-mono text-slate-600 truncate" }, path4)), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx(
   "button",
   {
-    onclick: `window.openApiModal('${category}', '${endpointId}', '/v1${path2}')`,
+    onclick: `window.openApiModal('${category}', '${endpointId}', '/v1${path4}')`,
     class: "p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all",
     title: "Try in Playground"
   },
@@ -5957,7 +5957,7 @@ var ApiEndpoint = ({ method, path: path2, title: title3, responseJson, category,
 ), /* @__PURE__ */ jsx(
   "button",
   {
-    onclick: `navigator.clipboard.writeText(window.location.origin + '/v1${path2}')`,
+    onclick: `navigator.clipboard.writeText(window.location.origin + '/v1${path4}')`,
     class: "p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all",
     title: "Copy URL"
   },
@@ -6187,12 +6187,12 @@ var Home = ({ baseUrl }) => {
     {
       title: "Cari Ayat",
       method: "GET",
-      path: "/ayah/find?query=alhamdulillah",
+      path: "/ayah/find?query=puasa",
       category: "quran",
       endpointId: "ayah-find",
       responseJson: `{
   "status": true,
-  "message": "Berhasil mencari ayat dengan kata kunci 'alhamdulillah'.",
+  "message": "Berhasil mencari ayat dengan kata kunci 'puasa'.",
   "data": [...]
 }`
     }
@@ -6415,23 +6415,23 @@ var Home = ({ baseUrl }) => {
 };
 
 // src/components/Other.jsx
-var ApiEndpoint2 = ({ method, path: path2, title: title3, responseJson, category, endpointId }) => /* @__PURE__ */ jsx("div", { class: "mb-8 bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300" }, /* @__PURE__ */ jsx("div", { class: "px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center" }, /* @__PURE__ */ jsx("h4", { class: "font-semibold text-slate-900" }, title3), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx("span", { class: `px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${method === "GET" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"}` }, method))), /* @__PURE__ */ jsx("div", { class: "p-6" }, /* @__PURE__ */ jsx("div", { class: "flex items-center gap-2 mb-6 group" }, /* @__PURE__ */ jsx("div", { class: "flex-grow flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-lg border border-slate-200 group-hover:border-emerald-200 transition-colors" }, /* @__PURE__ */ jsx("code", { class: "text-sm font-mono text-slate-600 truncate" }, path2)), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx(
+var ApiEndpoint2 = ({ method, path: path4, title: title3, responseJson, category, endpointId }) => /* @__PURE__ */ jsx("div", { class: "overflow-hidden mb-8 bg-white rounded-xl border shadow-sm transition-all duration-300 border-slate-200 hover:shadow-md" }, /* @__PURE__ */ jsx("div", { class: "flex justify-between items-center px-6 py-4 border-b border-slate-100 bg-slate-50/50" }, /* @__PURE__ */ jsx("h4", { class: "font-semibold text-slate-900" }, title3), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx("span", { class: `px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${method === "GET" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"}` }, method))), /* @__PURE__ */ jsx("div", { class: "p-6" }, /* @__PURE__ */ jsx("div", { class: "flex gap-2 items-center mb-6 group" }, /* @__PURE__ */ jsx("div", { class: "flex flex-grow gap-2 items-center px-3 py-2 rounded-lg border transition-colors bg-slate-100 border-slate-200 group-hover:border-emerald-200" }, /* @__PURE__ */ jsx("code", { class: "font-mono text-sm truncate text-slate-600" }, path4)), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx(
   "button",
   {
-    onclick: `window.openApiModal('${category}', '${endpointId}', '/v1${path2}')`,
-    class: "p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all",
+    onclick: `window.openApiModal('${category}', '${endpointId}', '/v1${path4}')`,
+    class: "p-2 rounded-lg transition-all text-slate-400 hover:text-blue-600 hover:bg-blue-50",
     title: "Try in Playground"
   },
-  /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-5 w-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" }), /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M21 12a9 9 0 11-18 0 9 9 0 0118 0z" }))
+  /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-5 h-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" }), /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M21 12a9 9 0 11-18 0 9 9 0 0118 0z" }))
 ), /* @__PURE__ */ jsx(
   "button",
   {
-    onclick: `navigator.clipboard.writeText(window.location.origin + '/v1${path2}')`,
-    class: "p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all",
+    onclick: `navigator.clipboard.writeText(window.location.origin + '/v1${path4}')`,
+    class: "p-2 rounded-lg transition-all text-slate-400 hover:text-emerald-600 hover:bg-emerald-50",
     title: "Copy URL"
   },
-  /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-5 w-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-3 8.5V11a.5.5 0 00-.5-.5H9.75a.5.5 0 00-.5.5v1.5a.5.5 0 00.5.5h.75a.5.5 0 00.5-.5z" }))
-))), /* @__PURE__ */ jsx("div", { class: "space-y-4" }, /* @__PURE__ */ jsx("details", { class: "group" }, /* @__PURE__ */ jsx("summary", { class: "flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors list-none" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-4 w-4 group-open:rotate-180 transition-transform", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M19 9l-7 7-7-7" })), "Example Response"), /* @__PURE__ */ jsx("div", { class: "mt-4 animate-in fade-in slide-in-from-top-2 duration-300" }, /* @__PURE__ */ jsx("pre", { class: "text-[11px] leading-relaxed shadow-inner" }, /* @__PURE__ */ jsx("code", null, responseJson)))))));
+  /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-5 h-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-3 8.5V11a.5.5 0 00-.5-.5H9.75a.5.5 0 00-.5.5v1.5a.5.5 0 00.5.5h.75a.5.5 0 00.5-.5z" }))
+))), /* @__PURE__ */ jsx("div", { class: "space-y-4" }, /* @__PURE__ */ jsx("details", { class: "group" }, /* @__PURE__ */ jsx("summary", { class: "flex gap-2 items-center text-sm font-medium list-none transition-colors cursor-pointer text-slate-500 hover:text-emerald-600" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-4 h-4 transition-transform group-open:rotate-180", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M19 9l-7 7-7-7" })), "Example Response"), /* @__PURE__ */ jsx("div", { class: "mt-4 duration-300 animate-in fade-in slide-in-from-top-2" }, /* @__PURE__ */ jsx("pre", { class: "text-[11px] leading-relaxed shadow-inner" }, /* @__PURE__ */ jsx("code", null, responseJson)))))));
 var SectionTitle2 = ({ title: title3, icon, id, color = "emerald" }) => {
   const colorClasses = {
     emerald: "bg-emerald-600 shadow-emerald-100",
@@ -6442,10 +6442,10 @@ var SectionTitle2 = ({ title: title3, icon, id, color = "emerald" }) => {
     indigo: "bg-indigo-600 shadow-indigo-100",
     slate: "bg-slate-600 shadow-slate-100"
   };
-  return /* @__PURE__ */ jsx("div", { id, class: "flex items-center gap-3 mb-8 scroll-mt-24" }, /* @__PURE__ */ jsx("div", { class: `w-10 h-10 ${colorClasses[color] || colorClasses.emerald} rounded-lg flex items-center justify-center shadow-lg` }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-white", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: icon }))), /* @__PURE__ */ jsx("h2", { class: "text-2xl font-bold text-slate-900" }, title3));
+  return /* @__PURE__ */ jsx("div", { id, class: "flex gap-3 items-center mb-8 scroll-mt-24" }, /* @__PURE__ */ jsx("div", { class: `w-10 h-10 ${colorClasses[color] || colorClasses.emerald} rounded-lg flex items-center justify-center shadow-lg` }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-6 h-6 text-white", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: icon }))), /* @__PURE__ */ jsx("h2", { class: "text-2xl font-bold text-slate-900" }, title3));
 };
 var Other = () => {
-  return /* @__PURE__ */ jsx("div", { class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" }, /* @__PURE__ */ jsx("div", { class: "grid grid-cols-1 lg:grid-cols-4 gap-12" }, /* @__PURE__ */ jsx("aside", { class: "hidden lg:block col-span-1 sticky top-28 self-start" }, /* @__PURE__ */ jsx("div", { class: "bg-white rounded-2xl border border-slate-200 p-6 shadow-sm" }, /* @__PURE__ */ jsx("h3", { class: "text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-3" }, "Menu Other API"), /* @__PURE__ */ jsx("nav", { class: "space-y-1" }, [
+  return /* @__PURE__ */ jsx("div", { class: "px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8" }, /* @__PURE__ */ jsx("div", { class: "grid grid-cols-1 gap-12 lg:grid-cols-4" }, /* @__PURE__ */ jsx("aside", { class: "hidden sticky top-28 col-span-1 self-start lg:block" }, /* @__PURE__ */ jsx("div", { class: "p-6 bg-white rounded-2xl border shadow-sm border-slate-200" }, /* @__PURE__ */ jsx("h3", { class: "px-3 mb-4 text-xs font-bold tracking-wider uppercase text-slate-400" }, "Menu Other API"), /* @__PURE__ */ jsx("nav", { class: "space-y-1" }, [
     { name: "Murottal", href: "#murottal", icon: "M11 5.882V19.118a3.63 3.63 0 01-5.12 3.574L1 18.817V5.183L5.88 1.309a3.63 3.63 0 015.12 3.573z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
     { name: "Sholat", href: "#sholat", icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
     { name: "Kalender", href: "#calendar", icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" },
@@ -6464,11 +6464,11 @@ var Other = () => {
     {
       key: index,
       href: item.href,
-      class: "flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all group"
+      class: "flex gap-3 items-center px-3 py-2 text-sm font-medium rounded-lg transition-all text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 group"
     },
-    /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-4 w-4 text-slate-400 group-hover:text-emerald-500 transition-colors", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: item.icon })),
+    /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-4 h-4 transition-colors text-slate-400 group-hover:text-emerald-500", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: item.icon })),
     item.name
-  ))))), /* @__PURE__ */ jsx("div", { class: "col-span-1 lg:col-span-3" }, /* @__PURE__ */ jsx("div", { class: "max-w-3xl mb-12" }, /* @__PURE__ */ jsx("h1", { class: "text-4xl font-extrabold text-slate-900 tracking-tight mb-4" }, "Other Resources"), /* @__PURE__ */ jsx("p", { class: "text-lg text-slate-600" }, "Kumpulan resource dan API lainnya yang mungkin bermanfaat untuk pengembangan aplikasi Anda.")), /* @__PURE__ */ jsx(
+  ))))), /* @__PURE__ */ jsx("div", { class: "col-span-1 lg:col-span-3" }, /* @__PURE__ */ jsx("div", { class: "mb-12 max-w-3xl" }, /* @__PURE__ */ jsx("h1", { class: "mb-4 text-4xl font-extrabold tracking-tight text-slate-900" }, "Other Resources"), /* @__PURE__ */ jsx("p", { class: "text-lg text-slate-600" }, "Kumpulan resource dan API lainnya yang mungkin bermanfaat untuk pengembangan aplikasi Anda.")), /* @__PURE__ */ jsx(
     SectionTitle2,
     {
       id: "murottal",
@@ -6675,21 +6675,21 @@ var Other = () => {
   ), /* @__PURE__ */ jsx(
     ApiEndpoint2,
     {
-      title: "Daftar Hadits Arbain",
+      title: "Cari Hadits (Query)",
       method: "GET",
-      path: "/hadits",
+      path: "/hadits/find?query=puasa&book=bukhari",
       category: "hadits",
-      endpointId: "hadits-list",
+      endpointId: "hadits-find",
       responseJson: `{
   "status": true,
-  "message": "Berhasil mendapatkan daftar hadits arbain.",
+  "message": "Berhasil mencari hadits di kitab Sahih Bukhari dengan kata kunci: puasa.",
   "data": [
     {
-      "id": 1,
-      "no": "1",
-      "judul": "Niat dan Ikhlas",
-      "arab": "\u0625\u0650\u0646\u064E\u0651\u0645\u064E\u0627 \u0627\u0644\u0623\u064E\u0639\u0652\u0645\u064E\u0627\u0644\u064F \u0628\u0650\u0627\u0644\u0646\u0650\u0651\u064A\u064E\u0651\u0627\u062A\u0650...",
-      "indo": "Sesungguhnya setiap amal itu tergantung niatnya..."
+      "no": 1901,
+      "judul": "Sahih Bukhari",
+      "arab": "...",
+      "indo": "...",
+      "sumber": "HR. Bukhari No. 1901"
     }
   ]
 }`
@@ -6706,9 +6706,29 @@ var Other = () => {
   "status": true,
   "message": "Berhasil mendapatkan seluruh koleksi kitab hadits.",
   "data": [
-    { "name": "Abudaud", "id": "abu-daud", "available": 4419 },
-    ...
+    { "id": "arbain", "name": "Hadits Arbain Nawawi", "available": 42 },
+    { "id": "bukhari", "name": "HR. Bukhari", "available": "Lokal (JSON)" },
+    { "id": "muslim", "name": "HR. Muslim", "available": "Lokal (JSON)" }
   ]
+}`
+    }
+  ), /* @__PURE__ */ jsx(
+    ApiEndpoint2,
+    {
+      title: "Detail Hadits per Kitab",
+      method: "GET",
+      path: "/hadits/books/bukhari/1",
+      category: "hadits",
+      endpointId: "hadits-book-detail",
+      responseJson: `{
+  "status": true,
+  "message": "Berhasil mendapatkan detail hadits nomor 1 dari kitab Sahih Bukhari.",
+  "data": {
+    "number": 1,
+    "arab": "...",
+    "id": "Semua perbuatan tergantung niatnya...",
+    "name": "HR. Bukhari"
+  }
 }`
     }
   ), /* @__PURE__ */ jsx(
@@ -7062,7 +7082,7 @@ var Other = () => {
     "hadits": {
       "arab": "...",
       "text": "...",
-      "sumber": "HR. Bukhari"
+      "sumber": "Hadits Arbain No. 1: Amalan Bergantung pada Niat"
     }
   }
 }`
@@ -7110,7 +7130,7 @@ var Other = () => {
   ), /* @__PURE__ */ jsx(
     ApiEndpoint2,
     {
-      title: "Pencarian Semantik (AI Search)",
+      title: "Pencarian Semantik (Cross-Source)",
       method: "GET",
       path: "/tools/semantic-search?query=sabar",
       category: "tools",
@@ -7123,18 +7143,16 @@ var Other = () => {
     "quran": [
       {
         "arab": "...",
-        "text": "...",
-        "sumber": "..."
-      },
-      "..."
+        "text": "Hai orang-orang yang beriman, bersabarlah kamu...",
+        "sumber": "QS. Ali 'Imran: 200"
+      }
     ],
     "hadits": [
       {
         "arab": "...",
-        "text": "...",
-        "sumber": "..."
-      },
-      "..."
+        "text": "Sungguh menakjubkan urusan seorang mukmin...",
+        "sumber": "HR. Muslim No. 2999"
+      }
     ]
   }
 }`
@@ -7147,7 +7165,7 @@ var Other = () => {
       icon: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1",
       color: "slate"
     }
-  ), /* @__PURE__ */ jsx("div", { class: "grid grid-cols-1 md:grid-cols-2 gap-4 mb-12" }, [
+  ), /* @__PURE__ */ jsx("div", { class: "grid grid-cols-1 gap-4 mb-12 md:grid-cols-2" }, [
     { name: "GitHub Repository", url: "https://github.com/vrush2000/muslim-all-in-one-api", desc: "Source code and documentation" },
     { name: "Quran Kemenag", url: "https://quran.kemenag.go.id/", desc: "Official Quran data from Kemenag RI" },
     { name: "MyQuran (Prayer Times)", url: "https://api.myquran.com/", desc: "Prayer times and Islamic schedule API" },
@@ -7162,10 +7180,10 @@ var Other = () => {
       href: resource.url,
       target: "_blank",
       rel: "noopener noreferrer",
-      class: "p-4 bg-white rounded-xl border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all group"
+      class: "p-4 bg-white rounded-xl border transition-all border-slate-200 hover:border-emerald-500 hover:shadow-md group"
     },
-    /* @__PURE__ */ jsx("div", { class: "flex items-center justify-between mb-1" }, /* @__PURE__ */ jsx("h4", { class: "font-bold text-slate-900 group-hover:text-emerald-600 transition-colors" }, resource.name), /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-4 w-4 text-slate-400 group-hover:text-emerald-500", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" }))),
-    /* @__PURE__ */ jsx("p", { class: "text-xs text-slate-500 leading-relaxed" }, resource.desc)
+    /* @__PURE__ */ jsx("div", { class: "flex justify-between items-center mb-1" }, /* @__PURE__ */ jsx("h4", { class: "font-bold transition-colors text-slate-900 group-hover:text-emerald-600" }, resource.name), /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-4 h-4 text-slate-400 group-hover:text-emerald-500", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" }))),
+    /* @__PURE__ */ jsx("p", { class: "text-xs leading-relaxed text-slate-500" }, resource.desc)
   ))))));
 };
 
@@ -7488,7 +7506,7 @@ var Playground = ({ baseUrl }) => {
             { id: 'ayah-juz', path: '/ayah/juz', name: 'Ayat by Juz', params: [{ name: 'juzId', placeholder: '1-30', type: 'number', default: '30', hint: 'Nomor Juz (1-30)' }] },
             { id: 'ayah-page', path: '/ayah/page', name: 'Ayat by Halaman', params: [{ name: 'page', placeholder: '1-604', type: 'number', default: '604', hint: 'Halaman Al-Quran (1-604)' }] },
             { id: 'ayah-range', path: '/ayah/range', name: 'Range Ayat', params: [{ name: 'surahId', placeholder: '1', type: 'number', default: '1' }, { name: 'start', placeholder: '1', type: 'number', default: '1' }, { name: 'end', placeholder: '7', type: 'number', default: '7' }] },
-            { id: 'ayah-find', path: '/ayah/find', name: 'Cari Ayat (Query)', params: [{ name: 'query', placeholder: 'alhamdulillah', type: 'text', default: 'alhamdulillah', hint: 'Kata kunci pencarian' }] },
+            { id: 'ayah-find', path: '/ayah/find', name: 'Cari Ayat (Query)', params: [{ name: 'query', placeholder: 'puasa', type: 'text', default: 'puasa', hint: 'Kata kunci pencarian' }] },
             { id: 'juz-list', path: '/juz', name: 'Daftar Juz', params: [] },
             { id: 'juz-detail', path: '/juz', name: 'Detail Juz', params: [{ name: 'juzId', placeholder: '1-30', type: 'number', default: '30', hint: 'Nomor Juz (1-30)' }] },
             { id: 'theme-list', path: '/theme', name: 'Daftar Tema', params: [] },
@@ -7624,11 +7642,11 @@ var Playground = ({ baseUrl }) => {
                 return '<div class="space-y-1">' +
                     '<label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">' + param.name + '</label>' +
                     '<div class="relative">' +
-                      '<select name="' + param.name + '" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all appearance-none cursor-pointer pr-8">' +
+                      '<select name="' + param.name + '" class="px-3 py-2 pr-8 w-full text-sm bg-white rounded-lg border transition-all appearance-none cursor-pointer border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">' +
                         optionsHtml +
                       '</select>' +
-                      '<div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-slate-400">' +
-                        '<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>' +
+                      '<div class="flex absolute inset-y-0 right-0 items-center px-2 pointer-events-none text-slate-400">' +
+                        '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>' +
                       '</div>' +
                     '</div>' +
                     (param.hint ? '<p class="text-[10px] text-slate-400 italic leading-tight">' + param.hint + '</p>' : '') +
@@ -7636,7 +7654,7 @@ var Playground = ({ baseUrl }) => {
               }
               return '<div class="space-y-1">' +
                   '<label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">' + param.name + '</label>' +
-                  '<input type="' + param.type + '" name="' + param.name + '" value="' + (param.default || '') + '" placeholder="' + param.placeholder + '" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all" />' +
+                  '<input type="' + param.type + '" name="' + param.name + '" value="' + (param.default || '') + '" placeholder="' + param.placeholder + '" class="px-3 py-2 w-full text-sm bg-white rounded-lg border transition-all border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />' +
                   (param.hint ? '<p class="text-[10px] text-slate-400 italic leading-tight">' + param.hint + '</p>' : '') +
                 '</div>';
             }).join('');
@@ -7829,7 +7847,7 @@ var Status = ({ baseUrl }) => {
               if (isOnline) {
                 statusEl.className = 'status-indicator w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]';
                 textEl.innerText = 'Online';
-                textEl.className = 'status-text text-sm font-bold text-emerald-600';
+                textEl.className = 'text-sm font-bold text-emerald-600 status-text';
                 latencyEl.innerText = latency + 'ms';
                 updateUptimeBar(uptimeEl, true);
               } else {
@@ -7838,7 +7856,7 @@ var Status = ({ baseUrl }) => {
             } catch (error) {
               statusEl.className = 'status-indicator w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]';
               textEl.innerText = 'Offline';
-              textEl.className = 'status-text text-sm font-bold text-red-600';
+              textEl.className = 'text-sm font-bold text-red-600 status-text';
               latencyEl.innerText = '-- ms';
               updateUptimeBar(uptimeEl, false);
             }
@@ -7850,7 +7868,7 @@ var Status = ({ baseUrl }) => {
             for(let i = 0; i < lastIndex; i++) {
               dots[i].className = dots[i+1].className;
             }
-            dots[lastIndex].className = 'uptime-dot h-4 w-1 rounded-full ' + (isOnline ? 'bg-emerald-500' : 'bg-red-500');
+            dots[lastIndex].className = 'w-1 h-4 rounded-full uptime-dot' + (isOnline ? 'bg-emerald-500' : 'bg-red-500');
           }
 
           function initStatus() {
@@ -8109,6 +8127,13 @@ ayah.get("/find", async (c) => {
         "SELECT * FROM ayah WHERE text LIKE ? ORDER BY CAST(id as INTEGER) ASC",
         [`%${q}%`]
       );
+      if (!data || data.length === 0) {
+        return c.json({
+          status: false,
+          message: `Tidak ada ayat yang ditemukan dengan kata kunci: ${q}.`,
+          data: []
+        }, 404);
+      }
       return c.json({ status: true, message: `Berhasil mencari ayat dengan kata kunci: ${q}.`, data: (data || []).map(formatAyah) });
     } else {
       return c.json({
@@ -8290,6 +8315,13 @@ doa.get("/find", async (c) => {
         "SELECT * FROM doa WHERE judul LIKE ? ORDER BY judul ASC",
         [`%${q}%`]
       );
+      if (!data || data.length === 0) {
+        return c.json({
+          status: false,
+          message: `Tidak ada doa yang ditemukan dengan kata kunci: ${q}.`,
+          data: []
+        }, 404);
+      }
       return c.json({ status: true, message: `Berhasil mencari doa dengan kata kunci: ${q}.`, data: data || [] });
     } else {
       return c.json({
@@ -8324,24 +8356,48 @@ dzikir.get("/", async (c) => {
 });
 var dzikir_default = dzikir;
 
-// src/config.js
-var API_CONFIG = {
-  SHOLAT: {
-    MYQURAN: "https://api.myquran.com/v2/sholat",
-    NOMINATIM: "https://nominatim.openstreetmap.org/reverse"
-  },
-  HADITS: {
-    GADING: "https://api.hadith.gading.dev"
-  },
-  KEMENAG: {
-    HARI_LIBUR: "https://api-harilibur.vercel.app/api",
-    PESANTREN: "https://api-pesantren-indonesia.vercel.app"
-  }
-};
-
 // src/routes/muslim/v1/hadits.js
+import fs3 from "fs/promises";
+import path2 from "path";
+import { fileURLToPath } from "url";
+var __filename = fileURLToPath(import.meta.url);
+var __dirname = path2.dirname(__filename);
 var hadits = new Hono2();
-var GADING_API_BASE = API_CONFIG.HADITS.GADING;
+async function getLocalHadits(bookName) {
+  try {
+    const filePath = path2.join(__dirname, "../../../../src/data/hadits", `${bookName}.json`);
+    const data = await fs3.readFile(filePath, "utf8");
+    return JSON.parse(data);
+  } catch (error) {
+    console.error(`Error reading local hadits ${bookName}:`, error.message);
+    return null;
+  }
+}
+var bookFileMapping = {
+  "bukhari": "bukhari",
+  "muslim": "muslim",
+  "abu-daud": "abu-daud",
+  "abudawud": "abu-daud",
+  "ibnu-majah": "ibnu-majah",
+  "ibnmajah": "ibnu-majah",
+  "tirmidzi": "tirmidzi",
+  "tirmidhi": "tirmidzi",
+  "ahmad": "ahmad",
+  "darimi": "darimi",
+  "malik": "malik",
+  "nasai": "nasai"
+};
+var bookDisplayNames = {
+  "bukhari": "Sahih Bukhari",
+  "muslim": "Sahih Muslim",
+  "abu-daud": "Sunan Abu Daud",
+  "ibnu-majah": "Sunan Ibnu Majah",
+  "tirmidzi": "Sunan Tirmidzi",
+  "ahmad": "Musnad Ahmad",
+  "darimi": "Sunan Darimi",
+  "malik": "Muwatha Malik",
+  "nasai": "Sunan Nasai"
+};
 hadits.get("/", async (c) => {
   try {
     const nomor = c.req.query("nomor");
@@ -8360,85 +8416,123 @@ hadits.get("/", async (c) => {
     return c.json({ status: false, message: "Gagal mendapatkan data hadits: " + error.message }, 500);
   }
 });
-hadits.get("/books", async (c) => {
-  try {
-    const response = await fetch(`${GADING_API_BASE}/books`);
-    const data = await response.json();
-    if (!response.ok || data.code && data.code !== 200) {
-      return c.json({
-        status: false,
-        message: "Gagal mengambil daftar kitab hadits dari API sumber.",
-        error: data.message || "Unknown error"
-      }, response.status || 502);
-    }
-    return c.json({
-      status: true,
-      message: "Berhasil mendapatkan daftar kitab hadits.",
-      data: data.data || data
-    });
-  } catch (error) {
-    return c.json({ status: false, message: "Gagal mendapatkan daftar kitab hadits: " + error.message }, 500);
-  }
-});
-hadits.get("/books/:name", async (c) => {
-  try {
-    const name = c.req.param("name");
-    const range = c.req.query("range");
-    const url = range ? `${GADING_API_BASE}/books/${name}?range=${range}` : `${GADING_API_BASE}/books/${name}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    if (!response.ok || data.code && data.code !== 200) {
-      return c.json({
-        status: false,
-        message: `Gagal mengambil daftar hadits dari kitab ${name} dari API sumber.`,
-        error: data.message || "Unknown error"
-      }, response.status || 502);
-    }
-    return c.json({
-      status: true,
-      message: `Berhasil mendapatkan daftar hadits dari kitab ${name}.`,
-      data: data.data || data
-    });
-  } catch (error) {
-    return c.json({ status: false, message: `Gagal mendapatkan daftar hadits dari kitab ${c.req.param("name")}: ` + error.message }, 500);
-  }
+hadits.get("/books", (c) => {
+  const books = Object.entries(bookDisplayNames).map(([id, name]) => ({
+    id,
+    name: `HR. ${name.replace("Sahih ", "").replace("Sunan ", "").replace("Musnad ", "").replace("Muwatha ", "")}`,
+    available: "Lokal (JSON)"
+  }));
+  return c.json({
+    status: true,
+    message: "Berhasil mendapatkan seluruh koleksi kitab hadits.",
+    data: [
+      { id: "arbain", name: "Hadits Arbain Nawawi", available: 42 },
+      ...books
+    ]
+  });
 });
 hadits.get("/books/:name/:number", async (c) => {
   try {
-    const name = c.req.param("name");
-    const number = c.req.param("number");
-    const response = await fetch(`${GADING_API_BASE}/books/${name}/${number}`);
-    const data = await response.json();
-    if (!response.ok || data.code && data.code !== 200) {
-      return c.json({
-        status: false,
-        message: `Gagal mengambil detail hadits nomor ${number} dari kitab ${name} dari API sumber.`,
-        error: data.message || "Unknown error"
-      }, response.status || 502);
+    const name = c.req.param("name").toLowerCase();
+    const number = parseInt(c.req.param("number"));
+    const targetBookFile = bookFileMapping[name];
+    if (!targetBookFile) {
+      return c.json({ status: false, message: `Kitab ${name} tidak ditemukan.` }, 404);
     }
+    const allHadits = await getLocalHadits(targetBookFile);
+    if (!allHadits) {
+      return c.json({ status: false, message: `Gagal memuat data kitab ${name}.` }, 500);
+    }
+    const hadith = allHadits.find((h) => h.number === number);
+    if (!hadith) {
+      return c.json({ status: false, message: `Hadits nomor ${number} tidak ditemukan di kitab ${name}.` }, 404);
+    }
+    const displayName = bookDisplayNames[targetBookFile] || name;
     return c.json({
       status: true,
-      message: `Berhasil mendapatkan detail hadits nomor ${number} dari kitab ${name}.`,
-      data: data.data || data
+      message: `Berhasil mendapatkan detail hadits nomor ${number} dari kitab ${displayName}.`,
+      data: {
+        number: hadith.number,
+        arab: hadith.arab,
+        id: hadith.id,
+        // Bahasa Indonesia
+        name: `HR. ${displayName.replace("Sahih ", "").replace("Sunan ", "").replace("Musnad ", "").replace("Muwatha ", "")}`
+      }
     });
   } catch (error) {
-    return c.json({ status: false, message: `Gagal mendapatkan detail hadits dari kitab ${c.req.param("name")}: ` + error.message }, 500);
+    return c.json({ status: false, message: "Gagal mendapatkan detail hadits: " + error.message }, 500);
   }
 });
 hadits.get("/find", async (c) => {
   try {
     const q = c.req.query("query");
-    if (q != null) {
-      const data = await query(
-        "SELECT * FROM hadits WHERE judul LIKE ? ORDER BY CAST(no as INTEGER) ASC",
-        [`%${q}%`]
-      );
-      return c.json({ status: true, message: `Berhasil mencari hadits dengan kata kunci: ${q}.`, data: data || [] });
-    } else {
+    const book = c.req.query("book");
+    if (!q) {
       return c.json({
         status: false,
-        message: "Parameter diperlukan (query)."
+        message: "Parameter query diperlukan."
       }, 400);
+    }
+    if (!book || book.toLowerCase() === "arbain") {
+      const data = await query(
+        "SELECT * FROM hadits WHERE judul LIKE ? OR indo LIKE ? ORDER BY CAST(no as INTEGER) ASC",
+        [`%${q}%`, `%${q}%`]
+      );
+      if (!data || data.length === 0) {
+        return c.json({
+          status: false,
+          message: `Tidak ada hadits Arbain yang ditemukan dengan kata kunci: ${q}.`,
+          data: []
+        }, 404);
+      }
+      return c.json({
+        status: true,
+        message: `Berhasil mencari hadits Arbain dengan kata kunci: ${q}.`,
+        data: data.map((r) => ({
+          ...r,
+          sumber: `Hadits Arbain No. ${r.no}: ${r.judul}`
+        }))
+      });
+    } else {
+      const targetBookFile = bookFileMapping[book.toLowerCase()];
+      if (!targetBookFile) {
+        return c.json({
+          status: false,
+          message: `Pencarian untuk buku '${book}' belum didukung. Gunakan: arbain, bukhari, muslim, abu-daud, ibnu-majah, tirmidzi, ahmad, darimi, malik, atau nasai.`
+        }, 400);
+      }
+      const allHadits = await getLocalHadits(targetBookFile);
+      if (!allHadits) {
+        return c.json({
+          status: false,
+          message: `Gagal membaca data hadits untuk kitab ${book}.`
+        }, 500);
+      }
+      const searchTerms = q.toLowerCase().split(" ");
+      const results = allHadits.filter((h) => {
+        const text = (h.id || "").toLowerCase();
+        return searchTerms.every((term) => text.includes(term));
+      }).slice(0, 50);
+      if (results.length === 0) {
+        return c.json({
+          status: false,
+          message: `Tidak ada hadits ditemukan di kitab ${book} dengan kata kunci: ${q}.`,
+          data: []
+        }, 404);
+      }
+      const displayName = bookDisplayNames[targetBookFile] || book;
+      return c.json({
+        status: true,
+        message: `Berhasil mencari hadits di kitab ${displayName} dengan kata kunci: ${q}.`,
+        data: results.map((h) => ({
+          no: h.number,
+          judul: displayName,
+          arab: h.arab,
+          indo: h.id,
+          // Field 'id' adalah terjemahan Indonesia
+          sumber: `HR. ${displayName.replace("Sahih ", "").replace("Sunan ", "").replace("Musnad ", "").replace("Muwatha ", "")} No. ${h.number}`
+        }))
+      });
     }
   } catch (error) {
     return c.json({ status: false, message: "Gagal mencari hadits: " + error.message }, 500);
@@ -8628,6 +8722,21 @@ integrity.get("/verify/ayah", async (c) => {
 });
 var integrity_default = integrity;
 
+// src/config.js
+var API_CONFIG = {
+  SHOLAT: {
+    MYQURAN: "https://api.myquran.com/v2/sholat",
+    NOMINATIM: "https://nominatim.openstreetmap.org/reverse"
+  },
+  HADITS: {
+    GADING: "https://api.hadith.gading.dev"
+  },
+  KEMENAG: {
+    HARI_LIBUR: "https://api-harilibur.vercel.app/api",
+    PESANTREN: "https://api-pesantren-indonesia.vercel.app"
+  }
+};
+
 // src/routes/muslim/v1/sholat.js
 var sholat = new Hono2();
 var BASE_API = API_CONFIG.SHOLAT.MYQURAN;
@@ -8658,6 +8767,13 @@ sholat.get("/kota/cari", async (c) => {
         message: `Gagal mencari kota dengan kata kunci: ${query2} dari API sumber.`,
         error: data.message || "Unknown error"
       }, response.status || 502);
+    }
+    if (!data.data || data.data.length === 0) {
+      return c.json({
+        status: false,
+        message: `Tidak ada kota yang ditemukan dengan kata kunci: ${query2}.`,
+        data: []
+      }, 404);
     }
     return c.json({
       status: true,
@@ -8878,12 +8994,23 @@ theme.get("/", async (c) => {
   try {
     const themeId = c.req.query("themeId") || c.req.query("id");
     if (themeId != null) {
-      const data = await get("SELECT * FROM theme WHERE id = ?", [themeId]);
-      if (!data) {
-        return c.json({ status: false, message: "Tema tidak ditemukan.", data: {} }, 404);
-      } else {
-        return c.json({ status: true, message: "Berhasil mendapatkan detail tema.", data });
+      const themeData = await get("SELECT * FROM theme WHERE id = ?", [themeId]);
+      if (!themeData) {
+        return c.json({ status: false, message: "Tema tidak ditemukan.", data: [] }, 404);
       }
+      const verses = await query(
+        "SELECT * FROM ayah WHERE theme LIKE ? OR theme = ? ORDER BY CAST(id as INTEGER) ASC",
+        [`%${themeId}%`, themeId]
+      );
+      const formatAyah2 = (a) => ({
+        ...a,
+        audio_partial: a.audio_partial ? JSON.parse(a.audio_partial) : {}
+      });
+      return c.json({
+        status: true,
+        message: `Berhasil mendapatkan ayat dengan tema: ${themeData.name}.`,
+        data: (verses || []).map(formatAyah2)
+      });
     } else {
       const data = await query("SELECT * FROM theme ORDER BY CAST(id as INTEGER) ASC");
       return c.json({ status: true, message: "Berhasil mendapatkan daftar seluruh tema.", data: data || [] });
@@ -9294,7 +9421,21 @@ sejarah.get("/today", async (c) => {
 var sejarah_default = sejarah;
 
 // src/routes/muslim/v1/tools.js
+import fs4 from "fs/promises";
+import path3 from "path";
+import { fileURLToPath as fileURLToPath2 } from "url";
+var __filename2 = fileURLToPath2(import.meta.url);
+var __dirname2 = path3.dirname(__filename2);
 var tools = new Hono2();
+async function getLocalHadits2(bookName) {
+  try {
+    const filePath = path3.join(__dirname2, "../../../../src/data/hadits", `${bookName}.json`);
+    const data = await fs4.readFile(filePath, "utf8");
+    return JSON.parse(data);
+  } catch (error) {
+    return null;
+  }
+}
 tools.get("/quotes/daily", async (c) => {
   try {
     const ayat = await get(`
@@ -9321,7 +9462,7 @@ tools.get("/quotes/daily", async (c) => {
         hadits: {
           arab: hadits2.arab,
           text: hadits2.indo,
-          sumber: `HR. ${hadits2.judul || "Hadits"}`
+          sumber: `Hadits Arbain No. ${hadits2.no}: ${hadits2.judul}`
         }
       }
     });
@@ -9422,22 +9563,53 @@ tools.get("/semantic-search", async (c) => {
         sumber: `QS. ${s.name_id || s.name_en || s.name_long}: ${r.ayah}`
       };
     }));
-    const haditsResults = await query(`
-      SELECT *
-      FROM hadits
-      WHERE indo LIKE ? OR judul LIKE ?
-    `, [`%${query2}%`, `%${query2}%`]);
+    const arbainResults = await query(
+      "SELECT * FROM hadits WHERE judul LIKE ? OR indo LIKE ? LIMIT 5",
+      [`%${query2}%`, `%${query2}%`]
+    );
+    const formattedArbain = (arbainResults || []).map((h) => ({
+      arab: h.arab,
+      text: h.indo,
+      sumber: `Hadits Arbain No. ${h.no}: ${h.judul}`
+    }));
+    let globalHadits = [];
+    const mainBooks = ["bukhari", "muslim"];
+    const searchTerms = query2.toLowerCase().split(" ");
+    for (const book of mainBooks) {
+      const allHadits = await getLocalHadits2(book);
+      if (allHadits) {
+        const matches = allHadits.filter((h) => {
+          const text = (h.id || "").toLowerCase();
+          return searchTerms.every((term) => text.includes(term));
+        }).slice(0, 3);
+        const bookName = book.charAt(0).toUpperCase() + book.slice(1);
+        globalHadits.push(...matches.map((h) => ({
+          arab: h.arab,
+          text: h.id,
+          sumber: `HR. ${bookName} No. ${h.number}`
+        })));
+      }
+      if (globalHadits.length >= 6) break;
+    }
+    const totalHadits = [...formattedArbain, ...globalHadits];
+    if (quranResults.length === 0 && totalHadits.length === 0) {
+      return c.json({
+        status: false,
+        message: `Tidak ada hasil pencarian semantik untuk '${query2}'.`,
+        data: {
+          query: query2,
+          quran: [],
+          hadits: []
+        }
+      }, 404);
+    }
     return c.json({
       status: true,
       message: `Pencarian semantik untuk '${query2}' berhasil.`,
       data: {
         query: query2,
         quran: formattedQuran,
-        hadits: haditsResults.map((r) => ({
-          arab: r.arab,
-          text: r.indo,
-          sumber: `HR. ${r.judul || "Hadits"}`
-        }))
+        hadits: totalHadits
       }
     });
   } catch (error) {
@@ -9505,7 +9677,7 @@ v1.get("/", (c) => {
           },
           cari: {
             pattern: "/v1/ayah/find?query={query}",
-            contoh: "/v1/ayah/find?query=alhamdulillah"
+            contoh: "/v1/ayah/find?query=puasa"
           }
         },
         juz: {
@@ -11479,9 +11651,9 @@ app.use("/v1/*", async (c, next) => {
   const ip = c.req.header("x-forwarded-for") || c.req.header("x-real-ip") || "local";
   const userAgent = c.req.header("user-agent") || "unknown";
   const method = c.req.method;
-  const path2 = c.req.path;
+  const path4 = c.req.path;
   if (process.env.NODE_ENV === "production") {
-    console.log(`[HIT] ${(/* @__PURE__ */ new Date()).toISOString()} | IP: ${ip} | Path: ${path2} | UA: ${userAgent}`);
+    console.log(`[HIT] ${(/* @__PURE__ */ new Date()).toISOString()} | IP: ${ip} | Path: ${path4} | UA: ${userAgent}`);
     return await next();
   }
   const now = Date.now();
@@ -11504,7 +11676,7 @@ app.use("/v1/*", async (c, next) => {
       client_info: { ip, user_agent: userAgent }
     }, 429);
   }
-  console.log(`[HIT] ${(/* @__PURE__ */ new Date()).toISOString()} | IP: ${ip} | Method: ${method} | Path: ${path2}`);
+  console.log(`[HIT] ${(/* @__PURE__ */ new Date()).toISOString()} | IP: ${ip} | Method: ${method} | Path: ${path4}`);
   await next();
 });
 app.route("/v1", v1_default);

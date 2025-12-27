@@ -2,8 +2,8 @@
 import { jsx } from 'hono/jsx'
 
 const ApiEndpoint = ({ method, path, title, responseJson, category, endpointId }) => (
-  <div class="mb-8 bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+  <div class="overflow-hidden mb-8 bg-white rounded-xl border shadow-sm transition-all duration-300 border-slate-200 hover:shadow-md">
+    <div class="flex justify-between items-center px-6 py-4 border-b border-slate-100 bg-slate-50/50">
       <h4 class="font-semibold text-slate-900">{title}</h4>
       <div class="flex gap-2">
         <span class={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
@@ -14,27 +14,27 @@ const ApiEndpoint = ({ method, path, title, responseJson, category, endpointId }
       </div>
     </div>
     <div class="p-6">
-      <div class="flex items-center gap-2 mb-6 group">
-        <div class="flex-grow flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-lg border border-slate-200 group-hover:border-emerald-200 transition-colors">
-          <code class="text-sm font-mono text-slate-600 truncate">{path}</code>
+      <div class="flex gap-2 items-center mb-6 group">
+        <div class="flex flex-grow gap-2 items-center px-3 py-2 rounded-lg border transition-colors bg-slate-100 border-slate-200 group-hover:border-emerald-200">
+          <code class="font-mono text-sm truncate text-slate-600">{path}</code>
         </div>
         <div class="flex gap-2">
           <button 
             onclick={`window.openApiModal('${category}', '${endpointId}', '/v1${path}')`}
-            class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+            class="p-2 rounded-lg transition-all text-slate-400 hover:text-blue-600 hover:bg-blue-50"
             title="Try in Playground"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </button>
           <button 
             onclick={`navigator.clipboard.writeText(window.location.origin + '/v1${path}')`}
-            class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+            class="p-2 rounded-lg transition-all text-slate-400 hover:text-emerald-600 hover:bg-emerald-50"
             title="Copy URL"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-3 8.5V11a.5.5 0 00-.5-.5H9.75a.5.5 0 00-.5.5v1.5a.5.5 0 00.5.5h.75a.5.5 0 00.5-.5z" />
             </svg>
           </button>
@@ -43,13 +43,13 @@ const ApiEndpoint = ({ method, path, title, responseJson, category, endpointId }
       
       <div class="space-y-4">
         <details class="group">
-          <summary class="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors list-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <summary class="flex gap-2 items-center text-sm font-medium list-none transition-colors cursor-pointer text-slate-500 hover:text-emerald-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
             Example Response
           </summary>
-          <div class="mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div class="mt-4 duration-300 animate-in fade-in slide-in-from-top-2">
             <pre class="text-[11px] leading-relaxed shadow-inner">
               <code>{responseJson}</code>
             </pre>
@@ -72,9 +72,9 @@ const SectionTitle = ({ title, icon, id, color = "emerald" }) => {
   };
 
   return (
-    <div id={id} class="flex items-center gap-3 mb-8 scroll-mt-24">
+    <div id={id} class="flex gap-3 items-center mb-8 scroll-mt-24">
       <div class={`w-10 h-10 ${colorClasses[color] || colorClasses.emerald} rounded-lg flex items-center justify-center shadow-lg`}>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={icon} />
         </svg>
       </div>
@@ -85,12 +85,12 @@ const SectionTitle = ({ title, icon, id, color = "emerald" }) => {
 
 export const Other = () => {
   return (
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
+    <div class="px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-4">
         {/* Sidebar */}
-        <aside class="hidden lg:block col-span-1 sticky top-28 self-start">
-          <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-3">Menu Other API</h3>
+        <aside class="hidden sticky top-28 col-span-1 self-start lg:block">
+          <div class="p-6 bg-white rounded-2xl border shadow-sm border-slate-200">
+            <h3 class="px-3 mb-4 text-xs font-bold tracking-wider uppercase text-slate-400">Menu Other API</h3>
             <nav class="space-y-1">
               {[
                 { name: 'Murottal', href: '#murottal', icon: 'M11 5.882V19.118a3.63 3.63 0 01-5.12 3.574L1 18.817V5.183L5.88 1.309a3.63 3.63 0 015.12 3.573z M15 12a3 3 0 11-6 0 3 3 0 016 0z' },
@@ -110,9 +110,9 @@ export const Other = () => {
                 <a 
                   key={index}
                   href={item.href} 
-                  class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all group"
+                  class="flex gap-3 items-center px-3 py-2 text-sm font-medium rounded-lg transition-all text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 group"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 group-hover:text-emerald-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-colors text-slate-400 group-hover:text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={item.icon} />
                   </svg>
                   {item.name}
@@ -123,8 +123,8 @@ export const Other = () => {
         </aside>
 
         <div class="col-span-1 lg:col-span-3">
-          <div class="max-w-3xl mb-12">
-            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">Other Resources</h1>
+          <div class="mb-12 max-w-3xl">
+            <h1 class="mb-4 text-4xl font-extrabold tracking-tight text-slate-900">Other Resources</h1>
             <p class="text-lg text-slate-600">
               Kumpulan resource dan API lainnya yang mungkin bermanfaat untuk pengembangan aplikasi Anda.
             </p>
@@ -316,21 +316,21 @@ export const Other = () => {
             color="orange"
           />
           <ApiEndpoint 
-            title="Daftar Hadits Arbain" 
+            title="Cari Hadits (Query)" 
             method="GET" 
-            path="/hadits" 
+            path="/hadits/find?query=puasa&book=bukhari" 
             category="hadits"
-            endpointId="hadits-list"
+            endpointId="hadits-find"
             responseJson={`{
   "status": true,
-  "message": "Berhasil mendapatkan daftar hadits arbain.",
+  "message": "Berhasil mencari hadits di kitab Sahih Bukhari dengan kata kunci: puasa.",
   "data": [
     {
-      "id": 1,
-      "no": "1",
-      "judul": "Niat dan Ikhlas",
-      "arab": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ...",
-      "indo": "Sesungguhnya setiap amal itu tergantung niatnya..."
+      "no": 1901,
+      "judul": "Sahih Bukhari",
+      "arab": "...",
+      "indo": "...",
+      "sumber": "HR. Bukhari No. 1901"
     }
   ]
 }`}
@@ -345,9 +345,27 @@ export const Other = () => {
   "status": true,
   "message": "Berhasil mendapatkan seluruh koleksi kitab hadits.",
   "data": [
-    { "name": "Abudaud", "id": "abu-daud", "available": 4419 },
-    ...
+    { "id": "arbain", "name": "Hadits Arbain Nawawi", "available": 42 },
+    { "id": "bukhari", "name": "HR. Bukhari", "available": "Lokal (JSON)" },
+    { "id": "muslim", "name": "HR. Muslim", "available": "Lokal (JSON)" }
   ]
+}`}
+          />
+          <ApiEndpoint 
+            title="Detail Hadits per Kitab" 
+            method="GET" 
+            path="/hadits/books/bukhari/1" 
+            category="hadits"
+            endpointId="hadits-book-detail"
+            responseJson={`{
+  "status": true,
+  "message": "Berhasil mendapatkan detail hadits nomor 1 dari kitab Sahih Bukhari.",
+  "data": {
+    "number": 1,
+    "arab": "...",
+    "id": "Semua perbuatan tergantung niatnya...",
+    "name": "HR. Bukhari"
+  }
 }`}
           />
 
@@ -661,7 +679,7 @@ export const Other = () => {
     "hadits": {
       "arab": "...",
       "text": "...",
-      "sumber": "HR. Bukhari"
+      "sumber": "Hadits Arbain No. 1: Amalan Bergantung pada Niat"
     }
   }
 }`}
@@ -703,7 +721,7 @@ export const Other = () => {
 }`}
           />
           <ApiEndpoint 
-            title="Pencarian Semantik (AI Search)" 
+            title="Pencarian Semantik (Cross-Source)" 
             method="GET" 
             path="/tools/semantic-search?query=sabar" 
             category="tools"
@@ -716,18 +734,16 @@ export const Other = () => {
     "quran": [
       {
         "arab": "...",
-        "text": "...",
-        "sumber": "..."
-      },
-      "..."
+        "text": "Hai orang-orang yang beriman, bersabarlah kamu...",
+        "sumber": "QS. Ali 'Imran: 200"
+      }
     ],
     "hadits": [
       {
         "arab": "...",
-        "text": "...",
-        "sumber": "..."
-      },
-      "..."
+        "text": "Sungguh menakjubkan urusan seorang mukmin...",
+        "sumber": "HR. Muslim No. 2999"
+      }
     ]
   }
 }`}
@@ -739,7 +755,7 @@ export const Other = () => {
             icon="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" 
             color="slate"
           />
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+          <div class="grid grid-cols-1 gap-4 mb-12 md:grid-cols-2">
             {[
               { name: 'GitHub Repository', url: 'https://github.com/vrush2000/muslim-all-in-one-api', desc: 'Source code and documentation' },
               { name: 'Quran Kemenag', url: 'https://quran.kemenag.go.id/', desc: 'Official Quran data from Kemenag RI' },
@@ -754,15 +770,15 @@ export const Other = () => {
                 href={resource.url} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                class="p-4 bg-white rounded-xl border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all group"
+                class="p-4 bg-white rounded-xl border transition-all border-slate-200 hover:border-emerald-500 hover:shadow-md group"
               >
-                <div class="flex items-center justify-between mb-1">
-                  <h4 class="font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">{resource.name}</h4>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 group-hover:text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="flex justify-between items-center mb-1">
+                  <h4 class="font-bold transition-colors text-slate-900 group-hover:text-emerald-600">{resource.name}</h4>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 group-hover:text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </div>
-                <p class="text-xs text-slate-500 leading-relaxed">{resource.desc}</p>
+                <p class="text-xs leading-relaxed text-slate-500">{resource.desc}</p>
               </a>
             ))}
           </div>

@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { trimTrailingSlash } from 'hono/trailing-slash';
 import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
-import { query as dbQuery } from './database/config.js';
+import { getSurahList } from './utils/jsonHandler.js';
 
 import apiRouter from './routes/index.jsx';
 import apiV1Router from './routes/muslim/v1/index.js';
@@ -16,12 +16,12 @@ app.use('*', cors());
 
 // Global Health Check
 app.get('/health', async (c) => {
-  let dbStatus = 'disconnected';
+  let jsonStatus = 'disconnected';
   try {
-    const result = await dbQuery('SELECT 1');
-    if (result) dbStatus = 'connected';
+    const result = await getSurahList();
+    if (result) jsonStatus = 'connected';
   } catch (e) {
-    dbStatus = 'error: ' + e.message;
+    jsonStatus = 'error: ' + e.message;
   }
 
   return c.json({
@@ -29,7 +29,7 @@ app.get('/health', async (c) => {
     timestamp: new Date().toISOString(),
     version: '1.0.0',
     services: {
-      database: dbStatus,
+      storage: jsonStatus,
       uptime: process.uptime()
     },
     env: process.env.NODE_ENV || 'development'
