@@ -1,5 +1,5 @@
 import { createClient } from '@libsql/client/web';
-import 'dotenv/config';
+// import 'dotenv/config'; // Vercel handles env variables natively
 
 const url = process.env.TURSO_DATABASE_URL;
 const authToken = process.env.TURSO_AUTH_TOKEN;
