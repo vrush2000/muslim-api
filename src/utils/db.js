@@ -4,10 +4,12 @@ import { createClient } from '@libsql/client/web';
 const url = (process.env.TURSO_DATABASE_URL || "").trim();
 const authToken = (process.env.TURSO_AUTH_TOKEN || "").trim();
 
-if (!url) {
-  console.warn("WARNING: TURSO_DATABASE_URL is not defined in environment variables.");
-} else {
-  console.log("[DB] Connecting to Turso...");
+console.log("[DB] Attempting connection...");
+console.log("[DB] URL Length:", url.length);
+console.log("[DB] Token Length:", authToken.length);
+
+if (!url || !authToken) {
+  console.warn("WARNING: TURSO_DATABASE_URL or TURSO_AUTH_TOKEN is missing!");
 }
 
 export const client = createClient({
