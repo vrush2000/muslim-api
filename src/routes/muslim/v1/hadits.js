@@ -1,25 +1,7 @@
 import { Hono } from 'hono';
-import { getHaditsArbain } from '../../../utils/jsonHandler.js';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { getHaditsArbain, getLocalHadits } from '../../../utils/jsonHandler.js';
 
 const hadits = new Hono();
-
-// Helper untuk membaca file JSON hadits lokal
-async function getLocalHadits(bookName) {
-  try {
-    const filePath = path.join(__dirname, '../../../../src/data/hadits', `${bookName}.json`);
-    const data = await fs.readFile(filePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error(`Error reading local hadits ${bookName}:`, error.message);
-    return null;
-  }
-}
 
 // Mapping ID buku ke file lokal
 const bookFileMapping = {

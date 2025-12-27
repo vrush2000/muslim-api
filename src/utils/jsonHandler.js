@@ -2,10 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const DATA_PATH = path.join(__dirname, '../data');
+const DATA_PATH = path.join(process.cwd(), 'src/data');
 
 export async function readJson(filePath) {
   try {
@@ -85,4 +82,8 @@ export async function getCalendarDays() {
 
 export async function getMasjid() {
   return await readJson('common/masjid.json');
+}
+
+export async function getLocalHadits(bookName) {
+  return await readJson(`hadits/${bookName}.json`);
 }

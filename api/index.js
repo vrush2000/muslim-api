@@ -666,26 +666,26 @@ var handleParsingNestedValues = (form3, key, value) => {
 };
 
 // node_modules/hono/dist/utils/url.js
-var splitPath = (path4) => {
-  const paths = path4.split("/");
+var splitPath = (path5) => {
+  const paths = path5.split("/");
   if (paths[0] === "") {
     paths.shift();
   }
   return paths;
 };
 var splitRoutingPath = (routePath) => {
-  const { groups, path: path4 } = extractGroupsFromPath(routePath);
-  const paths = splitPath(path4);
+  const { groups, path: path5 } = extractGroupsFromPath(routePath);
+  const paths = splitPath(path5);
   return replaceGroupMarks(paths, groups);
 };
-var extractGroupsFromPath = (path4) => {
+var extractGroupsFromPath = (path5) => {
   const groups = [];
-  path4 = path4.replace(/\{[^}]+\}/g, (match2, index) => {
+  path5 = path5.replace(/\{[^}]+\}/g, (match2, index) => {
     const mark = `@${index}`;
     groups.push([mark, match2]);
     return mark;
   });
-  return { groups, path: path4 };
+  return { groups, path: path5 };
 };
 var replaceGroupMarks = (paths, groups) => {
   for (let i = groups.length - 1; i >= 0; i--) {
@@ -740,8 +740,8 @@ var getPath = (request) => {
     const charCode = url.charCodeAt(i);
     if (charCode === 37) {
       const queryIndex = url.indexOf("?", i);
-      const path4 = url.slice(start, queryIndex === -1 ? void 0 : queryIndex);
-      return tryDecodeURI(path4.includes("%25") ? path4.replace(/%25/g, "%2525") : path4);
+      const path5 = url.slice(start, queryIndex === -1 ? void 0 : queryIndex);
+      return tryDecodeURI(path5.includes("%25") ? path5.replace(/%25/g, "%2525") : path5);
     } else if (charCode === 63) {
       break;
     }
@@ -758,11 +758,11 @@ var mergePath = (base, sub, ...rest) => {
   }
   return `${base?.[0] === "/" ? "" : "/"}${base}${sub === "/" ? "" : `${base?.at(-1) === "/" ? "" : "/"}${sub?.[0] === "/" ? sub.slice(1) : sub}`}`;
 };
-var checkOptionalParameter = (path4) => {
-  if (path4.charCodeAt(path4.length - 1) !== 63 || !path4.includes(":")) {
+var checkOptionalParameter = (path5) => {
+  if (path5.charCodeAt(path5.length - 1) !== 63 || !path5.includes(":")) {
     return null;
   }
-  const segments = path4.split("/");
+  const segments = path5.split("/");
   const results = [];
   let basePath = "";
   segments.forEach((segment) => {
@@ -903,9 +903,9 @@ var HonoRequest = class {
    */
   path;
   bodyCache = {};
-  constructor(request, path4 = "/", matchResult = [[]]) {
+  constructor(request, path5 = "/", matchResult = [[]]) {
     this.raw = request;
-    this.path = path4;
+    this.path = path5;
     this.#matchResult = matchResult;
     this.#validatedData = {};
   }
@@ -1715,8 +1715,8 @@ var Hono = class _Hono {
         return this;
       };
     });
-    this.on = (method, path4, ...handlers) => {
-      for (const p of [path4].flat()) {
+    this.on = (method, path5, ...handlers) => {
+      for (const p of [path5].flat()) {
         this.#path = p;
         for (const m of [method].flat()) {
           handlers.map((handler) => {
@@ -1773,8 +1773,8 @@ var Hono = class _Hono {
    * app.route("/api", app2) // GET /api/user
    * ```
    */
-  route(path4, app2) {
-    const subApp = this.basePath(path4);
+  route(path5, app2) {
+    const subApp = this.basePath(path5);
     app2.routes.map((r) => {
       let handler;
       if (app2.errorHandler === errorHandler) {
@@ -1800,9 +1800,9 @@ var Hono = class _Hono {
    * const api = new Hono().basePath('/api')
    * ```
    */
-  basePath(path4) {
+  basePath(path5) {
     const subApp = this.#clone();
-    subApp._basePath = mergePath(this._basePath, path4);
+    subApp._basePath = mergePath(this._basePath, path5);
     return subApp;
   }
   /**
@@ -1876,7 +1876,7 @@ var Hono = class _Hono {
    * })
    * ```
    */
-  mount(path4, applicationHandler, options) {
+  mount(path5, applicationHandler, options) {
     let replaceRequest;
     let optionHandler;
     if (options) {
@@ -1903,7 +1903,7 @@ var Hono = class _Hono {
       return [c.env, executionContext];
     };
     replaceRequest ||= (() => {
-      const mergedPath = mergePath(this._basePath, path4);
+      const mergedPath = mergePath(this._basePath, path5);
       const pathPrefixLength = mergedPath === "/" ? 0 : mergedPath.length;
       return (request) => {
         const url = new URL(request.url);
@@ -1918,14 +1918,14 @@ var Hono = class _Hono {
       }
       await next();
     };
-    this.#addRoute(METHOD_NAME_ALL, mergePath(path4, "*"), handler);
+    this.#addRoute(METHOD_NAME_ALL, mergePath(path5, "*"), handler);
     return this;
   }
-  #addRoute(method, path4, handler) {
+  #addRoute(method, path5, handler) {
     method = method.toUpperCase();
-    path4 = mergePath(this._basePath, path4);
-    const r = { basePath: this._basePath, path: path4, method, handler };
-    this.router.add(method, path4, [handler, r]);
+    path5 = mergePath(this._basePath, path5);
+    const r = { basePath: this._basePath, path: path5, method, handler };
+    this.router.add(method, path5, [handler, r]);
     this.routes.push(r);
   }
   #handleError(err, c) {
@@ -1938,10 +1938,10 @@ var Hono = class _Hono {
     if (method === "HEAD") {
       return (async () => new Response(null, await this.#dispatch(request, executionCtx, env, "GET")))();
     }
-    const path4 = this.getPath(request, { env });
-    const matchResult = this.router.match(method, path4);
+    const path5 = this.getPath(request, { env });
+    const matchResult = this.router.match(method, path5);
     const c = new Context(request, {
-      path: path4,
+      path: path5,
       matchResult,
       env,
       executionCtx,
@@ -2041,7 +2041,7 @@ var Hono = class _Hono {
 
 // node_modules/hono/dist/router/reg-exp-router/matcher.js
 var emptyParam = [];
-function match(method, path4) {
+function match(method, path5) {
   const matchers = this.buildAllMatchers();
   const match2 = ((method2, path22) => {
     const matcher = matchers[method2] || matchers[METHOD_NAME_ALL];
@@ -2057,7 +2057,7 @@ function match(method, path4) {
     return [matcher[1][index], match3];
   });
   this.match = match2;
-  return match2(method, path4);
+  return match2(method, path5);
 }
 
 // node_modules/hono/dist/router/reg-exp-router/node.js
@@ -2172,12 +2172,12 @@ var Node = class _Node {
 var Trie = class {
   #context = { varIndex: 0 };
   #root = new Node();
-  insert(path4, index, pathErrorCheckOnly) {
+  insert(path5, index, pathErrorCheckOnly) {
     const paramAssoc = [];
     const groups = [];
     for (let i = 0; ; ) {
       let replaced = false;
-      path4 = path4.replace(/\{[^}]+\}/g, (m) => {
+      path5 = path5.replace(/\{[^}]+\}/g, (m) => {
         const mark = `@\\${i}`;
         groups[i] = [mark, m];
         i++;
@@ -2188,7 +2188,7 @@ var Trie = class {
         break;
       }
     }
-    const tokens = path4.match(/(?::[^\/]+)|(?:\/\*$)|./g) || [];
+    const tokens = path5.match(/(?::[^\/]+)|(?:\/\*$)|./g) || [];
     for (let i = groups.length - 1; i >= 0; i--) {
       const [mark] = groups[i];
       for (let j = tokens.length - 1; j >= 0; j--) {
@@ -2227,9 +2227,9 @@ var Trie = class {
 // node_modules/hono/dist/router/reg-exp-router/router.js
 var nullMatcher = [/^$/, [], /* @__PURE__ */ Object.create(null)];
 var wildcardRegExpCache = /* @__PURE__ */ Object.create(null);
-function buildWildcardRegExp(path4) {
-  return wildcardRegExpCache[path4] ??= new RegExp(
-    path4 === "*" ? "" : `^${path4.replace(
+function buildWildcardRegExp(path5) {
+  return wildcardRegExpCache[path5] ??= new RegExp(
+    path5 === "*" ? "" : `^${path5.replace(
       /\/\*$|([.\\+*[^\]$()])/g,
       (_, metaChar) => metaChar ? `\\${metaChar}` : "(?:|/.*)"
     )}$`
@@ -2251,17 +2251,17 @@ function buildMatcherFromPreprocessedRoutes(routes) {
   );
   const staticMap = /* @__PURE__ */ Object.create(null);
   for (let i = 0, j = -1, len = routesWithStaticPathFlag.length; i < len; i++) {
-    const [pathErrorCheckOnly, path4, handlers] = routesWithStaticPathFlag[i];
+    const [pathErrorCheckOnly, path5, handlers] = routesWithStaticPathFlag[i];
     if (pathErrorCheckOnly) {
-      staticMap[path4] = [handlers.map(([h]) => [h, /* @__PURE__ */ Object.create(null)]), emptyParam];
+      staticMap[path5] = [handlers.map(([h]) => [h, /* @__PURE__ */ Object.create(null)]), emptyParam];
     } else {
       j++;
     }
     let paramAssoc;
     try {
-      paramAssoc = trie.insert(path4, j, pathErrorCheckOnly);
+      paramAssoc = trie.insert(path5, j, pathErrorCheckOnly);
     } catch (e) {
-      throw e === PATH_ERROR ? new UnsupportedPathError(path4) : e;
+      throw e === PATH_ERROR ? new UnsupportedPathError(path5) : e;
     }
     if (pathErrorCheckOnly) {
       continue;
@@ -2295,12 +2295,12 @@ function buildMatcherFromPreprocessedRoutes(routes) {
   }
   return [regexp, handlerMap, staticMap];
 }
-function findMiddleware(middleware, path4) {
+function findMiddleware(middleware, path5) {
   if (!middleware) {
     return void 0;
   }
   for (const k of Object.keys(middleware).sort((a, b) => b.length - a.length)) {
-    if (buildWildcardRegExp(k).test(path4)) {
+    if (buildWildcardRegExp(k).test(path5)) {
       return [...middleware[k]];
     }
   }
@@ -2314,7 +2314,7 @@ var RegExpRouter = class {
     this.#middleware = { [METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null) };
     this.#routes = { [METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null) };
   }
-  add(method, path4, handler) {
+  add(method, path5, handler) {
     const middleware = this.#middleware;
     const routes = this.#routes;
     if (!middleware || !routes) {
@@ -2329,18 +2329,18 @@ var RegExpRouter = class {
         });
       });
     }
-    if (path4 === "/*") {
-      path4 = "*";
+    if (path5 === "/*") {
+      path5 = "*";
     }
-    const paramCount = (path4.match(/\/:/g) || []).length;
-    if (/\*$/.test(path4)) {
-      const re = buildWildcardRegExp(path4);
+    const paramCount = (path5.match(/\/:/g) || []).length;
+    if (/\*$/.test(path5)) {
+      const re = buildWildcardRegExp(path5);
       if (method === METHOD_NAME_ALL) {
         Object.keys(middleware).forEach((m) => {
-          middleware[m][path4] ||= findMiddleware(middleware[m], path4) || findMiddleware(middleware[METHOD_NAME_ALL], path4) || [];
+          middleware[m][path5] ||= findMiddleware(middleware[m], path5) || findMiddleware(middleware[METHOD_NAME_ALL], path5) || [];
         });
       } else {
-        middleware[method][path4] ||= findMiddleware(middleware[method], path4) || findMiddleware(middleware[METHOD_NAME_ALL], path4) || [];
+        middleware[method][path5] ||= findMiddleware(middleware[method], path5) || findMiddleware(middleware[METHOD_NAME_ALL], path5) || [];
       }
       Object.keys(middleware).forEach((m) => {
         if (method === METHOD_NAME_ALL || method === m) {
@@ -2358,7 +2358,7 @@ var RegExpRouter = class {
       });
       return;
     }
-    const paths = checkOptionalParameter(path4) || [path4];
+    const paths = checkOptionalParameter(path5) || [path5];
     for (let i = 0, len = paths.length; i < len; i++) {
       const path22 = paths[i];
       Object.keys(routes).forEach((m) => {
@@ -2385,13 +2385,13 @@ var RegExpRouter = class {
     const routes = [];
     let hasOwnRoute = method === METHOD_NAME_ALL;
     [this.#middleware, this.#routes].forEach((r) => {
-      const ownRoute = r[method] ? Object.keys(r[method]).map((path4) => [path4, r[method][path4]]) : [];
+      const ownRoute = r[method] ? Object.keys(r[method]).map((path5) => [path5, r[method][path5]]) : [];
       if (ownRoute.length !== 0) {
         hasOwnRoute ||= true;
         routes.push(...ownRoute);
       } else if (method !== METHOD_NAME_ALL) {
         routes.push(
-          ...Object.keys(r[METHOD_NAME_ALL]).map((path4) => [path4, r[METHOD_NAME_ALL][path4]])
+          ...Object.keys(r[METHOD_NAME_ALL]).map((path5) => [path5, r[METHOD_NAME_ALL][path5]])
         );
       }
     });
@@ -2411,13 +2411,13 @@ var SmartRouter = class {
   constructor(init) {
     this.#routers = init.routers;
   }
-  add(method, path4, handler) {
+  add(method, path5, handler) {
     if (!this.#routes) {
       throw new Error(MESSAGE_MATCHER_IS_ALREADY_BUILT);
     }
-    this.#routes.push([method, path4, handler]);
+    this.#routes.push([method, path5, handler]);
   }
-  match(method, path4) {
+  match(method, path5) {
     if (!this.#routes) {
       throw new Error("Fatal error");
     }
@@ -2432,7 +2432,7 @@ var SmartRouter = class {
         for (let i2 = 0, len2 = routes.length; i2 < len2; i2++) {
           router3.add(...routes[i2]);
         }
-        res = router3.match(method, path4);
+        res = router3.match(method, path5);
       } catch (e) {
         if (e instanceof UnsupportedPathError) {
           continue;
@@ -2476,10 +2476,10 @@ var Node2 = class _Node2 {
     }
     this.#patterns = [];
   }
-  insert(method, path4, handler) {
+  insert(method, path5, handler) {
     this.#order = ++this.#order;
     let curNode = this;
-    const parts = splitRoutingPath(path4);
+    const parts = splitRoutingPath(path5);
     const possibleKeys = [];
     for (let i = 0, len = parts.length; i < len; i++) {
       const p = parts[i];
@@ -2530,12 +2530,12 @@ var Node2 = class _Node2 {
     }
     return handlerSets;
   }
-  search(method, path4) {
+  search(method, path5) {
     const handlerSets = [];
     this.#params = emptyParams;
     const curNode = this;
     let curNodes = [curNode];
-    const parts = splitPath(path4);
+    const parts = splitPath(path5);
     const curNodesQueue = [];
     for (let i = 0, len = parts.length; i < len; i++) {
       const part = parts[i];
@@ -2623,18 +2623,18 @@ var TrieRouter = class {
   constructor() {
     this.#node = new Node2();
   }
-  add(method, path4, handler) {
-    const results = checkOptionalParameter(path4);
+  add(method, path5, handler) {
+    const results = checkOptionalParameter(path5);
     if (results) {
       for (let i = 0, len = results.length; i < len; i++) {
         this.#node.insert(method, results[i], handler);
       }
       return;
     }
-    this.#node.insert(method, path4, handler);
+    this.#node.insert(method, path5, handler);
   }
-  match(method, path4) {
-    return this.#node.search(method, path4);
+  match(method, path5) {
+    return this.#node.search(method, path5);
   }
 };
 
@@ -2713,18 +2713,18 @@ var colorStatus = async (status) => {
   }
   return `${status}`;
 };
-async function log(fn, prefix, method, path4, status = 0, elapsed) {
-  const out = prefix === "<--" ? `${prefix} ${method} ${path4}` : `${prefix} ${method} ${path4} ${await colorStatus(status)} ${elapsed}`;
+async function log(fn, prefix, method, path5, status = 0, elapsed) {
+  const out = prefix === "<--" ? `${prefix} ${method} ${path5}` : `${prefix} ${method} ${path5} ${await colorStatus(status)} ${elapsed}`;
   fn(out);
 }
 var logger = (fn = console.log) => {
   return async function logger2(c, next) {
     const { method, url } = c.req;
-    const path4 = url.slice(url.indexOf("/", 8));
-    await log(fn, "<--", method, path4);
+    const path5 = url.slice(url.indexOf("/", 8));
+    await log(fn, "<--", method, path5);
     const start = Date.now();
     await next();
-    await log(fn, "-->", method, path4, c.res.status, time(start));
+    await log(fn, "-->", method, path5, c.res.status, time(start));
   };
 };
 
@@ -2813,60 +2813,75 @@ var cors = (options) => {
   };
 };
 
-// src/database/config.js
-import Database from "better-sqlite3";
-import { join } from "path";
-import fs from "fs";
-var isProduction = process.env.VERCEL === "1";
-var db;
-var dbInitialized = false;
-var initializeDatabase = () => {
-  if (dbInitialized && db) return db;
+// src/utils/jsonHandler.js
+import fs from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
+var __filename = fileURLToPath(import.meta.url);
+var __dirname = path.dirname(__filename);
+var DATA_PATH = path.join(__dirname, "../data");
+async function readJson(filePath) {
   try {
-    let dbPath;
-    if (isProduction) {
-      const tmpDbPath = "/tmp/alquran.db";
-      const sourceDbPath = join(process.cwd(), "src", "database", "alquran.db");
-      console.log("Production mode - copying DB to /tmp");
-      if (!fs.existsSync(tmpDbPath)) {
-        if (!fs.existsSync(sourceDbPath)) {
-          throw new Error(`Source database not found: ${sourceDbPath}`);
-        }
-        fs.copyFileSync(sourceDbPath, tmpDbPath);
-        console.log("Database copied to /tmp");
-      }
-      dbPath = tmpDbPath;
-    } else {
-      dbPath = join(process.cwd(), "src", "database", "alquran.db");
-    }
-    console.log(`Initializing database at: ${dbPath}`);
-    db = new Database(dbPath, {
-      readonly: true,
-      fileMustExist: true
-    });
-    db.pragma("journal_mode = OFF");
-    db.pragma("query_only = ON");
-    db.pragma("synchronous = OFF");
-    db.pragma("temp_store = MEMORY");
-    db.pragma("cache_size = -8000");
-    dbInitialized = true;
-    console.log("Database initialized successfully");
-    return db;
+    const fullPath = path.join(DATA_PATH, filePath);
+    const data = await fs.readFile(fullPath, "utf8");
+    return JSON.parse(data);
   } catch (error) {
-    console.error("Failed to initialize database:", error);
-    throw error;
+    console.error(`Error reading JSON file ${filePath}:`, error);
+    return null;
   }
-};
-var query = async (sql, params = []) => {
-  const database = initializeDatabase();
-  const stmt = database.prepare(sql);
-  return stmt.all(params);
-};
-var get = async (sql, params = []) => {
-  const database = initializeDatabase();
-  const stmt = database.prepare(sql);
-  return stmt.get(params);
-};
+}
+async function getSurahList() {
+  return await readJson("quran/surah.json");
+}
+async function getSurahDetail(number) {
+  const surahs = await getSurahList();
+  return surahs ? surahs.find((s) => s.number == number) : null;
+}
+async function getAyahBySurah(surahNumber) {
+  return await readJson(`quran/ayah/${surahNumber}.json`);
+}
+async function getDoa() {
+  return await readJson("common/doa.json");
+}
+async function getAsmaulHusna() {
+  return await readJson("common/asmaul_husna.json");
+}
+async function getDzikir() {
+  return await readJson("common/dzikir.json");
+}
+async function getHaditsArbain() {
+  return await readJson("hadits/arbain.json");
+}
+async function getThemes() {
+  return await readJson("quran/themes.json");
+}
+async function getJuz() {
+  return await readJson("quran/juz.json");
+}
+async function getTafsir() {
+  return await readJson("quran/tafsir.json");
+}
+async function getWord() {
+  return await readJson("quran/word.json");
+}
+async function getAsbabNuzul() {
+  return await readJson("quran/asbab_nuzul.json");
+}
+async function getSejarah() {
+  return await readJson("common/sejarah.json");
+}
+async function getQari() {
+  return await readJson("common/qari.json");
+}
+async function getCalendarMonths() {
+  return await readJson("common/calendar_months.json");
+}
+async function getCalendarDays() {
+  return await readJson("common/calendar_days.json");
+}
+async function getMasjid() {
+  return await readJson("common/masjid.json");
+}
 
 // node_modules/hono/dist/jsx/constants.js
 var DOM_RENDERER = /* @__PURE__ */ Symbol("RENDERER");
@@ -4809,10 +4824,10 @@ var Search = () => {
 
 // src/components/Layout.jsx
 import fs2 from "node:fs";
-import path from "node:path";
+import path2 from "node:path";
 var compiledCss = "";
 try {
-  const cssPath = path.resolve(process.cwd(), "src/compiled.css");
+  const cssPath = path2.resolve(process.cwd(), "src/compiled.css");
   if (fs2.existsSync(cssPath)) {
     compiledCss = fs2.readFileSync(cssPath, "utf-8");
   }
@@ -5503,13 +5518,13 @@ var Layout = ({ children, title: title3 }) => {
               jsonDisplay.textContent = JSON.stringify(data, null, 2);
               
               statusBadge.textContent = response.status + ' ' + response.statusText + ' (' + Math.round(end - start) + 'ms)';
-              statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full' + 
+              statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + 
                 (response.ok ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800');
               statusBadge.classList.remove('hidden');
             } catch (error) {
               jsonDisplay.textContent = JSON.stringify({ error: 'Failed to fetch API', details: error.message }, null, 2);
               statusBadge.textContent = 'Error';
-              statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 text-xs font-medium text-red-800 bg-red-100 rounded-full';
+              statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800';
               statusBadge.classList.remove('hidden');
             }
           };
@@ -5526,7 +5541,7 @@ var Layout = ({ children, title: title3 }) => {
               navigator.clipboard.writeText(json).then(() => {
                 const btn = event.currentTarget;
                 const originalText = btn.innerHTML;
-                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copied!';
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copied!';
                 setTimeout(() => btn.innerHTML = originalText, 2000);
               });
             }
@@ -5898,7 +5913,7 @@ var Layout = ({ children, title: title3 }) => {
             }
 
             btn.disabled = true;
-            btn.innerHTML = '<svg class="w-5 h-5 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
+            btn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
 
             try {
               const response = await fetch('/api/qris/generate?amount=' + amount);
@@ -5946,26 +5961,26 @@ var Layout = ({ children, title: title3 }) => {
 };
 
 // src/components/Home.jsx
-var ApiEndpoint = ({ method, path: path4, title: title3, responseJson, category, endpointId }) => /* @__PURE__ */ jsx("div", { class: "mb-8 bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300" }, /* @__PURE__ */ jsx("div", { class: "px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center" }, /* @__PURE__ */ jsx("h4", { class: "font-semibold text-slate-900" }, title3), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx("span", { class: `px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${method === "GET" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"}` }, method))), /* @__PURE__ */ jsx("div", { class: "p-6" }, /* @__PURE__ */ jsx("div", { class: "flex items-center gap-2 mb-6 group" }, /* @__PURE__ */ jsx("div", { class: "flex-grow flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-lg border border-slate-200 group-hover:border-emerald-200 transition-colors" }, /* @__PURE__ */ jsx("code", { class: "text-sm font-mono text-slate-600 truncate" }, path4)), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx(
+var ApiEndpoint = ({ method, path: path5, title: title3, responseJson, category, endpointId }) => /* @__PURE__ */ jsx("div", { class: "overflow-hidden mb-8 bg-white rounded-xl border shadow-sm transition-all duration-300 border-slate-200 hover:shadow-md" }, /* @__PURE__ */ jsx("div", { class: "flex justify-between items-center px-6 py-4 border-b border-slate-100 bg-slate-50/50" }, /* @__PURE__ */ jsx("h4", { class: "font-semibold text-slate-900" }, title3), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx("span", { class: `px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${method === "GET" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"}` }, method))), /* @__PURE__ */ jsx("div", { class: "p-6" }, /* @__PURE__ */ jsx("div", { class: "flex gap-2 items-center mb-6 group" }, /* @__PURE__ */ jsx("div", { class: "flex flex-grow gap-2 items-center px-3 py-2 rounded-lg border transition-colors bg-slate-100 border-slate-200 group-hover:border-emerald-200" }, /* @__PURE__ */ jsx("code", { class: "font-mono text-sm truncate text-slate-600" }, path5)), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx(
   "button",
   {
-    onclick: `window.openApiModal('${category}', '${endpointId}', '/v1${path4}')`,
-    class: "p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all",
+    onclick: `window.openApiModal('${category}', '${endpointId}', '/v1${path5}')`,
+    class: "p-2 rounded-lg transition-all text-slate-400 hover:text-blue-600 hover:bg-blue-50",
     title: "Try in Playground"
   },
-  /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-5 w-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" }), /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M21 12a9 9 0 11-18 0 9 9 0 0118 0z" }))
+  /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-5 h-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" }), /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M21 12a9 9 0 11-18 0 9 9 0 0118 0z" }))
 ), /* @__PURE__ */ jsx(
   "button",
   {
-    onclick: `navigator.clipboard.writeText(window.location.origin + '/v1${path4}')`,
-    class: "p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all",
+    onclick: `navigator.clipboard.writeText(window.location.origin + '/v1${path5}')`,
+    class: "p-2 rounded-lg transition-all text-slate-400 hover:text-emerald-600 hover:bg-emerald-50",
     title: "Copy URL"
   },
-  /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-5 w-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-3 8.5V11a.5.5 0 00-.5-.5H9.75a.5.5 0 00-.5.5v1.5a.5.5 0 00.5.5h.75a.5.5 0 00.5-.5z" }))
-))), /* @__PURE__ */ jsx("div", { class: "space-y-4" }, /* @__PURE__ */ jsx("details", { class: "group" }, /* @__PURE__ */ jsx("summary", { class: "flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors list-none" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-4 w-4 group-open:rotate-180 transition-transform", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M19 9l-7 7-7-7" })), "Example Response"), /* @__PURE__ */ jsx("div", { class: "mt-4 animate-in fade-in slide-in-from-top-2 duration-300" }, /* @__PURE__ */ jsx("pre", { class: "text-[11px] leading-relaxed shadow-inner" }, /* @__PURE__ */ jsx("code", null, responseJson)))))));
-var SectionTitle = ({ title: title3, icon, id, color = "emerald" }) => /* @__PURE__ */ jsx("div", { id, class: "flex items-center gap-3 mb-8 scroll-mt-24" }, /* @__PURE__ */ jsx("div", { class: `w-10 h-10 bg-${color}-600 rounded-lg flex items-center justify-center shadow-lg shadow-${color}-100` }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-white", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: icon }))), /* @__PURE__ */ jsx("h2", { class: "text-2xl font-bold text-slate-900" }, title3));
+  /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-5 h-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-3 8.5V11a.5.5 0 00-.5-.5H9.75a.5.5 0 00-.5.5v1.5a.5.5 0 00.5.5h.75a.5.5 0 00.5-.5z" }))
+))), /* @__PURE__ */ jsx("div", { class: "space-y-4" }, /* @__PURE__ */ jsx("details", { class: "group" }, /* @__PURE__ */ jsx("summary", { class: "flex gap-2 items-center text-sm font-medium list-none transition-colors cursor-pointer text-slate-500 hover:text-emerald-600" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-4 h-4 transition-transform group-open:rotate-180", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M19 9l-7 7-7-7" })), "Example Response"), /* @__PURE__ */ jsx("div", { class: "mt-4 duration-300 animate-in fade-in slide-in-from-top-2" }, /* @__PURE__ */ jsx("pre", { class: "text-[11px] leading-relaxed shadow-inner" }, /* @__PURE__ */ jsx("code", null, responseJson)))))));
+var SectionTitle = ({ title: title3, icon, id, color = "emerald" }) => /* @__PURE__ */ jsx("div", { id, class: "flex gap-3 items-center mb-8 scroll-mt-24" }, /* @__PURE__ */ jsx("div", { class: `flex justify-center items-center w-10 h-10 rounded-lg shadow-lg bg-${color}-600 shadow-${color}-100` }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-6 h-6 text-white", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: icon }))), /* @__PURE__ */ jsx("h2", { class: "text-2xl font-bold text-slate-900" }, title3));
 var Home = ({ baseUrl }) => {
-  return /* @__PURE__ */ jsx("div", { class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" }, /* @__PURE__ */ jsx("div", { class: "grid grid-cols-1 lg:grid-cols-4 gap-12" }, /* @__PURE__ */ jsx("aside", { class: "hidden lg:block col-span-1 sticky top-28 self-start" }, /* @__PURE__ */ jsx("div", { class: "bg-white rounded-2xl border border-slate-200 p-6 shadow-sm" }, /* @__PURE__ */ jsx("h3", { class: "text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-3" }, "Menu"), /* @__PURE__ */ jsx("nav", { class: "space-y-1" }, [
+  return /* @__PURE__ */ jsx("div", { class: "px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8" }, /* @__PURE__ */ jsx("div", { class: "grid grid-cols-1 gap-12 lg:grid-cols-4" }, /* @__PURE__ */ jsx("aside", { class: "hidden sticky top-28 col-span-1 self-start lg:block" }, /* @__PURE__ */ jsx("div", { class: "p-6 bg-white rounded-2xl border shadow-sm border-slate-200" }, /* @__PURE__ */ jsx("h3", { class: "px-3 mb-4 text-xs font-bold tracking-wider uppercase text-slate-400" }, "Menu"), /* @__PURE__ */ jsx("nav", { class: "space-y-1" }, [
     { name: "Introduction", href: "#intro", icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
     { name: "Quran", href: "#quran", icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" },
     { name: "Integrity", href: "#integrity", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" },
@@ -5975,19 +5990,19 @@ var Home = ({ baseUrl }) => {
     {
       key: index,
       href: item.href,
-      class: "flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all group"
+      class: "flex gap-3 items-center px-3 py-2 text-sm font-medium rounded-lg transition-all text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 group"
     },
-    /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-4 w-4 text-slate-400 group-hover:text-emerald-500 transition-colors", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: item.icon })),
+    /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-4 h-4 transition-colors text-slate-400 group-hover:text-emerald-500", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: item.icon })),
     item.name
-  ))))), /* @__PURE__ */ jsx("div", { class: "col-span-1 lg:col-span-3" }, /* @__PURE__ */ jsx("section", { id: "intro", class: "mb-20 scroll-mt-24" }, /* @__PURE__ */ jsx("div", { class: "flex flex-wrap gap-3 mb-6" }, /* @__PURE__ */ jsx("div", { class: "inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold" }, /* @__PURE__ */ jsx("span", { class: "relative flex h-2 w-2" }, /* @__PURE__ */ jsx("span", { class: "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" }), /* @__PURE__ */ jsx("span", { class: "relative inline-flex rounded-full h-2 w-2 bg-emerald-500" })), "v1.0.0 Stable"), /* @__PURE__ */ jsx("div", { class: "inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-3 w-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "3", d: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 2.944a11.955 11.955 0 01-8.618 3.04M12 2.944V12m0 9.472c-2.28 0-4.47-.636-6.342-1.742L12 12l6.342 7.73A11.955 11.955 0 0112 21.472z" })), "Verified Data Source: Kemenag RI")), /* @__PURE__ */ jsx("h1", { class: "text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-6" }, "Muslim ", /* @__PURE__ */ jsx("span", { class: "text-emerald-600 block md:inline" }, "All-in-One API")), /* @__PURE__ */ jsx("p", { class: "text-xl text-slate-600 leading-relaxed mb-10 max-w-3xl" }, "Akses data keislaman terlengkap dengan performa tinggi. Dibangun untuk pengembang yang ingin membuat aplikasi islami."), /* @__PURE__ */ jsx("div", { class: "grid grid-cols-1 md:grid-cols-2 gap-6 mb-10" }, /* @__PURE__ */ jsx("div", { class: "p-6 rounded-2xl border border-slate-200 bg-white shadow-sm" }, /* @__PURE__ */ jsx("div", { class: "w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 mb-4" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" }))), /* @__PURE__ */ jsx("h3", { class: "font-bold text-slate-900 mb-2" }, "Base URL"), /* @__PURE__ */ jsx("div", { class: "flex items-center justify-between gap-2 bg-slate-50 p-2 rounded-lg border border-slate-100 group" }, /* @__PURE__ */ jsx("code", { class: "text-sm text-emerald-600 font-mono font-bold truncate" }, baseUrl), /* @__PURE__ */ jsx(
+  ))))), /* @__PURE__ */ jsx("div", { class: "col-span-1 lg:col-span-3" }, /* @__PURE__ */ jsx("section", { id: "intro", class: "mb-20 scroll-mt-24" }, /* @__PURE__ */ jsx("div", { class: "flex flex-wrap gap-3 mb-6" }, /* @__PURE__ */ jsx("div", { class: "inline-flex gap-2 items-center px-3 py-1 text-xs font-bold text-emerald-700 bg-emerald-100 rounded-full" }, /* @__PURE__ */ jsx("span", { class: "flex relative w-2 h-2" }, /* @__PURE__ */ jsx("span", { class: "inline-flex absolute w-full h-full bg-emerald-400 rounded-full opacity-75 animate-ping" }), /* @__PURE__ */ jsx("span", { class: "inline-flex relative w-2 h-2 bg-emerald-500 rounded-full" })), "v1.0.0 Stable"), /* @__PURE__ */ jsx("div", { class: "inline-flex gap-2 items-center px-3 py-1 text-xs font-bold text-blue-700 bg-blue-100 rounded-full" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "3", d: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 2.944a11.955 11.955 0 01-8.618 3.04M12 2.944V12m0 9.472c-2.28 0-4.47-.636-6.342-1.742L12 12l6.342 7.73A11.955 11.955 0 0112 21.472z" })), "Verified Data Source: Kemenag RI")), /* @__PURE__ */ jsx("h1", { class: "mb-6 text-4xl font-extrabold tracking-tight md:text-5xl text-slate-900" }, "Muslim ", /* @__PURE__ */ jsx("span", { class: "block text-emerald-600 md:inline" }, "All-in-One API")), /* @__PURE__ */ jsx("p", { class: "mb-10 max-w-3xl text-xl leading-relaxed text-slate-600" }, "Akses data keislaman terlengkap dengan performa tinggi. Dibangun untuk pengembang yang ingin membuat aplikasi islami."), /* @__PURE__ */ jsx("div", { class: "grid grid-cols-1 gap-6 mb-10 md:grid-cols-2" }, /* @__PURE__ */ jsx("div", { class: "p-6 bg-white rounded-2xl border shadow-sm border-slate-200" }, /* @__PURE__ */ jsx("div", { class: "flex justify-center items-center mb-4 w-10 h-10 text-emerald-600 bg-emerald-100 rounded-xl" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-6 h-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" }))), /* @__PURE__ */ jsx("h3", { class: "mb-2 font-bold text-slate-900" }, "Base URL"), /* @__PURE__ */ jsx("div", { class: "flex gap-2 justify-between items-center p-2 rounded-lg border bg-slate-50 border-slate-100 group" }, /* @__PURE__ */ jsx("code", { class: "font-mono text-sm font-bold text-emerald-600 truncate" }, baseUrl), /* @__PURE__ */ jsx(
     "button",
     {
       onclick: `navigator.clipboard.writeText('${baseUrl}')`,
-      class: "p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-all shrink-0",
+      class: "p-1.5 rounded-md transition-all text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 shrink-0",
       title: "Copy Base URL"
     },
-    /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-4 w-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" }))
-  ))), /* @__PURE__ */ jsx("div", { class: "p-6 rounded-2xl border border-slate-200 bg-white shadow-sm" }, /* @__PURE__ */ jsx("div", { class: "w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-4" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" }))), /* @__PURE__ */ jsx("h3", { class: "font-bold text-slate-900 mb-2" }, "Format"), /* @__PURE__ */ jsx("div", { class: "flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-100" }, /* @__PURE__ */ jsx("code", { class: "text-sm text-blue-600 font-mono font-bold" }, "application/json"))))), /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-4 h-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" }))
+  ))), /* @__PURE__ */ jsx("div", { class: "p-6 bg-white rounded-2xl border shadow-sm border-slate-200" }, /* @__PURE__ */ jsx("div", { class: "flex justify-center items-center mb-4 w-10 h-10 text-blue-600 bg-blue-100 rounded-xl" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-6 h-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" }))), /* @__PURE__ */ jsx("h3", { class: "mb-2 font-bold text-slate-900" }, "Format"), /* @__PURE__ */ jsx("div", { class: "flex gap-2 items-center p-2 rounded-lg border bg-slate-50 border-slate-100" }, /* @__PURE__ */ jsx("code", { class: "font-mono text-sm font-bold text-blue-600" }, "application/json"))))), /* @__PURE__ */ jsx(
     SectionTitle,
     {
       id: "quran",
@@ -6307,7 +6322,7 @@ var Home = ({ baseUrl }) => {
       icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
       color: "emerald"
     }
-  ), /* @__PURE__ */ jsx("div", { className: "bg-emerald-50 border-l-4 border-emerald-500 p-4 mb-6 rounded-r-lg" }, /* @__PURE__ */ jsx("p", { className: "text-sm text-emerald-800 font-medium" }, "\u{1F6E1}\uFE0F ", /* @__PURE__ */ jsx("strong", null, "Data Integrity Proof:"), ' Kami menggunakan teknologi cryptographic hashing (SHA-256) untuk memastikan kemurnian teks Al-Quran. Setiap Surah dan Ayah memiliki "Digital Fingerprint" yang unik. Jika ada perubahan satu karakter saja pada database kami, maka hash integrity akan berubah, memberitahukan pengguna bahwa data tidak lagi murni.')), /* @__PURE__ */ jsx(
+  ), /* @__PURE__ */ jsx("div", { className: "p-4 mb-6 bg-emerald-50 rounded-r-lg border-l-4 border-emerald-500" }, /* @__PURE__ */ jsx("p", { className: "text-sm font-medium text-emerald-800" }, "\u{1F6E1}\uFE0F ", /* @__PURE__ */ jsx("strong", null, "Data Integrity Proof:"), ' Kami menggunakan teknologi cryptographic hashing (SHA-256) untuk memastikan kemurnian teks Al-Quran. Setiap Surah dan Ayah memiliki "Digital Fingerprint" yang unik. Jika ada perubahan satu karakter saja pada database kami, maka hash integrity akan berubah, memberitahukan pengguna bahwa data tidak lagi murni.')), /* @__PURE__ */ jsx(
     ApiEndpoint,
     {
       title: "Integrity Chain (Blockchain)",
@@ -6354,14 +6369,14 @@ var Home = ({ baseUrl }) => {
   }
 }`
     }
-  ), /* @__PURE__ */ jsx("div", { class: "mb-20 p-8 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl overflow-hidden relative group" }, /* @__PURE__ */ jsx("div", { class: "absolute -right-10 -bottom-10 opacity-10 group-hover:scale-110 transition-transform duration-500" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-64 w-64", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "1", d: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" }))), /* @__PURE__ */ jsx("div", { class: "relative z-10" }, /* @__PURE__ */ jsx("h3", { class: "text-2xl font-bold mb-3" }, "Butuh Resource Lainnya?"), /* @__PURE__ */ jsx("p", { class: "text-emerald-50 mb-6 max-w-lg" }, "Temukan API tambahan seperti Murottal, Jadwal Sholat, Kalender Hijriah, Hadits, Asmaul Husna, dan banyak lagi di halaman Resources."), /* @__PURE__ */ jsx(
+  ), /* @__PURE__ */ jsx("div", { class: "overflow-hidden relative p-8 mb-20 text-white bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl shadow-xl group" }, /* @__PURE__ */ jsx("div", { class: "absolute -right-10 -bottom-10 opacity-10 transition-transform duration-500 group-hover:scale-110" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-64 h-64", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "1", d: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" }))), /* @__PURE__ */ jsx("div", { class: "relative z-10" }, /* @__PURE__ */ jsx("h3", { class: "mb-3 text-2xl font-bold" }, "Butuh Resource Lainnya?"), /* @__PURE__ */ jsx("p", { class: "mb-6 max-w-lg text-emerald-50" }, "Temukan API tambahan seperti Murottal, Jadwal Sholat, Kalender Hijriah, Hadits, Asmaul Husna, dan banyak lagi di halaman Resources."), /* @__PURE__ */ jsx(
     "a",
     {
       href: "/other",
-      class: "inline-flex items-center gap-2 bg-white text-emerald-700 px-6 py-3 rounded-xl font-bold hover:bg-emerald-50 transition-colors shadow-lg"
+      class: "inline-flex gap-2 items-center px-6 py-3 font-bold text-emerald-700 bg-white rounded-xl shadow-lg transition-colors hover:bg-emerald-50"
     },
     "Eksplor Other Resources",
-    /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-5 w-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M14 5l7 7-7 7" }))
+    /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-5 h-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M14 5l7 7-7 7" }))
   ))), /* @__PURE__ */ jsx(
     SectionTitle,
     {
@@ -6370,7 +6385,7 @@ var Home = ({ baseUrl }) => {
       icon: "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
       color: "slate"
     }
-  ), /* @__PURE__ */ jsx("div", { class: "space-y-4 mb-20" }, [
+  ), /* @__PURE__ */ jsx("div", { class: "mb-20 space-y-4" }, [
     {
       q: "Apa itu Muslim All-in-One API?",
       a: "Muslim All-in-One API adalah proyek open-source yang bertujuan menyediakan akses data keislaman (Al-Quran, Jadwal Sholat, Hadits, dll) dalam satu platform yang cepat, gratis, dan mudah digunakan oleh pengembang aplikasi."
@@ -6411,14 +6426,14 @@ var Home = ({ baseUrl }) => {
       q: "Apakah ada batasan rate limit?",
       a: "Saat ini tidak ada batasan rate limit yang ketat, namun kami menyarankan untuk melakukan caching di sisi aplikasi Anda untuk performa terbaik dan menjaga keberlangsungan layanan."
     }
-  ].map((faq, index) => /* @__PURE__ */ jsx("details", { key: index, class: "group bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" }, /* @__PURE__ */ jsx("summary", { class: "flex items-center justify-between p-6 cursor-pointer list-none" }, /* @__PURE__ */ jsx("span", { class: "font-bold text-slate-900" }, faq.q), /* @__PURE__ */ jsx("span", { class: "text-emerald-500 transition-transform group-open:rotate-180" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-5 w-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M19 9l-7 7-7-7" })))), /* @__PURE__ */ jsx("div", { class: "px-6 pb-6 text-slate-600 leading-relaxed border-t border-slate-50 pt-4" }, faq.a)))), /* @__PURE__ */ jsx("div", { class: "bg-slate-900 rounded-3xl p-10 text-center text-white mb-20" }, /* @__PURE__ */ jsx("h2", { class: "text-3xl font-bold mb-4" }, "Siap untuk Membangun?"), /* @__PURE__ */ jsx("p", { class: "text-slate-400 mb-8 max-w-xl mx-auto" }, "Mulai integrasikan Muslim API ke dalam aplikasi Anda hari ini. Gratis, cepat, dan terpercaya."), /* @__PURE__ */ jsx("div", { class: "flex flex-wrap justify-center gap-4" }, /* @__PURE__ */ jsx("a", { href: "/playground", class: "bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg shadow-emerald-900/20" }, "Coba di Playground"), /* @__PURE__ */ jsx("a", { href: "https://github.com/vrush2000/muslim-all-in-one-api", target: "_blank", class: "bg-slate-800 hover:bg-slate-700 text-white px-8 py-3 rounded-xl font-bold transition-all border border-slate-700" }, "GitHub Repository"))))));
+  ].map((faq, index) => /* @__PURE__ */ jsx("details", { key: index, class: "overflow-hidden bg-white rounded-2xl border shadow-sm group border-slate-200" }, /* @__PURE__ */ jsx("summary", { class: "flex justify-between items-center p-6 list-none cursor-pointer" }, /* @__PURE__ */ jsx("span", { class: "font-bold text-slate-900" }, faq.q), /* @__PURE__ */ jsx("span", { class: "text-emerald-500 transition-transform group-open:rotate-180" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-5 h-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M19 9l-7 7-7-7" })))), /* @__PURE__ */ jsx("div", { class: "px-6 pt-4 pb-6 leading-relaxed border-t text-slate-600 border-slate-50" }, faq.a)))), /* @__PURE__ */ jsx("div", { class: "p-10 mb-20 text-center text-white rounded-3xl bg-slate-900" }, /* @__PURE__ */ jsx("h2", { class: "mb-4 text-3xl font-bold" }, "Siap untuk Membangun?"), /* @__PURE__ */ jsx("p", { class: "mx-auto mb-8 max-w-xl text-slate-400" }, "Mulai integrasikan Muslim API ke dalam aplikasi Anda hari ini. Gratis, cepat, dan terpercaya."), /* @__PURE__ */ jsx("div", { class: "flex flex-wrap gap-4 justify-center" }, /* @__PURE__ */ jsx("a", { href: "/playground", class: "px-8 py-3 font-bold text-white bg-emerald-600 rounded-xl shadow-lg transition-all hover:bg-emerald-700 shadow-emerald-900/20" }, "Coba di Playground"), /* @__PURE__ */ jsx("a", { href: "https://github.com/vrush2000/muslim-all-in-one-api", target: "_blank", class: "px-8 py-3 font-bold text-white rounded-xl border transition-all bg-slate-800 hover:bg-slate-700 border-slate-700" }, "GitHub Repository"))))));
 };
 
 // src/components/Other.jsx
-var ApiEndpoint2 = ({ method, path: path4, title: title3, responseJson, category, endpointId }) => /* @__PURE__ */ jsx("div", { class: "overflow-hidden mb-8 bg-white rounded-xl border shadow-sm transition-all duration-300 border-slate-200 hover:shadow-md" }, /* @__PURE__ */ jsx("div", { class: "flex justify-between items-center px-6 py-4 border-b border-slate-100 bg-slate-50/50" }, /* @__PURE__ */ jsx("h4", { class: "font-semibold text-slate-900" }, title3), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx("span", { class: `px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${method === "GET" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"}` }, method))), /* @__PURE__ */ jsx("div", { class: "p-6" }, /* @__PURE__ */ jsx("div", { class: "flex gap-2 items-center mb-6 group" }, /* @__PURE__ */ jsx("div", { class: "flex flex-grow gap-2 items-center px-3 py-2 rounded-lg border transition-colors bg-slate-100 border-slate-200 group-hover:border-emerald-200" }, /* @__PURE__ */ jsx("code", { class: "font-mono text-sm truncate text-slate-600" }, path4)), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx(
+var ApiEndpoint2 = ({ method, path: path5, title: title3, responseJson, category, endpointId }) => /* @__PURE__ */ jsx("div", { class: "overflow-hidden mb-8 bg-white rounded-xl border shadow-sm transition-all duration-300 border-slate-200 hover:shadow-md" }, /* @__PURE__ */ jsx("div", { class: "flex justify-between items-center px-6 py-4 border-b border-slate-100 bg-slate-50/50" }, /* @__PURE__ */ jsx("h4", { class: "font-semibold text-slate-900" }, title3), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx("span", { class: `px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${method === "GET" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"}` }, method))), /* @__PURE__ */ jsx("div", { class: "p-6" }, /* @__PURE__ */ jsx("div", { class: "flex gap-2 items-center mb-6 group" }, /* @__PURE__ */ jsx("div", { class: "flex flex-grow gap-2 items-center px-3 py-2 rounded-lg border transition-colors bg-slate-100 border-slate-200 group-hover:border-emerald-200" }, /* @__PURE__ */ jsx("code", { class: "font-mono text-sm truncate text-slate-600" }, path5)), /* @__PURE__ */ jsx("div", { class: "flex gap-2" }, /* @__PURE__ */ jsx(
   "button",
   {
-    onclick: `window.openApiModal('${category}', '${endpointId}', '/v1${path4}')`,
+    onclick: `window.openApiModal('${category}', '${endpointId}', '/v1${path5}')`,
     class: "p-2 rounded-lg transition-all text-slate-400 hover:text-blue-600 hover:bg-blue-50",
     title: "Try in Playground"
   },
@@ -6426,7 +6441,7 @@ var ApiEndpoint2 = ({ method, path: path4, title: title3, responseJson, category
 ), /* @__PURE__ */ jsx(
   "button",
   {
-    onclick: `navigator.clipboard.writeText(window.location.origin + '/v1${path4}')`,
+    onclick: `navigator.clipboard.writeText(window.location.origin + '/v1${path5}')`,
     class: "p-2 rounded-lg transition-all text-slate-400 hover:text-emerald-600 hover:bg-emerald-50",
     title: "Copy URL"
   },
@@ -7382,11 +7397,11 @@ var Landing = () => {
 
 // src/components/Playground.jsx
 var Playground = ({ baseUrl }) => {
-  return /* @__PURE__ */ jsx("div", { class: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" }, /* @__PURE__ */ jsx("div", { class: "mb-12" }, /* @__PURE__ */ jsx("h1", { class: "text-4xl font-extrabold text-slate-900 tracking-tight mb-4" }, "API Playground"), /* @__PURE__ */ jsx("p", { class: "text-lg text-slate-600" }, "Uji coba API secara interaktif. Pilih endpoint, masukkan parameter, dan lihat hasilnya secara langsung.")), /* @__PURE__ */ jsx("div", { class: "grid grid-cols-1 lg:grid-cols-2 gap-8" }, /* @__PURE__ */ jsx("div", { class: "space-y-6" }, /* @__PURE__ */ jsx("div", { class: "bg-white rounded-3xl border border-slate-200 p-8 shadow-sm" }, /* @__PURE__ */ jsx("h3", { class: "text-xl font-bold text-slate-900 mb-6 flex items-center gap-2" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-emerald-600", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M13 10V3L4 14h7v7l9-11h-7z" })), "Konfigurasi Request"), /* @__PURE__ */ jsx("div", { class: "space-y-4" }, /* @__PURE__ */ jsx("div", null, /* @__PURE__ */ jsx("label", { class: "block text-sm font-semibold text-slate-700 mb-2" }, "Pilih Kategori"), /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsx("div", { class: "px-4 py-12 mx-auto max-w-7xl sm:px-6 lg:px-8" }, /* @__PURE__ */ jsx("div", { class: "mb-12" }, /* @__PURE__ */ jsx("h1", { class: "mb-4 text-4xl font-extrabold tracking-tight text-slate-900" }, "API Playground"), /* @__PURE__ */ jsx("p", { class: "text-lg text-slate-600" }, "Uji coba API secara interaktif. Pilih endpoint, masukkan parameter, dan lihat hasilnya secara langsung.")), /* @__PURE__ */ jsx("div", { class: "grid grid-cols-1 gap-8 lg:grid-cols-2" }, /* @__PURE__ */ jsx("div", { class: "space-y-6" }, /* @__PURE__ */ jsx("div", { class: "p-8 bg-white rounded-3xl border shadow-sm border-slate-200" }, /* @__PURE__ */ jsx("h3", { class: "flex gap-2 items-center mb-6 text-xl font-bold text-slate-900" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-6 h-6 text-emerald-600", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M13 10V3L4 14h7v7l9-11h-7z" })), "Konfigurasi Request"), /* @__PURE__ */ jsx("div", { class: "space-y-4" }, /* @__PURE__ */ jsx("div", null, /* @__PURE__ */ jsx("label", { class: "block mb-2 text-sm font-semibold text-slate-700" }, "Pilih Kategori"), /* @__PURE__ */ jsx(
     "select",
     {
       id: "category-select",
-      class: "w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer",
+      class: "px-4 py-3 w-full rounded-xl border transition-all cursor-pointer bg-slate-50 border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500",
       onchange: "window.updateEndpoints(this.value)"
     },
     /* @__PURE__ */ jsx("option", { value: "quran" }, "Al-Quran Indonesia"),
@@ -7398,23 +7413,23 @@ var Playground = ({ baseUrl }) => {
     /* @__PURE__ */ jsx("option", { value: "tools" }, "Tools & Fitur Cerdas"),
     /* @__PURE__ */ jsx("option", { value: "integrity" }, "Integrity & Blockchain"),
     /* @__PURE__ */ jsx("option", { value: "other" }, "Lainnya (Asmaul Husna, Doa, dll)")
-  )), /* @__PURE__ */ jsx("div", null, /* @__PURE__ */ jsx("label", { class: "block text-sm font-semibold text-slate-700 mb-2" }, "Endpoint"), /* @__PURE__ */ jsx(
+  )), /* @__PURE__ */ jsx("div", null, /* @__PURE__ */ jsx("label", { class: "block mb-2 text-sm font-semibold text-slate-700" }, "Endpoint"), /* @__PURE__ */ jsx(
     "select",
     {
       id: "endpoint-select",
-      class: "w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer font-mono text-sm",
+      class: "px-4 py-3 w-full font-mono text-sm rounded-xl border transition-all cursor-pointer bg-slate-50 border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500",
       onchange: "window.updateParams(this.value)"
     }
-  )), /* @__PURE__ */ jsx("div", { id: "params-container", class: "space-y-4 pt-4 border-t border-slate-100 hidden" }, /* @__PURE__ */ jsx("label", { class: "block text-sm font-semibold text-slate-700" }, "Parameter"), /* @__PURE__ */ jsx("div", { id: "params-fields", class: "grid grid-cols-1 md:grid-cols-2 gap-4" })), /* @__PURE__ */ jsx("div", { class: "pt-6" }, /* @__PURE__ */ jsx(
+  )), /* @__PURE__ */ jsx("div", { id: "params-container", class: "hidden pt-4 space-y-4 border-t border-slate-100" }, /* @__PURE__ */ jsx("label", { class: "block text-sm font-semibold text-slate-700" }, "Parameter"), /* @__PURE__ */ jsx("div", { id: "params-fields", class: "grid grid-cols-1 gap-4 md:grid-cols-2" })), /* @__PURE__ */ jsx("div", { class: "pt-6" }, /* @__PURE__ */ jsx(
     "button",
     {
       id: "send-request",
       onclick: "window.sendRequest()",
-      class: "w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold text-lg hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-200 flex items-center justify-center gap-2 group"
+      class: "flex gap-2 justify-center items-center py-4 w-full text-lg font-bold text-white bg-emerald-600 rounded-2xl shadow-xl transition-all hover:bg-emerald-700 shadow-emerald-200 group"
     },
     "Kirim Request",
-    /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-5 w-5 group-hover:translate-x-1 transition-transform", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M14 5l7 7-7 7" }))
-  )))), /* @__PURE__ */ jsx("div", { class: "bg-emerald-50 rounded-2xl p-6 border border-emerald-100" }, /* @__PURE__ */ jsx("h4", { class: "font-bold text-emerald-800 mb-2 flex items-center gap-2" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "h-5 w-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" })), "Tips"), /* @__PURE__ */ jsx("p", { class: "text-sm text-emerald-700 leading-relaxed" }, "Gunakan playground ini untuk memahami struktur response JSON sebelum mengimplementasikannya di aplikasi Anda. Base URL yang digunakan adalah ", /* @__PURE__ */ jsx("code", { class: "font-bold" }, baseUrl), "."))), /* @__PURE__ */ jsx("div", { class: "flex flex-col h-full lg:max-h-[700px]" }, /* @__PURE__ */ jsx("div", { class: "bg-slate-900 rounded-3xl shadow-2xl flex-grow overflow-hidden flex flex-col h-full" }, /* @__PURE__ */ jsx("div", { class: "px-6 py-4 bg-slate-800 border-b border-slate-700 flex justify-between items-center shrink-0" }, /* @__PURE__ */ jsx("div", { class: "flex items-center gap-3" }, /* @__PURE__ */ jsx("div", { class: "flex gap-1.5" }, /* @__PURE__ */ jsx("div", { class: "w-3 h-3 rounded-full bg-rose-500" }), /* @__PURE__ */ jsx("div", { class: "w-3 h-3 rounded-full bg-amber-500" }), /* @__PURE__ */ jsx("div", { class: "w-3 h-3 rounded-full bg-emerald-500" })), /* @__PURE__ */ jsx("span", { class: "text-xs font-bold text-slate-400 uppercase tracking-widest ml-2" }, "JSON Response")), /* @__PURE__ */ jsx("div", { id: "status-badge", class: "hidden" }, /* @__PURE__ */ jsx("span", { class: "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" }, "200 OK"))), /* @__PURE__ */ jsx("div", { class: "flex-grow overflow-hidden relative custom-scrollbar flex flex-col" }, /* @__PURE__ */ jsx("div", { id: "loader", class: "absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center hidden z-10" }, /* @__PURE__ */ jsx("div", { class: "flex flex-col items-center gap-4" }, /* @__PURE__ */ jsx("div", { class: "w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" }), /* @__PURE__ */ jsx("span", { class: "text-emerald-500 font-medium animate-pulse" }, "Memuat data..."))), /* @__PURE__ */ jsx("div", { id: "json-viewer-container", class: "flex-grow h-full w-full" })), /* @__PURE__ */ jsx("div", { class: "px-6 py-3 bg-slate-800 border-t border-slate-700 flex justify-between items-center text-[10px] text-slate-500 font-mono shrink-0" }, /* @__PURE__ */ jsx("span", { id: "response-time" }, "Time: 0ms"), /* @__PURE__ */ jsx("span", { id: "response-size" }, "Size: 0B"))))), /* @__PURE__ */ jsx("style", { dangerouslySetInnerHTML: { __html: `
+    /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-5 h-5 transition-transform group-hover:translate-x-1", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M14 5l7 7-7 7" }))
+  )))), /* @__PURE__ */ jsx("div", { class: "p-6 bg-emerald-50 rounded-2xl border border-emerald-100" }, /* @__PURE__ */ jsx("h4", { class: "flex gap-2 items-center mb-2 font-bold text-emerald-800" }, /* @__PURE__ */ jsx("svg", { xmlns: "http://www.w3.org/2000/svg", class: "w-5 h-5", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ jsx("path", { "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "2", d: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" })), "Tips"), /* @__PURE__ */ jsx("p", { class: "text-sm leading-relaxed text-emerald-700" }, "Gunakan playground ini untuk memahami struktur response JSON sebelum mengimplementasikannya di aplikasi Anda. Base URL yang digunakan adalah ", /* @__PURE__ */ jsx("code", { class: "font-bold" }, baseUrl), "."))), /* @__PURE__ */ jsx("div", { class: "flex flex-col h-full lg:max-h-[700px]" }, /* @__PURE__ */ jsx("div", { class: "flex overflow-hidden flex-col flex-grow h-full rounded-3xl shadow-2xl bg-slate-900" }, /* @__PURE__ */ jsx("div", { class: "flex justify-between items-center px-6 py-4 border-b bg-slate-800 border-slate-700 shrink-0" }, /* @__PURE__ */ jsx("div", { class: "flex gap-3 items-center" }, /* @__PURE__ */ jsx("div", { class: "flex gap-1.5" }, /* @__PURE__ */ jsx("div", { class: "w-3 h-3 bg-rose-500 rounded-full" }), /* @__PURE__ */ jsx("div", { class: "w-3 h-3 bg-amber-500 rounded-full" }), /* @__PURE__ */ jsx("div", { class: "w-3 h-3 bg-emerald-500 rounded-full" })), /* @__PURE__ */ jsx("span", { class: "ml-2 text-xs font-bold tracking-widest uppercase text-slate-400" }, "JSON Response")), /* @__PURE__ */ jsx("div", { id: "status-badge", class: "hidden" }, /* @__PURE__ */ jsx("span", { class: "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" }, "200 OK"))), /* @__PURE__ */ jsx("div", { class: "flex overflow-hidden relative flex-col flex-grow custom-scrollbar" }, /* @__PURE__ */ jsx("div", { id: "loader", class: "flex hidden absolute inset-0 z-10 justify-center items-center backdrop-blur-sm bg-slate-900/80" }, /* @__PURE__ */ jsx("div", { class: "flex flex-col gap-4 items-center" }, /* @__PURE__ */ jsx("div", { class: "w-10 h-10 rounded-full border-4 animate-spin border-emerald-500/20 border-t-emerald-500" }), /* @__PURE__ */ jsx("span", { class: "font-medium text-emerald-500 animate-pulse" }, "Memuat data..."))), /* @__PURE__ */ jsx("div", { id: "json-viewer-container", class: "flex-grow w-full h-full" })), /* @__PURE__ */ jsx("div", { class: "px-6 py-3 bg-slate-800 border-t border-slate-700 flex justify-between items-center text-[10px] text-slate-500 font-mono shrink-0" }, /* @__PURE__ */ jsx("span", { id: "response-time" }, "Time: 0ms"), /* @__PURE__ */ jsx("span", { id: "response-size" }, "Size: 0B"))))), /* @__PURE__ */ jsx("style", { dangerouslySetInnerHTML: { __html: `
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;
           height: 8px;
@@ -7847,7 +7862,7 @@ var Status = ({ baseUrl }) => {
               if (isOnline) {
                 statusEl.className = 'status-indicator w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]';
                 textEl.innerText = 'Online';
-                textEl.className = 'text-sm font-bold text-emerald-600 status-text';
+                textEl.className = 'status-text text-sm font-bold text-emerald-600';
                 latencyEl.innerText = latency + 'ms';
                 updateUptimeBar(uptimeEl, true);
               } else {
@@ -7856,7 +7871,7 @@ var Status = ({ baseUrl }) => {
             } catch (error) {
               statusEl.className = 'status-indicator w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]';
               textEl.innerText = 'Offline';
-              textEl.className = 'text-sm font-bold text-red-600 status-text';
+              textEl.className = 'status-text text-sm font-bold text-red-600';
               latencyEl.innerText = '-- ms';
               updateUptimeBar(uptimeEl, false);
             }
@@ -7868,7 +7883,7 @@ var Status = ({ baseUrl }) => {
             for(let i = 0; i < lastIndex; i++) {
               dots[i].className = dots[i+1].className;
             }
-            dots[lastIndex].className = 'w-1 h-4 rounded-full uptime-dot' + (isOnline ? 'bg-emerald-500' : 'bg-red-500');
+            dots[lastIndex].className = 'uptime-dot h-4 w-1 rounded-full ' + (isOnline ? 'bg-emerald-500' : 'bg-red-500');
           }
 
           function initStatus() {
@@ -7954,15 +7969,13 @@ var asbab = new Hono2();
 asbab.get("/", async (c) => {
   try {
     const id = c.req.query("asbabId") || c.req.query("id");
+    const allAsbab = await getAsbabNuzul();
+    if (!allAsbab) return c.json({ status: false, message: "Daftar Asbabun Nuzul tidak tersedia.", data: [] }, 404);
     if (id == null) {
-      const data = await query("SELECT * FROM asbab_nuzul ORDER BY CAST(id as INTEGER) ASC");
-      if (!data) {
-        return c.json({ status: false, message: "Daftar Asbabun Nuzul tidak tersedia.", data: [] }, 404);
-      } else {
-        return c.json({ status: true, message: "Berhasil mendapatkan daftar Asbabun Nuzul.", data });
-      }
+      const sortedData = [...allAsbab].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      return c.json({ status: true, message: "Berhasil mendapatkan daftar Asbabun Nuzul.", data: sortedData });
     } else {
-      const data = await get("SELECT * FROM asbab_nuzul WHERE id = ?", [id]);
+      const data = allAsbab.find((a) => a.id == id);
       if (!data) {
         return c.json({ status: false, message: "Asbabun Nuzul tidak ditemukan.", data: {} }, 404);
       } else {
@@ -7980,20 +7993,18 @@ var asma = new Hono2();
 asma.get("/", async (c) => {
   try {
     const id = c.req.query("asmaId") || c.req.query("id");
+    const allAsma = await getAsmaulHusna();
+    if (!allAsma) return c.json({ status: false, message: "Daftar Asmaul Husna tidak tersedia.", data: [] }, 404);
     if (id != null) {
-      const data = await query("SELECT * FROM asmaul_husna WHERE id = ?", [id]);
-      if (!data || data.length === 0) {
+      const data = allAsma.find((a) => a.id == id);
+      if (!data) {
         return c.json({ status: false, message: "Asmaul Husna tidak ditemukan.", data: {} }, 404);
       } else {
-        return c.json({ status: true, message: "Berhasil mendapatkan detail Asmaul Husna.", data: data[0] });
+        return c.json({ status: true, message: "Berhasil mendapatkan detail Asmaul Husna.", data });
       }
     } else {
-      const data = await query("SELECT * FROM asmaul_husna ORDER BY CAST(id as INTEGER) ASC");
-      if (!data) {
-        return c.json({ status: false, message: "Daftar Asmaul Husna tidak tersedia.", data: [] }, 404);
-      } else {
-        return c.json({ status: true, message: "Berhasil mendapatkan daftar Asmaul Husna.", data });
-      }
+      const sortedData = [...allAsma].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      return c.json({ status: true, message: "Berhasil mendapatkan daftar Asmaul Husna.", data: sortedData });
     }
   } catch (error) {
     return c.json({ status: false, message: "Gagal mendapatkan data Asmaul Husna: " + error.message }, 500);
@@ -8004,15 +8015,21 @@ var asma_default = asma;
 // src/routes/muslim/v1/ayah.js
 var ayah = new Hono2();
 var formatAyah = (a) => {
+  if (!a) return a;
   return {
     ...a,
-    audio_partial: a.audio_partial ? JSON.parse(a.audio_partial) : {}
+    audio_partial: typeof a.audio_partial === "string" ? JSON.parse(a.audio_partial) : a.audio_partial || {}
   };
 };
 ayah.get("/", async (c) => {
   try {
-    const data = await query("SELECT * FROM ayah ORDER BY CAST(id as INTEGER) ASC");
-    return c.json({ status: true, message: "Berhasil mendapatkan daftar seluruh ayat.", data: (data || []).map(formatAyah) });
+    const surahList = await getSurahList();
+    let allAyahs = [];
+    for (const s of surahList) {
+      const ayahs = await getAyahBySurah(s.number);
+      if (ayahs) allAyahs.push(...ayahs);
+    }
+    return c.json({ status: true, message: "Berhasil mendapatkan daftar seluruh ayat.", data: allAyahs.map(formatAyah) });
   } catch (error) {
     return c.json({ status: false, message: "Gagal mendapatkan daftar ayat: " + error.message }, 500);
   }
@@ -8020,14 +8037,18 @@ ayah.get("/", async (c) => {
 ayah.get("/range", async (c) => {
   try {
     const surahId = c.req.query("surahId") || c.req.query("id");
-    const start = c.req.query("start");
-    const end = c.req.query("end");
-    if (surahId != null && start != null && end != null) {
-      const data = await query(
-        "SELECT * FROM ayah WHERE surah = ? AND ayah BETWEEN CAST(? as INTEGER) and CAST(? as INTEGER) ORDER BY CAST(id as INTEGER) ASC",
-        [surahId, start, end]
-      );
-      return c.json({ status: true, message: `Berhasil mendapatkan ayat dari surah ${surahId} rentang ${start}-${end}.`, data: (data || []).map(formatAyah) });
+    const start = parseInt(c.req.query("start"));
+    const end = parseInt(c.req.query("end"));
+    if (surahId != null && !isNaN(start) && !isNaN(end)) {
+      const ayahs = await getAyahBySurah(surahId);
+      if (!ayahs) {
+        return c.json({ status: false, message: "Surah tidak ditemukan." }, 404);
+      }
+      const data = ayahs.filter((a) => {
+        const num = parseInt(a.ayah);
+        return num >= start && num <= end;
+      });
+      return c.json({ status: true, message: `Berhasil mendapatkan ayat dari surah ${surahId} rentang ${start}-${end}.`, data: data.map(formatAyah) });
     } else {
       return c.json({
         status: false,
@@ -8042,11 +8063,11 @@ ayah.get("/surah", async (c) => {
   try {
     const id = c.req.query("surahId") || c.req.query("id");
     if (id != null) {
-      const data = await query(
-        "SELECT * FROM ayah WHERE surah = ? ORDER BY CAST(id as INTEGER) ASC",
-        [id]
-      );
-      return c.json({ status: true, message: `Berhasil mendapatkan daftar ayat untuk surah ${id}.`, data: (data || []).map(formatAyah) });
+      const data = await getAyahBySurah(id);
+      if (!data) {
+        return c.json({ status: false, message: `Surah ${id} tidak ditemukan.`, data: [] }, 404);
+      }
+      return c.json({ status: true, message: `Berhasil mendapatkan daftar ayat untuk surah ${id}.`, data: data.map(formatAyah) });
     } else {
       return c.json({
         status: false,
@@ -8054,18 +8075,23 @@ ayah.get("/surah", async (c) => {
       }, 400);
     }
   } catch (error) {
-    return c.json({ status: false, message: "Gagal mendapatkan ayat juz: " + error.message }, 500);
+    return c.json({ status: false, message: "Gagal mendapatkan ayat surah: " + error.message }, 500);
   }
 });
 ayah.get("/juz", async (c) => {
   try {
     const id = c.req.query("juzId") || c.req.query("id");
     if (id != null) {
-      const data = await query(
-        "SELECT * FROM ayah WHERE juz = ? ORDER BY CAST(id as INTEGER) ASC",
-        [id]
-      );
-      return c.json({ status: true, message: `Berhasil mendapatkan daftar ayat untuk juz ${id}.`, data: (data || []).map(formatAyah) });
+      const surahList = await getSurahList();
+      let juzAyahs = [];
+      for (const s of surahList) {
+        const ayahs = await getAyahBySurah(s.number);
+        if (ayahs) {
+          const filtered = ayahs.filter((a) => a.juz == id);
+          juzAyahs.push(...filtered);
+        }
+      }
+      return c.json({ status: true, message: `Berhasil mendapatkan daftar ayat untuk juz ${id}.`, data: juzAyahs.map(formatAyah) });
     } else {
       return c.json({
         status: false,
@@ -8073,18 +8099,23 @@ ayah.get("/juz", async (c) => {
       }, 400);
     }
   } catch (error) {
-    return c.json({ status: false, message: "Gagal mendapatkan ayat halaman: " + error.message }, 500);
+    return c.json({ status: false, message: "Gagal mendapatkan ayat juz: " + error.message }, 500);
   }
 });
 ayah.get("/page", async (c) => {
   try {
     const id = c.req.query("page") || c.req.query("id");
     if (id != null) {
-      const data = await query(
-        "SELECT * FROM ayah WHERE page = ? ORDER BY CAST(id as INTEGER) ASC",
-        [id]
-      );
-      return c.json({ status: true, message: `Berhasil mendapatkan daftar ayat untuk halaman ${id}.`, data: (data || []).map(formatAyah) });
+      const surahList = await getSurahList();
+      let pageAyahs = [];
+      for (const s of surahList) {
+        const ayahs = await getAyahBySurah(s.number);
+        if (ayahs) {
+          const filtered = ayahs.filter((a) => a.page == id);
+          pageAyahs.push(...filtered);
+        }
+      }
+      return c.json({ status: true, message: `Berhasil mendapatkan daftar ayat untuk halaman ${id}.`, data: pageAyahs.map(formatAyah) });
     } else {
       return c.json({
         status: false,
@@ -8123,7 +8154,7 @@ ayah.get("/find", async (c) => {
   try {
     const q = c.req.query("query");
     if (q != null && q.length > 3) {
-      const data = await query(
+      const data = await dbQuery(
         "SELECT * FROM ayah WHERE text LIKE ? ORDER BY CAST(id as INTEGER) ASC",
         [`%${q}%`]
       );
@@ -8150,8 +8181,11 @@ var ayah_default = ayah;
 // src/routes/muslim/v1/calendar.js
 var calendar = new Hono2();
 var getCalendarData = async () => {
-  const months = await query("SELECT type, month_index, name FROM calendar_months");
-  const days = await query("SELECT type, day_index, name FROM calendar_days");
+  const months = await getCalendarMonths();
+  const days = await getCalendarDays();
+  if (!months || !days) {
+    throw new Error("Data kalender tidak tersedia.");
+  }
   return {
     islamicMonths: months.filter((m) => m.type === "islamic").sort((a, b) => a.month_index - b.month_index).map((m) => m.name),
     jawaMonths: months.filter((m) => m.type === "jawa").sort((a, b) => a.month_index - b.month_index).map((m) => m.name),
@@ -8293,15 +8327,14 @@ var doa = new Hono2();
 doa.get("/", async (c) => {
   try {
     const source = c.req.query("source");
+    const allDoa = await getDoa();
+    if (!allDoa) return c.json({ status: false, message: "Daftar doa tidak tersedia.", data: [] }, 404);
     if (source != null) {
-      const data = await query(
-        "SELECT * FROM doa WHERE source = ? ORDER BY judul ASC",
-        [source]
-      );
-      return c.json({ status: true, message: `Berhasil mendapatkan doa dari sumber: ${source}.`, data: data || [] });
+      const data = allDoa.filter((d) => d.source === source).sort((a, b) => a.judul.localeCompare(b.judul));
+      return c.json({ status: true, message: `Berhasil mendapatkan doa dari sumber: ${source}.`, data });
     } else {
-      const data = await query("SELECT * FROM doa ORDER BY judul ASC");
-      return c.json({ status: true, message: "Berhasil mendapatkan daftar doa.", data: data || [] });
+      const data = [...allDoa].sort((a, b) => a.judul.localeCompare(b.judul));
+      return c.json({ status: true, message: "Berhasil mendapatkan daftar doa.", data });
     }
   } catch (error) {
     return c.json({ status: false, message: "Gagal mendapatkan data doa: " + error.message }, 500);
@@ -8311,18 +8344,18 @@ doa.get("/find", async (c) => {
   try {
     const q = c.req.query("query");
     if (q != null) {
-      const data = await query(
-        "SELECT * FROM doa WHERE judul LIKE ? ORDER BY judul ASC",
-        [`%${q}%`]
-      );
-      if (!data || data.length === 0) {
+      const allDoa = await getDoa();
+      if (!allDoa) return c.json({ status: false, message: "Daftar doa tidak tersedia.", data: [] }, 404);
+      const queryLower = q.toLowerCase();
+      const data = allDoa.filter((d) => d.judul.toLowerCase().includes(queryLower)).sort((a, b) => a.judul.localeCompare(b.judul));
+      if (data.length === 0) {
         return c.json({
           status: false,
           message: `Tidak ada doa yang ditemukan dengan kata kunci: ${q}.`,
           data: []
         }, 404);
       }
-      return c.json({ status: true, message: `Berhasil mencari doa dengan kata kunci: ${q}.`, data: data || [] });
+      return c.json({ status: true, message: `Berhasil mencari doa dengan kata kunci: ${q}.`, data });
     } else {
       return c.json({
         status: false,
@@ -8340,15 +8373,13 @@ var dzikir = new Hono2();
 dzikir.get("/", async (c) => {
   try {
     const type = c.req.query("type");
+    const allDzikir = await getDzikir();
+    if (!allDzikir) return c.json({ status: false, message: "Daftar dzikir tidak tersedia.", data: [] }, 404);
     if (type != null) {
-      const data = await query(
-        "SELECT * FROM dzikir WHERE type = ?",
-        [type]
-      );
-      return c.json({ status: true, message: `Berhasil mendapatkan dzikir tipe: ${type}.`, data: data || [] });
+      const data = allDzikir.filter((d) => d.type === type);
+      return c.json({ status: true, message: `Berhasil mendapatkan dzikir tipe: ${type}.`, data });
     } else {
-      const data = await query("SELECT * FROM dzikir");
-      return c.json({ status: true, message: "Berhasil mendapatkan daftar dzikir.", data: data || [] });
+      return c.json({ status: true, message: "Berhasil mendapatkan daftar dzikir.", data: allDzikir });
     }
   } catch (error) {
     return c.json({ status: false, message: "Gagal mendapatkan data dzikir: " + error.message }, 500);
@@ -8358,14 +8389,14 @@ var dzikir_default = dzikir;
 
 // src/routes/muslim/v1/hadits.js
 import fs3 from "fs/promises";
-import path2 from "path";
-import { fileURLToPath } from "url";
-var __filename = fileURLToPath(import.meta.url);
-var __dirname = path2.dirname(__filename);
+import path3 from "path";
+import { fileURLToPath as fileURLToPath2 } from "url";
+var __filename2 = fileURLToPath2(import.meta.url);
+var __dirname2 = path3.dirname(__filename2);
 var hadits = new Hono2();
 async function getLocalHadits(bookName) {
   try {
-    const filePath = path2.join(__dirname, "../../../../src/data/hadits", `${bookName}.json`);
+    const filePath = path3.join(__dirname2, "../../../../src/data/hadits", `${bookName}.json`);
     const data = await fs3.readFile(filePath, "utf8");
     return JSON.parse(data);
   } catch (error) {
@@ -8401,16 +8432,18 @@ var bookDisplayNames = {
 hadits.get("/", async (c) => {
   try {
     const nomor = c.req.query("nomor");
+    const allArbain = await getHaditsArbain();
+    if (!allArbain) return c.json({ status: false, message: "Daftar hadits tidak tersedia.", data: [] }, 404);
     if (nomor != null) {
-      const data = await get("SELECT * FROM hadits WHERE no = ?", [nomor]);
+      const data = allArbain.find((h) => h.no == nomor);
       if (!data) {
         return c.json({ status: false, message: "Hadits tidak ditemukan.", data: {} }, 404);
       } else {
         return c.json({ status: true, message: "Berhasil mendapatkan detail Hadits Arbain.", data });
       }
     } else {
-      const data = await query("SELECT * FROM hadits ORDER BY CAST(no as INTEGER) ASC");
-      return c.json({ status: true, message: "Berhasil mendapatkan daftar Hadits Arbain.", data: data || [] });
+      const sortedData = [...allArbain].sort((a, b) => parseInt(a.no) - parseInt(b.no));
+      return c.json({ status: true, message: "Berhasil mendapatkan daftar Hadits Arbain.", data: sortedData });
     }
   } catch (error) {
     return c.json({ status: false, message: "Gagal mendapatkan data hadits: " + error.message }, 500);
@@ -8474,7 +8507,7 @@ hadits.get("/find", async (c) => {
       }, 400);
     }
     if (!book || book.toLowerCase() === "arbain") {
-      const data = await query(
+      const data = await dbQuery(
         "SELECT * FROM hadits WHERE judul LIKE ? OR indo LIKE ? ORDER BY CAST(no as INTEGER) ASC",
         [`%${q}%`, `%${q}%`]
       );
@@ -8545,16 +8578,18 @@ var juz = new Hono2();
 juz.get("/", async (c) => {
   try {
     const juzId = c.req.query("juzId") || c.req.query("id");
+    const allJuz = await getJuz();
+    if (!allJuz) return c.json({ status: false, message: "Daftar juz tidak tersedia.", data: [] }, 404);
     if (juzId != null) {
-      const data = await get("SELECT * FROM juz WHERE number = ?", [juzId]);
+      const data = allJuz.find((j) => j.number == juzId);
       if (!data) {
         return c.json({ status: false, message: "Juz tidak ditemukan.", data: {} }, 404);
       } else {
         return c.json({ status: true, message: "Berhasil mendapatkan detail juz.", data });
       }
     } else {
-      const data = await query("SELECT * FROM juz ORDER BY CAST (number as INTEGER) ASC");
-      return c.json({ status: true, message: "Berhasil mendapatkan daftar seluruh juz.", data: data || [] });
+      const sortedData = [...allJuz].sort((a, b) => parseInt(a.number) - parseInt(b.number));
+      return c.json({ status: true, message: "Berhasil mendapatkan daftar seluruh juz.", data: sortedData });
     }
   } catch (error) {
     return c.json({ status: false, message: "Gagal mendapatkan data juz: " + error.message }, 500);
@@ -8566,7 +8601,8 @@ var juz_default = juz;
 var murotal = new Hono2();
 murotal.get("/qari", async (c) => {
   try {
-    const data = await query("SELECT * FROM qari ORDER BY id ASC");
+    const data = await getQari();
+    if (!data) return c.json({ status: false, message: "Daftar qari tidak tersedia.", data: [] }, 404);
     return c.json({
       status: true,
       message: "Berhasil mendapatkan daftar qari.",
@@ -8580,14 +8616,15 @@ murotal.get("/", async (c) => {
   try {
     const qariId = c.req.query("qariId") || "05";
     const surahId = c.req.query("surahId");
-    const qari = await get("SELECT * FROM qari WHERE id = ?", [qariId]);
+    const allQari = await getQari();
+    const qari = allQari ? allQari.find((q) => q.id == qariId) : null;
     if (surahId) {
-      const data = await query("SELECT number, name_id, name_short, audio_full FROM surah WHERE number = ?", [surahId]);
-      if (data.length === 0) {
+      const allSurahs2 = await getSurahList();
+      const surah2 = allSurahs2 ? allSurahs2.find((s) => s.number == surahId) : null;
+      if (!surah2) {
         return c.json({ status: false, message: "Surah tidak ditemukan." }, 404);
       }
-      const surah2 = data[0];
-      const audioFull = JSON.parse(surah2.audio_full || "{}");
+      const audioFull = typeof surah2.audio_full === "string" ? JSON.parse(surah2.audio_full || "{}") : surah2.audio_full || {};
       return c.json({
         status: true,
         message: `Berhasil mendapatkan murotal surah ${surah2.name_id} untuk qari ${qari ? qari.name : qariId}.`,
@@ -8600,9 +8637,10 @@ murotal.get("/", async (c) => {
         }
       });
     }
-    const allSurahs = await query("SELECT number, name_id, name_short, audio_full FROM surah ORDER BY CAST(number as INTEGER) ASC");
-    const result = allSurahs.map((s) => {
-      const audioFull = JSON.parse(s.audio_full || "{}");
+    const allSurahs = await getSurahList();
+    if (!allSurahs) return c.json({ status: false, message: "Daftar surah tidak tersedia.", data: [] }, 404);
+    const result = allSurahs.sort((a, b) => parseInt(a.number) - parseInt(b.number)).map((s) => {
+      const audioFull = typeof s.audio_full === "string" ? JSON.parse(s.audio_full || "{}") : s.audio_full || {};
       return {
         surahId: s.number,
         name: s.name_id,
@@ -8630,14 +8668,15 @@ var generateHash = (data) => {
 };
 integrity.get("/chain", async (c) => {
   try {
-    const surahs = await query("SELECT number, name_id FROM surah ORDER BY CAST(number as INTEGER) ASC");
+    const allSurahs = await getSurahList();
+    if (!allSurahs) return c.json({ status: false, message: "Data surah tidak tersedia." }, 404);
+    const surahs = [...allSurahs].sort((a, b) => parseInt(a.number) - parseInt(b.number));
     let chain = [];
     let previousHash = "0".repeat(64);
     for (const surah2 of surahs) {
-      const ayahs = await query(
-        "SELECT arab, text FROM ayah WHERE surah = ? ORDER BY CAST(ayah as INTEGER) ASC",
-        [surah2.number]
-      );
+      const ayahsData = await getAyahBySurah(surah2.number);
+      if (!ayahsData) continue;
+      const ayahs = ayahsData.sort((a, b) => parseInt(a.ayah) - parseInt(b.ayah)).map((a) => ({ arab: a.arab, text: a.text }));
       const blockData = {
         surah_number: surah2.number,
         surah_name: surah2.name_id,
@@ -8670,11 +8709,10 @@ integrity.get("/chain", async (c) => {
 });
 integrity.get("/verify", async (c) => {
   try {
-    const surah2 = await query("SELECT number, name_id FROM surah WHERE number = 1");
-    const ayahs = await query(
-      "SELECT arab, text FROM ayah WHERE surah = 1 ORDER BY CAST(ayah as INTEGER) ASC"
-    );
-    const isDataValid = surah2 && surah2.length > 0 && ayahs && ayahs.length > 0;
+    const allSurahs = await getSurahList();
+    const surah2 = allSurahs ? allSurahs.find((s) => s.number == 1) : null;
+    const ayahs = await getAyahBySurah(1);
+    const isDataValid = surah2 && ayahs && ayahs.length > 0;
     return c.json({
       status: true,
       message: isDataValid ? "Integritas sistem terverifikasi." : "Sistem Online (Pengecekan data tertunda).",
@@ -8699,20 +8737,19 @@ integrity.get("/verify/ayah", async (c) => {
     return c.json({ status: false, message: "Parameter surahId dan ayahId diperlukan." }, 400);
   }
   try {
-    const data = await get(
-      "SELECT arab, text FROM ayah WHERE surah = ? AND ayah = ?",
-      [surahId, ayahId]
-    );
+    const ayahs = await getAyahBySurah(surahId);
+    const data = ayahs ? ayahs.find((a) => a.ayah == ayahId) : null;
     if (!data) {
       return c.json({ status: false, message: `Ayat ${ayahId} pada surah ${surahId} tidak ditemukan.`, data: {} }, 404);
     }
+    const verificationData = { arab: data.arab, text: data.text };
     return c.json({
       status: true,
       message: `Berhasil memverifikasi integritas ayat ${ayahId} pada surah ${surahId}.`,
       data: {
         surahId,
         ayahId,
-        hash: generateHash(data),
+        hash: generateHash(verificationData),
         timestamp: (/* @__PURE__ */ new Date()).toISOString()
       }
     });
@@ -8937,27 +8974,29 @@ var sholat_default = sholat;
 // src/routes/muslim/v1/surah.js
 var surah = new Hono2();
 var formatSurah = (s) => {
+  if (!s) return s;
   return {
     ...s,
-    audio_full: s.audio_full ? JSON.parse(s.audio_full) : {}
+    audio_full: typeof s.audio_full === "string" ? JSON.parse(s.audio_full) : s.audio_full || {}
   };
 };
 surah.get("/", async (c) => {
   try {
     const surahId = c.req.query("surahId") || c.req.query("id");
     if (surahId != null) {
-      const data = await get("SELECT * FROM surah WHERE number = ?", [surahId]);
+      const data = await getSurahDetail(surahId);
       if (!data) {
         return c.json({ status: false, message: "Surah tidak ditemukan.", data: {} }, 404);
       } else {
         return c.json({ status: true, message: "Berhasil mendapatkan detail surah.", data: formatSurah(data) });
       }
     } else {
-      const data = await query("SELECT * FROM surah ORDER BY CAST(number as INTEGER) ASC");
+      const data = await getSurahList();
       if (!data) {
         return c.json({ status: false, message: "Daftar surah tidak tersedia.", data: [] }, 404);
       } else {
-        return c.json({ status: true, message: "Berhasil mendapatkan daftar surah.", data: data.map(formatSurah) });
+        const sortedData = [...data].sort((a, b) => parseInt(a.number) - parseInt(b.number));
+        return c.json({ status: true, message: "Berhasil mendapatkan daftar surah.", data: sortedData.map(formatSurah) });
       }
     }
   } catch (error) {
@@ -8971,16 +9010,18 @@ var tafsir = new Hono2();
 tafsir.get("/", async (c) => {
   try {
     const surahId = c.req.query("surahId") || c.req.query("id");
+    const allTafsir = await getTafsir();
+    if (!allTafsir) return c.json({ status: false, message: "Daftar tafsir tidak tersedia.", data: [] }, 404);
     if (surahId != null) {
-      const data = await query("SELECT * FROM tafsir WHERE id = ?", [surahId]);
-      if (!data || data.length === 0) {
+      const data = allTafsir.find((t) => t.id == surahId);
+      if (!data) {
         return c.json({ status: false, message: "Tafsir surah tidak ditemukan.", data: {} }, 404);
       } else {
-        return c.json({ status: true, message: "Berhasil mendapatkan detail tafsir surah.", data: data[0] });
+        return c.json({ status: true, message: "Berhasil mendapatkan detail tafsir surah.", data });
       }
     } else {
-      const data = await query("SELECT * FROM tafsir ORDER BY CAST(id as INTEGER) ASC");
-      return c.json({ status: true, message: "Berhasil mendapatkan daftar tafsir surah.", data: data || [] });
+      const sortedData = [...allTafsir].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      return c.json({ status: true, message: "Berhasil mendapatkan daftar tafsir surah.", data: sortedData });
     }
   } catch (error) {
     return c.json({ status: false, message: "Gagal mendapatkan data tafsir: " + error.message }, 500);
@@ -8993,27 +9034,38 @@ var theme = new Hono2();
 theme.get("/", async (c) => {
   try {
     const themeId = c.req.query("themeId") || c.req.query("id");
+    const allThemes = await getThemes();
+    if (!allThemes) return c.json({ status: false, message: "Daftar tema tidak tersedia.", data: [] }, 404);
     if (themeId != null) {
-      const themeData = await get("SELECT * FROM theme WHERE id = ?", [themeId]);
+      const themeData = allThemes.find((t) => t.id == themeId);
       if (!themeData) {
         return c.json({ status: false, message: "Tema tidak ditemukan.", data: [] }, 404);
       }
-      const verses = await query(
-        "SELECT * FROM ayah WHERE theme LIKE ? OR theme = ? ORDER BY CAST(id as INTEGER) ASC",
-        [`%${themeId}%`, themeId]
-      );
+      const surahList = await getSurahList();
+      let themeVerses = [];
+      for (const s of surahList) {
+        const ayahs = await getAyahBySurah(s.number);
+        if (ayahs) {
+          const filtered = ayahs.filter((a) => {
+            if (!a.theme) return false;
+            const themes = a.theme.split(",").map((t) => t.trim());
+            return themes.includes(themeId.toString());
+          });
+          themeVerses.push(...filtered);
+        }
+      }
       const formatAyah2 = (a) => ({
         ...a,
-        audio_partial: a.audio_partial ? JSON.parse(a.audio_partial) : {}
+        audio_partial: typeof a.audio_partial === "string" ? JSON.parse(a.audio_partial) : a.audio_partial || {}
       });
       return c.json({
         status: true,
         message: `Berhasil mendapatkan ayat dengan tema: ${themeData.name}.`,
-        data: (verses || []).map(formatAyah2)
+        data: themeVerses.map(formatAyah2)
       });
     } else {
-      const data = await query("SELECT * FROM theme ORDER BY CAST(id as INTEGER) ASC");
-      return c.json({ status: true, message: "Berhasil mendapatkan daftar seluruh tema.", data: data || [] });
+      const sortedThemes = [...allThemes].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+      return c.json({ status: true, message: "Berhasil mendapatkan daftar seluruh tema.", data: sortedThemes });
     }
   } catch (error) {
     return c.json({ status: false, message: "Gagal mendapatkan data tema: " + error.message }, 500);
@@ -9027,23 +9079,82 @@ word.get("/", async (c) => {
   try {
     const surahId = c.req.query("surahId") || c.req.query("id");
     const ayahId = c.req.query("ayahId");
-    let sql = "SELECT * FROM word";
-    let params = [];
+    const allWords = await getWord();
+    if (!allWords) return c.json({ status: false, message: "Daftar kata tidak tersedia.", data: [] }, 404);
+    let data = allWords;
     if (surahId != null && ayahId != null) {
-      sql += " WHERE surah = ? AND ayah = ?";
-      params = [surahId, ayahId];
+      data = allWords.filter((w) => w.surah == surahId && w.ayah == ayahId);
     } else if (surahId != null) {
-      sql += " WHERE surah = ?";
-      params = [surahId];
+      data = allWords.filter((w) => w.surah == surahId);
     }
-    sql += " ORDER BY CAST(surah as INTEGER), CAST(ayah as INTEGER), CAST(word as INTEGER) ASC";
-    const data = await query(sql, params);
-    return c.json({ status: true, message: "Berhasil mendapatkan daftar kata.", data: data || [] });
+    const sortedData = [...data].sort((a, b) => {
+      const surahDiff = parseInt(a.surah) - parseInt(b.surah);
+      if (surahDiff !== 0) return surahDiff;
+      const ayahDiff = parseInt(a.ayah) - parseInt(b.ayah);
+      if (ayahDiff !== 0) return ayahDiff;
+      return parseInt(a.word) - parseInt(b.word);
+    });
+    return c.json({ status: true, message: "Berhasil mendapatkan daftar kata.", data: sortedData });
   } catch (error) {
     return c.json({ status: false, message: "Gagal mendapatkan data kata: " + error.message }, 500);
   }
 });
 var word_default = word;
+
+// src/database/config.js
+import Database from "better-sqlite3";
+import { join } from "path";
+import fs4 from "fs";
+var isProduction = process.env.VERCEL === "1";
+var db;
+var dbInitialized = false;
+var initializeDatabase = () => {
+  if (dbInitialized && db) return db;
+  try {
+    let dbPath;
+    if (isProduction) {
+      const tmpDbPath = "/tmp/alquran.db";
+      const sourceDbPath = join(process.cwd(), "src", "database", "alquran.db");
+      console.log("Production mode - copying DB to /tmp");
+      if (!fs4.existsSync(tmpDbPath)) {
+        if (!fs4.existsSync(sourceDbPath)) {
+          throw new Error(`Source database not found: ${sourceDbPath}`);
+        }
+        fs4.copyFileSync(sourceDbPath, tmpDbPath);
+        console.log("Database copied to /tmp");
+      }
+      dbPath = tmpDbPath;
+    } else {
+      dbPath = join(process.cwd(), "src", "database", "alquran.db");
+    }
+    console.log(`Initializing database at: ${dbPath}`);
+    db = new Database(dbPath, {
+      readonly: true,
+      fileMustExist: true
+    });
+    db.pragma("journal_mode = OFF");
+    db.pragma("query_only = ON");
+    db.pragma("synchronous = OFF");
+    db.pragma("temp_store = MEMORY");
+    db.pragma("cache_size = -8000");
+    dbInitialized = true;
+    console.log("Database initialized successfully");
+    return db;
+  } catch (error) {
+    console.error("Failed to initialize database:", error);
+    throw error;
+  }
+};
+var query = async (sql, params = []) => {
+  const database = initializeDatabase();
+  const stmt = database.prepare(sql);
+  return stmt.all(params);
+};
+var get2 = async (sql, params = []) => {
+  const database = initializeDatabase();
+  const stmt = database.prepare(sql);
+  return stmt.get(params);
+};
 
 // src/routes/muslim/v1/admin.js
 var admin = new Hono2();
@@ -9067,7 +9178,7 @@ admin.patch("/ayah", async (c) => {
     if (!surahId || !ayahId) {
       return c.json({ status: false, message: "surahId dan ayahId diperlukan." }, 400);
     }
-    const oldData = await get(
+    const oldData = await get2(
       "SELECT arab, text, latin FROM ayah WHERE surah = ? AND ayah = ?",
       [surahId, ayahId]
     );
@@ -9096,7 +9207,7 @@ admin.patch("/ayah", async (c) => {
       `UPDATE ayah SET ${updates.join(", ")} WHERE surah = ? AND ayah = ?`,
       params
     );
-    const newData = await get(
+    const newData = await get2(
       "SELECT arab, text, latin FROM ayah WHERE surah = ? AND ayah = ?",
       [surahId, ayahId]
     );
@@ -9117,7 +9228,7 @@ admin.patch("/dzikir", async (c) => {
   try {
     const { id, title: title3, arabic, translation } = await c.req.json();
     if (!id) return c.json({ status: false, message: "Parameter id diperlukan." }, 400);
-    const oldData = await get("SELECT title, arabic, translation FROM dzikir WHERE id = ?", [id]);
+    const oldData = await get2("SELECT title, arabic, translation FROM dzikir WHERE id = ?", [id]);
     if (!oldData) return c.json({ status: false, message: "Dzikir tidak ditemukan.", data: {} }, 404);
     const updates = [];
     const params = [];
@@ -9139,7 +9250,7 @@ admin.patch("/dzikir", async (c) => {
       `UPDATE dzikir SET ${updates.join(", ")} WHERE id = ?`,
       params
     );
-    const newData = await get("SELECT title, arabic, translation FROM dzikir WHERE id = ?", [id]);
+    const newData = await get2("SELECT title, arabic, translation FROM dzikir WHERE id = ?", [id]);
     return c.json({
       status: true,
       message: "Berhasil memperbarui dzikir.",
@@ -9156,7 +9267,7 @@ admin.patch("/doa", async (c) => {
   try {
     const { id, judul, arab, indo } = await c.req.json();
     if (!id) return c.json({ status: false, message: "id diperlukan." }, 400);
-    const oldData = await get("SELECT judul, arab, indo FROM doa WHERE id = ?", [id]);
+    const oldData = await get2("SELECT judul, arab, indo FROM doa WHERE id = ?", [id]);
     if (!oldData) return c.json({ status: false, message: "Doa tidak ditemukan." }, 404);
     const updates = [];
     const params = [];
@@ -9175,7 +9286,7 @@ admin.patch("/doa", async (c) => {
     if (updates.length === 0) return c.json({ status: false, message: "Tidak ada bidang untuk diperbarui." }, 400);
     params.push(id);
     await query(`UPDATE doa SET ${updates.join(", ")} WHERE id = ?`, params);
-    const newData = await get("SELECT judul, arab, indo FROM doa WHERE id = ?", [id]);
+    const newData = await get2("SELECT judul, arab, indo FROM doa WHERE id = ?", [id]);
     return c.json({
       status: true,
       message: "Berhasil memperbarui doa.",
@@ -9192,6 +9303,15 @@ var admin_default = admin;
 
 // src/routes/muslim/v1/kemenag.js
 var kemenag = new Hono2();
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c;
+  return d;
+}
 kemenag.get("/libur", async (c) => {
   const year = c.req.query("year") || (/* @__PURE__ */ new Date()).getFullYear().toString();
   try {
@@ -9257,29 +9377,25 @@ kemenag.get("/masjid", async (c) => {
     const lokasi = c.req.query("lokasi");
     const jenis = c.req.query("jenis");
     const tipologi = c.req.query("tipologi");
-    let sql = "SELECT * FROM masjid";
-    let params = [];
-    let conditions = [];
+    const allMasjid = await getMasjid();
+    if (!allMasjid) return c.json({ status: false, message: "Daftar masjid tidak tersedia.", data: [] }, 404);
+    let data = allMasjid;
     if (search) {
-      conditions.push("(nama LIKE ? OR deskripsi LIKE ?)");
-      params.push(`%${search}%`, `%${search}%`);
+      const searchLower = search.toLowerCase();
+      data = data.filter(
+        (m) => m.nama && m.nama.toLowerCase().includes(searchLower) || m.deskripsi && m.deskripsi.toLowerCase().includes(searchLower)
+      );
     }
     if (lokasi) {
-      conditions.push("lokasi LIKE ?");
-      params.push(`%${lokasi}%`);
+      const lokasiLower = lokasi.toLowerCase();
+      data = data.filter((m) => m.lokasi && m.lokasi.toLowerCase().includes(lokasiLower));
     }
     if (jenis) {
-      conditions.push("jenis = ?");
-      params.push(jenis);
+      data = data.filter((m) => m.jenis === jenis);
     }
     if (tipologi) {
-      conditions.push("tipologi = ?");
-      params.push(tipologi);
+      data = data.filter((m) => m.tipologi === tipologi);
     }
-    if (conditions.length > 0) {
-      sql += " WHERE " + conditions.join(" AND ");
-    }
-    const data = await query(sql, params);
     return c.json({
       status: true,
       message: search || lokasi || jenis || tipologi ? `Berhasil mencari masjid dengan kriteria tertentu.` : `Berhasil mendapatkan daftar seluruh masjid.`,
@@ -9293,11 +9409,12 @@ kemenag.get("/masjid/detail", async (c) => {
   const id = c.req.query("id");
   if (!id) return c.json({ status: false, message: "Parameter id diperlukan." }, 400);
   try {
-    const data = await query("SELECT * FROM masjid WHERE id = ?", [id]);
-    if (data.length === 0) {
+    const allMasjid = await getMasjid();
+    const data = allMasjid ? allMasjid.find((m) => m.id == id) : null;
+    if (!data) {
       return c.json({ status: false, message: "Masjid tidak ditemukan.", data: {} }, 404);
     }
-    return c.json({ status: true, message: "Berhasil mendapatkan detail masjid.", data: data[0] });
+    return c.json({ status: true, message: "Berhasil mendapatkan detail masjid.", data });
   } catch (error) {
     return c.json({ status: false, message: "Gagal mendapatkan detail masjid: " + error.message }, 500);
   }
@@ -9305,15 +9422,15 @@ kemenag.get("/masjid/detail", async (c) => {
 kemenag.get("/masjid/:id", async (c) => {
   try {
     const id = c.req.param("id");
-    const sql = "SELECT * FROM masjid WHERE id = ?";
-    const data = await query(sql, [id]);
-    if (data.length === 0) {
+    const allMasjid = await getMasjid();
+    const data = allMasjid ? allMasjid.find((m) => m.id == id) : null;
+    if (!data) {
       return c.json({ status: false, message: "Masjid tidak ditemukan.", data: {} }, 404);
     }
     return c.json({
       status: true,
       message: "Berhasil mendapatkan detail masjid.",
-      data: data[0]
+      data
     });
   } catch (error) {
     return c.json({ status: false, message: "Gagal mendapatkan detail masjid: " + error.message }, 500);
@@ -9327,18 +9444,12 @@ kemenag.get("/masjid/nearby", async (c) => {
     if (isNaN(lat) || isNaN(lng)) {
       return c.json({ status: false, message: "Parameter lat dan lng diperlukan." }, 400);
     }
-    const data = await query(`
-      SELECT * FROM (
-        SELECT *, 
-        (6371 * acos(cos(radians(${lat})) * cos(radians(latitude)) * cos(radians(longitude) - radians(${lng})) + sin(radians(${lat})) * sin(radians(latitude)))) AS distance
-        FROM masjid
-        WHERE latitude BETWEEN ${lat - radius / 111} AND ${lat + radius / 111}
-        AND longitude BETWEEN ${lng - radius / (111 * Math.cos(lat * Math.PI / 180))} AND ${lng + radius / (111 * Math.cos(lat * Math.PI / 180))}
-      ) AS t
-      WHERE distance <= ${radius}
-      ORDER BY distance ASC
-      LIMIT 20
-    `);
+    const allMasjid = await getMasjid();
+    if (!allMasjid) return c.json({ status: false, message: "Daftar masjid tidak tersedia.", data: [] }, 404);
+    const data = allMasjid.map((m) => {
+      const distance = getDistance(lat, lng, parseFloat(m.latitude), parseFloat(m.longitude));
+      return { ...m, distance };
+    }).filter((m) => m.distance <= radius).sort((a, b) => a.distance - b.distance).slice(0, 20);
     return c.json({
       status: true,
       message: `Berhasil menemukan masjid dalam radius ${radius}km.`,
@@ -9355,13 +9466,13 @@ var sejarah = new Hono2();
 sejarah.get("/", async (c) => {
   try {
     const kategori = c.req.query("kategori");
-    let sql = "SELECT * FROM sejarah";
-    let params = [];
+    const allSejarah = await getSejarah();
+    if (!allSejarah) return c.json({ status: false, message: "Daftar sejarah tidak tersedia.", data: [] }, 404);
+    let data = allSejarah;
     if (kategori) {
-      sql += " WHERE kategori LIKE ?";
-      params.push(`%${kategori}%`);
+      const kategoriLower = kategori.toLowerCase();
+      data = allSejarah.filter((s) => s.kategori && s.kategori.toLowerCase().includes(kategoriLower));
     }
-    const data = await query(sql, params);
     return c.json({
       status: true,
       message: kategori ? `Berhasil mendapatkan daftar sejarah kategori ${kategori}.` : "Berhasil mendapatkan seluruh daftar sejarah.",
@@ -9375,7 +9486,9 @@ sejarah.get("/detail", async (c) => {
   try {
     const id = c.req.query("id");
     if (!id) return c.json({ status: false, message: "Parameter id diperlukan." }, 400);
-    const item = await get("SELECT * FROM sejarah WHERE id = ?", [id]);
+    const allSejarah = await getSejarah();
+    if (!allSejarah) return c.json({ status: false, message: "Daftar sejarah tidak tersedia.", data: {} }, 404);
+    const item = allSejarah.find((s) => s.id == id);
     if (!item) return c.json({ status: false, message: "Data sejarah tidak ditemukan.", data: {} }, 404);
     return c.json({ status: true, message: "Berhasil mendapatkan detail sejarah.", data: item });
   } catch (error) {
@@ -9401,11 +9514,12 @@ sejarah.get("/today", async (c) => {
       "Desember"
     ];
     const month = monthNames[today.getMonth()];
-    const data = await query(`
-      SELECT * FROM sejarah 
-      WHERE tahun LIKE ? OR tahun LIKE ? OR deskripsi LIKE ?
-      LIMIT 10
-    `, [`%${day} ${month}%`, `%${month}%`, `%${day} ${month}%`]);
+    const allSejarah = await getSejarah();
+    if (!allSejarah) return c.json({ status: false, message: "Daftar sejarah tidak tersedia.", data: [] }, 404);
+    const searchStr = `${day} ${month}`;
+    const data = allSejarah.filter(
+      (s) => s.tahun && s.tahun.includes(searchStr) || s.tahun && s.tahun.includes(month) || s.deskripsi && s.deskripsi.includes(searchStr)
+    ).slice(0, 10);
     return c.json({
       status: true,
       message: `Berhasil mendapatkan peristiwa sejarah untuk hari ini (${day} ${month}).`,
@@ -9421,16 +9535,16 @@ sejarah.get("/today", async (c) => {
 var sejarah_default = sejarah;
 
 // src/routes/muslim/v1/tools.js
-import fs4 from "fs/promises";
-import path3 from "path";
-import { fileURLToPath as fileURLToPath2 } from "url";
-var __filename2 = fileURLToPath2(import.meta.url);
-var __dirname2 = path3.dirname(__filename2);
+import fs5 from "fs/promises";
+import path4 from "path";
+import { fileURLToPath as fileURLToPath3 } from "url";
+var __filename3 = fileURLToPath3(import.meta.url);
+var __dirname3 = path4.dirname(__filename3);
 var tools = new Hono2();
 async function getLocalHadits2(bookName) {
   try {
-    const filePath = path3.join(__dirname2, "../../../../src/data/hadits", `${bookName}.json`);
-    const data = await fs4.readFile(filePath, "utf8");
+    const filePath = path4.join(__dirname3, "../../../../src/data/hadits", `${bookName}.json`);
+    const data = await fs5.readFile(filePath, "utf8");
     return JSON.parse(data);
   } catch (error) {
     return null;
@@ -9438,32 +9552,29 @@ async function getLocalHadits2(bookName) {
 }
 tools.get("/quotes/daily", async (c) => {
   try {
-    const ayat = await get(`
-      SELECT *
-      FROM ayah
-      ORDER BY RANDOM() LIMIT 1
-    `);
-    const surahData = await get(`SELECT * FROM surah WHERE number = ?`, [ayat.surah]);
-    const surahName = surahData.name_id || surahData.name_en || surahData.name_long;
-    const hadits2 = await get(`
-      SELECT *
-      FROM hadits
-      ORDER BY RANDOM() LIMIT 1
-    `);
+    const surahList = await getSurahList();
+    if (!surahList) throw new Error("Daftar surah tidak tersedia");
+    const randomSurah = surahList[Math.floor(Math.random() * surahList.length)];
+    const ayahs = await getAyahBySurah(randomSurah.number);
+    if (!ayahs) throw new Error("Daftar ayat tidak tersedia");
+    const randomAyah = ayahs[Math.floor(Math.random() * ayahs.length)];
+    const surahName = randomSurah.name_id || randomSurah.name_en || randomSurah.name_long;
+    const allArbain = await getHaditsArbain();
+    const randomHadits = allArbain ? allArbain[Math.floor(Math.random() * allArbain.length)] : null;
     return c.json({
       status: true,
       message: "Berhasil mengambil kutipan harian.",
       data: {
         ayat: {
-          arab: ayat.arab,
-          text: ayat.text,
-          sumber: `QS. ${surahName}: ${ayat.ayah}`
+          arab: randomAyah.arab,
+          text: randomAyah.text,
+          sumber: `QS. ${surahName}: ${randomAyah.ayah}`
         },
-        hadits: {
-          arab: hadits2.arab,
-          text: hadits2.indo,
-          sumber: `Hadits Arbain No. ${hadits2.no}: ${hadits2.judul}`
-        }
+        hadits: randomHadits ? {
+          arab: randomHadits.arab,
+          text: randomHadits.indo,
+          sumber: `Hadits Arbain No. ${randomHadits.no}: ${randomHadits.judul}`
+        } : null
       }
     });
   } catch (error) {
@@ -9550,31 +9661,40 @@ tools.get("/semantic-search", async (c) => {
   const query2 = c.req.query("query");
   if (!query2) return c.json({ status: false, message: "Parameter query diperlukan." }, 400);
   try {
-    const quranResults = await query(`
-      SELECT *
-      FROM ayah
-      WHERE text LIKE ? OR theme LIKE ?
-    `, [`%${query2}%`, `%${query2}%`]);
-    const formattedQuran = await Promise.all(quranResults.map(async (r) => {
-      const s = await get(`SELECT * FROM surah WHERE number = ?`, [r.surah]);
-      return {
-        arab: r.arab,
-        text: r.text,
-        sumber: `QS. ${s.name_id || s.name_en || s.name_long}: ${r.ayah}`
-      };
-    }));
-    const arbainResults = await query(
-      "SELECT * FROM hadits WHERE judul LIKE ? OR indo LIKE ? LIMIT 5",
-      [`%${query2}%`, `%${query2}%`]
-    );
-    const formattedArbain = (arbainResults || []).map((h) => ({
+    const queryLower = query2.toLowerCase();
+    const searchTerms = queryLower.split(" ");
+    const surahList = await getSurahList();
+    let quranResults = [];
+    for (const s of surahList) {
+      const ayahs = await getAyahBySurah(s.number);
+      if (ayahs) {
+        const matches = ayahs.filter((a) => {
+          const text = (a.text || "").toLowerCase();
+          return searchTerms.every((term) => text.includes(term));
+        }).slice(0, 5);
+        if (matches.length > 0) {
+          const surahName = s.name_id || s.name_en || s.name_long;
+          quranResults.push(...matches.map((a) => ({
+            arab: a.arab,
+            text: a.text,
+            sumber: `QS. ${surahName}: ${a.ayah}`
+          })));
+        }
+      }
+      if (quranResults.length >= 10) break;
+    }
+    const allArbain = await getHaditsArbain();
+    const arbainMatches = allArbain ? allArbain.filter((h) => {
+      const text = (h.judul + " " + h.indo).toLowerCase();
+      return searchTerms.every((term) => text.includes(term));
+    }).slice(0, 5) : [];
+    const formattedArbain = arbainMatches.map((h) => ({
       arab: h.arab,
       text: h.indo,
       sumber: `Hadits Arbain No. ${h.no}: ${h.judul}`
     }));
     let globalHadits = [];
     const mainBooks = ["bukhari", "muslim"];
-    const searchTerms = query2.toLowerCase().split(" ");
     for (const book of mainBooks) {
       const allHadits = await getLocalHadits2(book);
       if (allHadits) {
@@ -9608,7 +9728,7 @@ tools.get("/semantic-search", async (c) => {
       message: `Pencarian semantik untuk '${query2}' berhasil.`,
       data: {
         query: query2,
-        quran: formattedQuran,
+        quran: quranResults,
         hadits: totalHadits
       }
     });
@@ -11622,19 +11742,19 @@ app.use("*", trimTrailingSlash());
 app.use("*", logger());
 app.use("*", cors());
 app.get("/health", async (c) => {
-  let dbStatus = "disconnected";
+  let jsonStatus = "disconnected";
   try {
-    const result = await query("SELECT 1");
-    if (result) dbStatus = "connected";
+    const result = await getSurahList();
+    if (result) jsonStatus = "connected";
   } catch (e) {
-    dbStatus = "error: " + e.message;
+    jsonStatus = "error: " + e.message;
   }
   return c.json({
     status: "ok",
     timestamp: (/* @__PURE__ */ new Date()).toISOString(),
     version: "1.0.0",
     services: {
-      database: dbStatus,
+      storage: jsonStatus,
       uptime: process.uptime()
     },
     env: process.env.NODE_ENV || "development"
@@ -11651,9 +11771,9 @@ app.use("/v1/*", async (c, next) => {
   const ip = c.req.header("x-forwarded-for") || c.req.header("x-real-ip") || "local";
   const userAgent = c.req.header("user-agent") || "unknown";
   const method = c.req.method;
-  const path4 = c.req.path;
+  const path5 = c.req.path;
   if (process.env.NODE_ENV === "production") {
-    console.log(`[HIT] ${(/* @__PURE__ */ new Date()).toISOString()} | IP: ${ip} | Path: ${path4} | UA: ${userAgent}`);
+    console.log(`[HIT] ${(/* @__PURE__ */ new Date()).toISOString()} | IP: ${ip} | Path: ${path5} | UA: ${userAgent}`);
     return await next();
   }
   const now = Date.now();
@@ -11676,7 +11796,7 @@ app.use("/v1/*", async (c, next) => {
       client_info: { ip, user_agent: userAgent }
     }, 429);
   }
-  console.log(`[HIT] ${(/* @__PURE__ */ new Date()).toISOString()} | IP: ${ip} | Method: ${method} | Path: ${path4}`);
+  console.log(`[HIT] ${(/* @__PURE__ */ new Date()).toISOString()} | IP: ${ip} | Method: ${method} | Path: ${path5}`);
   await next();
 });
 app.route("/v1", v1_default);

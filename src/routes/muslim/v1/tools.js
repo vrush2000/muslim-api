@@ -1,24 +1,7 @@
 import { Hono } from 'hono';
-import { getSurahList, getAyahBySurah, getHaditsArbain } from '../../../utils/jsonHandler.js';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { getSurahList, getAyahBySurah, getHaditsArbain, getLocalHadits } from '../../../utils/jsonHandler.js';
 
 const tools = new Hono();
-
-// Helper untuk membaca file JSON hadits lokal
-async function getLocalHadits(bookName) {
-  try {
-    const filePath = path.join(__dirname, '../../../../src/data/hadits', `${bookName}.json`);
-    const data = await fs.readFile(filePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return null;
-  }
-}
 
 // Daily Quotes (Ayat/Hadits Hari Ini)
 tools.get('/quotes/daily', async (c) => {
