@@ -7,6 +7,7 @@ import { getSurahList } from './utils/jsonHandler.js';
 import apiRouter from './routes/index.jsx';
 import apiV1Router from './routes/muslim/v1/index.js';
 import qrisRouter from './routes/qris.js';
+import widgetRouter from './routes/widget.jsx';
 
 const app = new Hono();
 
@@ -86,6 +87,7 @@ app.use('/v1/*', async (c, next) => {
 
 app.route('/v1', apiV1Router);
 app.route('/api/qris', qrisRouter);
+app.route('/widget', widgetRouter);
 app.route('/', apiRouter);
 
 app.notFound((c) => {

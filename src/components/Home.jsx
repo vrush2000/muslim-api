@@ -239,6 +239,12 @@ export const Home = ({ baseUrl }) => {
   ]
 }`}
           />
+          <SectionTitle 
+            id="ayah" 
+            title="Ayat & Al-Quran" 
+            icon="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" 
+            color="emerald"
+          />
           <ApiEndpoint 
             title="Ayat by Surah" 
             method="GET" 
@@ -449,9 +455,29 @@ export const Home = ({ baseUrl }) => {
             color="emerald"
           />
           <div className="p-4 mb-6 bg-emerald-50 rounded-r-lg border-l-4 border-emerald-500">
-            <p className="text-sm font-medium text-emerald-800">
-              🛡️ <strong>Data Integrity Proof:</strong> Kami menggunakan teknologi cryptographic hashing (SHA-256) untuk memastikan kemurnian teks Al-Quran. Setiap Surah dan Ayah memiliki "Digital Fingerprint" yang unik. Jika ada perubahan satu karakter saja pada data kami, maka hash integrity akan berubah, memberitahukan pengguna bahwa data tidak lagi murni.
+            <p className="mb-3 text-sm font-medium text-emerald-800">
+              🛡️ <strong>Data Integrity Proof:</strong> Kami menggunakan teknologi cryptographic hashing (SHA-256) untuk memastikan kemurnian teks Al-Quran. Setiap Surah dan Ayah memiliki "Digital Fingerprint" yang unik. Jika ada perubahan satu karakter saja pada data kami, maka hash integrity akan berubah.
             </p>
+            <details class="text-xs text-emerald-700 cursor-pointer">
+              <summary class="font-bold hover:underline">Cara Verifikasi Mandiri (Standard Industri)</summary>
+              <div class="p-4 mt-3 space-y-3 rounded-lg bg-white/50">
+                <p>Anda dapat memverifikasi keaslian data secara manual:</p>
+                <ol class="space-y-1 list-decimal list-inside">
+                  <li>Ambil data mentah dari <code class="px-1 bg-emerald-100 rounded">/v1/ayah/surah?surahId=1</code></li>
+                  <li>Ekstrak field <code class="px-1 bg-emerald-100 rounded">arab</code> dan <code class="px-1 bg-emerald-100 rounded">text</code></li>
+                  <li>Lakukan hashing SHA-256 pada array tersebut</li>
+                  <li>Bandingkan dengan <code class="px-1 bg-emerald-100 rounded">content_hash</code> di <code class="px-1 bg-emerald-100 rounded">/v1/integrity/chain</code></li>
+                </ol>
+                <div class="mt-2">
+                  <p class="mb-1 font-bold">Snippet Node.js:</p>
+                  <pre class="overflow-x-auto p-2 text-emerald-400 rounded-md bg-slate-900">
+{`const crypto = require('crypto');
+const data = ayahs.map(a => ({ arab: a.arab, text: a.text }));
+const hash = crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');`}
+                  </pre>
+                </div>
+              </div>
+            </details>
           </div>
           <ApiEndpoint 
             title="Integrity Chain (Proof of Authenticity)" 
@@ -515,25 +541,6 @@ export const Home = ({ baseUrl }) => {
 }`}
           />
 
-          <ApiEndpoint 
-            title="Kalkulator Zakat" 
-            method="GET" 
-            path="/tools/zakat?type=maal&amount=100000000&hargaEmas=1200000" 
-            category="tools"
-            endpointId="tools-zakat"
-            responseJson={`{
-  "status": true,
-  "message": "Kalkulasi zakat berhasil.",
-  "data": {
-    "type": "maal",
-    "amount": 100000000,
-    "nishab": 102000000,
-    "isWajib": false,
-    "zakat": 0,
-    "keterangan": "Nishab Zakat Maal adalah setara 85 gram emas per tahun. Tarif zakat 2,5%."
-  }
-}`}
-          />
 
           {/* Analytics Category */}
           <div class="mt-12 mb-6">
@@ -578,63 +585,6 @@ export const Home = ({ baseUrl }) => {
 }`}
           />
 
-          <div class="p-8 mb-20 bg-white rounded-2xl border shadow-sm border-slate-200">
-            <h3 class="flex gap-2 items-center mb-4 text-xl font-bold text-slate-900">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-              Transparansi & Verifikasi Mandiri
-            </h3>
-            <p class="mb-6 text-slate-600">
-              Kami percaya bahwa kepercayaan dibangun di atas transparansi. Anda tidak perlu hanya percaya pada klaim kami; Anda dapat memverifikasi keaslian data Al-Quran secara mandiri menggunakan metode standar industri.
-            </p>
-            
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div class="p-5 rounded-xl bg-slate-50">
-                <h4 class="mb-3 font-bold text-slate-900">Metode Verifikasi</h4>
-                <ul class="space-y-3 text-sm text-slate-600">
-                  <li class="flex gap-2">
-                    <span class="font-bold text-emerald-600">1.</span>
-                    Ambil data mentah (raw data) dari endpoint <code class="px-1 bg-white rounded border">/v1/ayah/surah?surahId=1</code>
-                  </li>
-                  <li class="flex gap-2">
-                    <span class="font-bold text-emerald-600">2.</span>
-                    Ekstrak hanya field <code class="px-1 bg-white rounded border">arab</code> dan <code class="px-1 bg-white rounded border">text</code> untuk setiap ayat.
-                  </li>
-                  <li class="flex gap-2">
-                    <span class="font-bold text-emerald-600">3.</span>
-                    Lakukan hashing SHA-256 pada array objek tersebut.
-                  </li>
-                  <li class="flex gap-2">
-                    <span class="font-bold text-emerald-600">4.</span>
-                    Bandingkan hasilnya dengan <code class="px-1 bg-white rounded border">content_hash</code> di <code class="px-1 bg-white rounded border">/v1/integrity/chain</code>.
-                  </li>
-                </ul>
-              </div>
-              
-              <div class="p-5 rounded-xl bg-slate-50">
-                <h4 class="mb-3 font-bold text-slate-900">Algoritma Hashing</h4>
-                <p class="mb-4 text-sm text-slate-600">
-                  Kami menggunakan algoritma SHA-256 yang standar dan tidak dapat dimanipulasi. Berikut adalah contoh snippet kode Node.js untuk verifikasi:
-                </p>
-                <div class="p-3 rounded-lg bg-slate-900">
-                  <pre class="text-[10px] text-emerald-400 overflow-x-auto">
-{`const crypto = require('crypto');
-const data = ayahs.map(a => ({ arab: a.arab, text: a.text }));
-const hash = crypto.createHash('sha256')
-  .update(JSON.stringify(data))
-  .digest('hex');`}
-                  </pre>
-                </div>
-              </div>
-            </div>
-            
-            <div class="p-4 mt-6 rounded-xl border border-blue-100 bg-blue-50/50">
-              <p class="text-xs leading-relaxed text-blue-700">
-                <strong>Catatan Keamanan:</strong> Struktur rantai integritas kami (Integrity Chain) juga menyertakan <code class="px-1 bg-blue-100 rounded">previous_hash</code>, yang berarti jika satu Surah diubah, seluruh rantai setelahnya akan menjadi tidak valid. Ini adalah mekanisme yang sama yang digunakan oleh teknologi blockchain untuk menjamin imutabilitas data.
-              </p>
-            </div>
-          </div>
 
           {/* Other Resources Banner */}
           <div class="overflow-hidden relative p-8 mb-20 text-white bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl shadow-xl group">
@@ -657,6 +607,100 @@ const hash = crypto.createHash('sha256')
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7" />
                 </svg>
               </a>
+            </div>
+          </div>
+
+          <SectionTitle 
+            id="widgets" 
+            title="Widget Dashboard" 
+            icon="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" 
+            color="blue"
+          />
+          <div class="p-8 mb-12 bg-white rounded-2xl border shadow-sm border-slate-200">
+            <p class="mb-8 text-slate-600">
+              Ingin memasang jadwal sholat atau ayat harian di website Anda? Gunakan kode embed sederhana di bawah ini. Anda dapat menyesuaikan tampilan melalui parameter URL.
+            </p>
+
+            <div class="space-y-10">
+              {/* Jadwal Sholat Widget */}
+              <div>
+                <h4 class="flex gap-2 items-center mb-4 font-bold text-slate-900">
+                  <span class="flex justify-center items-center w-8 h-8 text-sm text-blue-600 bg-blue-100 rounded-lg">1</span>
+                  Widget Jadwal Sholat
+                </h4>
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  <div class="space-y-4">
+                    <p class="text-sm text-slate-500">Salin kode di bawah ini ke dalam HTML Anda:</p>
+                    <div class="relative group">
+                      <pre class="overflow-x-auto p-4 text-xs rounded-xl bg-slate-900 text-slate-300">
+{`<iframe 
+  src="${baseUrl.replace('/v1', '')}/widget/sholat?city=jakarta" 
+  width="300" 
+  height="400" 
+  frameborder="0"
+></iframe>`}
+                      </pre>
+                      <button 
+                        onclick={`navigator.clipboard.writeText('<iframe src="${baseUrl.replace('/v1', '')}/widget/sholat?city=jakarta" width="300" height="400" frameborder="0"></iframe>')`}
+                        class="absolute top-2 right-2 p-2 text-white rounded-lg opacity-0 transition-all bg-white/10 hover:bg-white/20 group-hover:opacity-100"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bg-slate-50 rounded-xl p-2 border border-slate-200 flex items-center justify-center min-h-[420px] overflow-hidden">
+                    <iframe 
+                      src={`${baseUrl.replace('/v1', '')}/widget/sholat?city=jakarta`} 
+                      width="300" 
+                      height="400" 
+                      frameborder="0"
+                      class="rounded-xl shadow-lg"
+                    ></iframe>
+                  </div>
+                </div>
+              </div>
+
+              {/* Ayat Harian Widget */}
+              <div>
+                <h4 class="flex gap-2 items-center mb-4 font-bold text-slate-900">
+                  <span class="flex justify-center items-center w-8 h-8 text-sm text-emerald-600 bg-emerald-100 rounded-lg">2</span>
+                  Widget Ayat Harian
+                </h4>
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  <div class="space-y-4">
+                    <p class="text-sm text-slate-500">Salin kode di bawah ini ke dalam HTML Anda:</p>
+                    <div class="relative group">
+                      <pre class="overflow-x-auto p-4 text-xs rounded-xl bg-slate-900 text-slate-300">
+{`<iframe 
+  src="${baseUrl.replace('/v1', '')}/widget/ayat" 
+  width="400" 
+  height="300" 
+  frameborder="0"
+></iframe>`}
+                      </pre>
+                      <button 
+                        onclick={`navigator.clipboard.writeText('<iframe src="${baseUrl.replace('/v1', '')}/widget/ayat" width="400" height="300" frameborder="0"></iframe>')`}
+                        class="absolute top-2 right-2 p-2 text-white rounded-lg opacity-0 transition-all bg-white/10 hover:bg-white/20 group-hover:opacity-100"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bg-slate-50 rounded-xl p-2 border border-slate-200 flex items-center justify-center min-h-[320px] overflow-hidden">
+                    <iframe 
+                      src={`${baseUrl.replace('/v1', '')}/widget/ayat`} 
+                      width="400" 
+                      height="300" 
+                      frameborder="0"
+                      class="rounded-xl shadow-lg"
+                    ></iframe>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

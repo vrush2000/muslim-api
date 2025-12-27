@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { dbQuery, dbGet, dbAll } from './db.js';
 
 const DATA_PATH = path.join(process.cwd(), 'src/data');
 
@@ -98,32 +99,76 @@ export async function getMasjid() {
   return await readJson('common/masjid.json');
 }
 
+export async function getPuasa() {
+  return await readJson('common/puasa.json');
+}
+
+export async function getFiqhPuasa() {
+  return await readJson('common/fiqh_puasa.json');
+}
+
 export async function getAnalytics() {
-  const data = await readJson('common/analytics.json');
-  return data || {
-    trending_surahs: {},
-    trending_ayahs: {},
-    global_khatam: 0,
-    total_reads: 0,
-    last_updated: new Date().toISOString()
-  };
+  try {
+    const totalReads = await dbGet("SELECT value FROM global_stats WHERE key = 'total_reads'");
+    const globalKhatam = await dbGet("SELECT value FROM global_stats WHERE key = 'global_khatam'");
+    const lastUpdated = await dbGet("SELECT last_updated FROM global_stats WHERE key = 'total_reads'");
+
+    const trendingSurahs = await dbAll("SELECT item_id, count FROM item_stats WHERE type = 'surah'");
+    const trendingAyahs = await dbAll("SELECT item_id, count FROM item_stats WHERE type = 'ayah'");
+
+    const surahMap = {};
+    trendingSurahs.forEach(row => surahMap[row.item_id] = row.count);
+
+    const ayahMap = {};
+    trendingAyahs.forEach(row => ayahMap[row.item_id] = row.count);
+
+    return {
+      trending_surahs: surahMap,
+      trending_ayahs: ayahMap,
+      global_khatam: globalKhatam ? globalKhatam.value : 0,
+      total_reads: totalReads ? totalReads.value : 0,
+      last_updated: lastUpdated ? lastUpdated.last_updated : new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('Failed to get analytics from DB:', error);
+    return {
+      trending_surahs: {},
+      trending_ayahs: {},
+      global_khatam: 0,
+      total_reads: 0,
+      last_updated: new Date().toISOString()
+    };
+  }
 }
 
 export async function updateAnalytics(type, id) {
-  const stats = await getAnalytics();
-  
-  if (type === 'surah') {
-    stats.trending_surahs[id] = (stats.trending_surahs[id] || 0) + 1;
-    stats.total_reads += 1;
-  } else if (type === 'ayah') {
-    stats.trending_ayahs[id] = (stats.trending_ayahs[id] || 0) + 1;
-    stats.total_reads += 1;
-  } else if (type === 'khatam') {
-    stats.global_khatam += 1;
+  try {
+    if (type === 'surah' || type === 'ayah') {
+      await dbQuery(`
+        INSERT INTO item_stats (type, item_id, count, last_updated) 
+        VALUES (?, ?, 1, CURRENT_TIMESTAMP)
+        ON CONFLICT(type, item_id) DO UPDATE SET 
+          count = count + 1,
+          last_updated = CURRENT_TIMESTAMP
+      `, [type, id]);
+
+      await dbQuery(`
+        UPDATE global_stats 
+        SET value = value + 1, last_updated = CURRENT_TIMESTAMP 
+        WHERE key = 'total_reads'
+      `);
+    } else if (type === 'khatam') {
+      await dbQuery(`
+        UPDATE global_stats 
+        SET value = value + 1, last_updated = CURRENT_TIMESTAMP 
+        WHERE key = 'global_khatam'
+      `);
+    }
+    return true;
+  } catch (error) {
+    console.error('Failed to update analytics in DB:', error);
+    return false;
   }
-  
-  stats.last_updated = new Date().toISOString();
-  return await writeJson('common/analytics.json', stats);
 }
 
 export async function getLocalHadits(bookName) {

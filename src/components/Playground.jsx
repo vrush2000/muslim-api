@@ -36,6 +36,7 @@ export const Playground = ({ baseUrl }) => {
                   <option value="murottal">Murottal Audio</option>
                   <option value="kemenag">Kemenag Open Data</option>
                   <option value="sejarah">Sejarah Islam</option>
+                  <option value="puasa">Puasa & Fiqh</option>
                   <option value="tools">Tools & Fitur Cerdas</option>
                   <option value="integrity">Integrity Chain</option>
                   <option value="analytics">Spiritual Analytics</option>
@@ -298,12 +299,35 @@ export const Playground = ({ baseUrl }) => {
             { id: 'sejarah-today', path: '/sejarah/today', name: 'Peristiwa Hari Ini', params: [] },
             { id: 'sejarah-detail', path: '/sejarah/detail', name: 'Detail Sejarah', params: [{ name: 'id', type: 'number', default: '1', placeholder: '1' }] },
           ],
+          puasa: [
+            { id: 'puasa-all', path: '/puasa', name: 'Daftar Puasa (Wajib & Sunnah)', params: [] },
+            { id: 'puasa-fiqh', path: '/puasa/fiqh', name: 'Fiqh & Adab Puasa (70 Masalah)', params: [] },
+            { id: 'puasa-find', path: '/puasa/find', name: 'Cari Puasa', params: [{ name: 'query', type: 'text', default: 'bidh', placeholder: 'bidh' }] },
+            { id: 'puasa-type', path: '/puasa/type/mingguan', name: 'Filter by Tipe', params: [
+              { name: 'type', type: 'select', default: 'mingguan', options: [
+                { value: 'mingguan', label: 'Mingguan' },
+                { value: 'bulanan', label: 'Bulanan' },
+                { value: 'tahunan', label: 'Tahunan' }
+              ]}
+            ]},
+          ],
           tools: [
             { id: 'tools-quotes', path: '/tools/quotes/daily', name: 'Daily Quotes', params: [] },
             { id: 'tools-zakat', path: '/tools/zakat', name: 'Kalkulator Zakat', params: [
               { name: 'type', type: 'select', default: 'maal', options: [{value:'maal', label:'Zakat Maal'}, {value:'penghasilan', label:'Zakat Penghasilan'}, {value:'fitrah', label:'Zakat Fitrah'}] },
               { name: 'amount', type: 'number', default: '100000000', hint: 'Jumlah harta/pendapatan' },
-              { name: 'hargaEmas', type: 'number', default: '1200000', hint: 'Harga emas per gram (opsional)' }
+              { name: 'hargaEmas', type: 'number', default: '1200000', hint: 'Harga emas per gram (opsional)' },
+              { name: 'hargaBeras', type: 'number', default: '15000', hint: 'Harga beras per kg (Zakat Fitrah)' },
+              { name: 'jumlahOrang', type: 'number', default: '1', hint: 'Jumlah jiwa (Zakat Fitrah)' }
+            ]},
+            { id: 'tools-faraidh', path: '/tools/faraidh', name: 'Kalkulator Waris (Faraidh)', params: [
+              { name: 'totalHarta', type: 'number', default: '120000000', hint: 'Total harta warisan' },
+              { name: 'suami', type: 'number', default: '1', hint: 'Jumlah suami (0-1)' },
+              { name: 'istri', type: 'number', default: '0', hint: 'Jumlah istri' },
+              { name: 'anakLk', type: 'number', default: '1', hint: 'Jumlah anak laki-laki' },
+              { name: 'anakPr', type: 'number', default: '1', hint: 'Jumlah anak perempuan' },
+              { name: 'ayah', type: 'select', default: 'false', options: [{value:'true', label:'Ada'}, {value:'false', label:'Tidak Ada'}] },
+              { name: 'ibu', type: 'select', default: 'false', options: [{value:'true', label:'Ada'}, {value:'false', label:'Tidak Ada'}] }
             ]},
             { id: 'tools-qibla', path: '/tools/qibla', name: 'Arah Kiblat', params: [{ name: 'lat', type: 'text', default: '-6.1751' }, { name: 'lng', type: 'text', default: '106.8272' }] },
             { id: 'tools-search', path: '/tools/semantic-search', name: 'Pencarian Semantik (AI)', params: [{ name: 'query', type: 'text', default: 'sabar', hint: 'Cari di Quran & Hadits' }] },
